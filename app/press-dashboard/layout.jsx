@@ -1,11 +1,12 @@
 import React from "react";
 import SidebarDashboard from "../components/SidebarDashboard";
-
+import TalkTo from '../components/TawkTo'
 const Layout = ({ children }) => {
   return (
     <>
       <div className="hidden md:block">
         <SidebarDashboard>{children}</SidebarDashboard>
+        <TalkTo/>
       </div>
       <div className="block md:hidden">
         <SidebarDashboard />

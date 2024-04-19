@@ -177,6 +177,7 @@ export default function Page() {
   if (session && sessionStatus === "authenticated" && plans.length > 0) {
     return (
       <Container>
+       
         <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
           <div className="flex justify-center gap-5">
             <MdInventory />
@@ -267,6 +268,7 @@ export default function Page() {
             </TableFooter>
           </Table>
         </TableContainer>
+        
       </Container>
     );
   } else if (

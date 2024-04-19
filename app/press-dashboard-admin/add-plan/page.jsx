@@ -79,12 +79,14 @@ export default function Page() {
     }
   };
 
-  const handleDeleteCoupon = (couponId) => {
-    fetch("/api/plans?_id=" + couponId, {
+  const handleDeleteCoupon = (planId) => {
+    console.log("work plan")
+    fetch("/api/plans?_id=" + planId, {
       method: "DELETE",
     })
       .then((response) => {
         if (response.ok) {
+          console.log("delete")
           fetchPlans();
         } else {
           console.error("Failed to delete");
