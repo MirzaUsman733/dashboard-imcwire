@@ -1,0 +1,162 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider  = "postgres"
+  url       = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id              Int        @id @default(autoincrement())
+  name            String?
+  email           String     @unique
+  password        String
+  role            String     @default("user")
+  approved        Boolean    @default(false)
+  status          String?
+  resetToken      String?
+  tokenExpiration DateTime?
+  createdAt       DateTime   @default(now())
+  updatedAt       DateTime   @updatedAt
+  loginLogs       LoginLog[]
+  lastActivity DateTime?
+}
+
+model LoginLog {
+  id         Int      @id @default(autoincrement())
+  userId     Int
+  loggedInAt DateTime @default(now())
+  userEmail  String
+  status     String?
+  user       User     @relation(fields: [userId], references: [id])
+}
+
+model compaignData {
+  id                          Int      @id @default(autoincrement())
+  clientId                    String   @unique
+  formDataSignUp              Json?
+  matchedPlanData             Json?
+  selectedCategories          Json?
+  selectedCountries           Json?
+  selectedCountryTranslations Json?
+  selectedPrice               Float?
+  cost                        Float?
+  categorySubtotal            Float?
+  countrySubTotal             Float?
+  countryTranslationsPrice    Float?
+  totalPrice                  Float?
+  selectedOption              String?
+  status                      String   @default("unpaid")
+  action                      String   @default("pending")
+  isAgency                    Boolean?
+  agencyName                  String?
+  transactionId               String?
+  currentTime                 DateTime @default(now())
+  updatedAt                   DateTime @default(now()) @updatedAt
+}
+
+model WebhookEvent {
+  id        Int      @id @default(autoincrement())
+  eventType Json
+  eventData Json
+  createdAt DateTime @default(now())
+}
+
+model PlanItem {
+  // id              Int      @id @default(autoincrement())
+  id              String    @id @default(cuid())
+  planName        String
+  priceSingle     Float
+  totalPlanPrice  Float
+  numberOfPR      Int      @default(0)
+  planDescription String
+  pdfLink         String
+  createdAt       DateTime @default(now())
+  updatedAt       DateTime @default(now()) @updatedAt
+}
+
+// model Report {
+//   id                Int      @id @default(autoincrement())
+//   pressReleaseTitle String
+//   packageName       String
+//   clientEmail       String
+//   // link              String
+//   // type              String
+//   // industry          String
+//   // topCountries      String
+//   // potentialAudience String
+//   uniqueId          String?
+//   currentTime       DateTime @default(now())
+//   updatedAt         DateTime @default(now()) @updatedAt
+//   publication          Publication? @relation(fields: [publicationId], references: [id])
+//   publicationId        Int?
+// }
+model Report {
+  id                Int      @id @default(autoincrement())
+  storeData         Json
+  formData          Json
+  formDataContract  Json
+  pressReleaseTitle String
+  packageName       String
+  clientEmail       String
+  uniqueId          String
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+}
+
+model Company {
+  id          Int      @id @default(autoincrement())
+  companyName String
+  contactName String
+  address1    String?
+  address2    String?
+  city        String
+  country     String
+  phone       String
+  state       String
+  email       String
+  websiteUrl  String
+  user        Json?
+  currentTime DateTime @default(now())
+  updatedAt   DateTime @default(now()) @updatedAt
+}
+
+model Publication {
+  id               Int      @id @default(autoincrement())
+  storeData        Json
+  formData         Json
+  formDataContract Json
+  createdAt        DateTime @default(now())
+  updatedAt        DateTime @default(now()) @updatedAt
+}
+
+model File {
+  // id              String    @id @default(cuid())
+  id        String   @id
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  image     String?  @db.Text
+  pdf       String?
+  excel     String?
+  // uniqueId  String?
+}
+
+model Coupon {
+  id                 Int       @id @default(autoincrement())
+  couponCode         String?   @unique
+  discountPercentage Float?
+  createdAt          DateTime? @default(now())
+  updatedAt          DateTime? @default(now()) @updatedAt
+}
+model pdf {
+  id       Int      @id @default(autoincrement())
+  pdf      String
+}
