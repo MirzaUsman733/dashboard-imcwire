@@ -109,13 +109,13 @@ export default function Auth() {
         }),
       });
 
-      if (res.status === 400) {
+      if (res?.status === 400) {
         setError("This email is already registered");
         setLoadingSignUp(false);
         return;
       }
 
-      if (res.status === 200) {
+      if (res?.status === 200) {
         setLoadingSignUp(false);
         setError("");
         setName("");
@@ -141,7 +141,7 @@ export default function Auth() {
       return;
     }
 
-    if (!passwordSignIn || passwordSignIn.length < 8) {
+    if (!passwordSignIn || passwordSignIn?.length < 8) {
       setError("Password is invalid");
       return;
     }
@@ -153,8 +153,8 @@ export default function Auth() {
     });
 
     if (res?.error) {
-      setError(res.error);
-      if (!res?.error) router.replace("/frontend");
+      setError(res?.error);
+      if (!res?.error) router?.replace("/frontend");
     } else {
       setError("");
     }

@@ -249,7 +249,7 @@ export default function CompaniesTable() {
                     page * rowsPerPage + rowsPerPage
                   )
                 : rows
-              )?.map((row, index) => (
+              ).map((row, index) => (
                 <StyledTableRow key={row.id}>
                   <TableCell>{index + 1}</TableCell>
                   <TableCell>{row.companyName}</TableCell>
