@@ -30,8 +30,8 @@ const Page = ({ params }) => {
       if (response.ok) {
         const detailData = await response.json();
         setDetail(detailData);
-        setFormData(detailData.formData);
-        setPublicationData(detailData.formDataContract);
+        setFormData(detailData?.formData);
+        setPublicationData(detailData?.formDataContract);
       } else {
         console.error("Failed to fetch detail");
       }

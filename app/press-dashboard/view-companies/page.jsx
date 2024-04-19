@@ -118,11 +118,15 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const fetchDataFromAPI = async () => {
+const fetchDataFromAPI = async (session) => {
   try {
     const response = await fetch("/api/add-company");
     const data = await response.json();
-    return data;
+    console.log(data)
+    // Filter data based on session email
+    const filteredData = data.filter((plan) => plan?.user?.user?.email === session?.email);
+    console.log(filteredData)
+    return filteredData;
   } catch (error) {
     console.error("Error fetching data:", error);
     return [];
@@ -196,7 +200,7 @@ export default function CompaniesTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-
+console.log(rows)
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 

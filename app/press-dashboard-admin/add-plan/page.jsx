@@ -1,12 +1,15 @@
 "use client";
 import React, { useState, useEffect } from "react";
-import { TextField } from "@mui/material";
+import { CircularProgress, IconButton, Menu, MenuItem, Snackbar, TextField } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-
+import MoreVertIcon from "@mui/icons-material/MoreVert";
+import FileCopyIcon from "@mui/icons-material/FileCopy";
+import CloseIcon from '@mui/icons-material/Close';
 export default function Page() {
+  const [loading, setLoading] = useState(false);
   const [newPlan, setNewPlan] = useState({
     planName: "",
     totalPlanPrice: 0,
@@ -15,12 +18,16 @@ export default function Page() {
     pdfLink: "",
     numberOfPR: 0,
   });
-
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
+  const [plans, setPlans] = useState([]);
+  const [anchorEl, setAnchorEl] = React.useState(
+    new Array(plans.length).fill(null)
+  );
   const handleInputChange = (field, value) => {
     setNewPlan({ ...newPlan, [field]: value });
   };
 
-  const [plans, setPlans] = useState([]);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   useEffect(() => {
@@ -50,6 +57,7 @@ export default function Page() {
 
   const handleAddPlan = async () => {
     try {
+      setLoading(true)
       // Calculate total price based on single price and number of PR
       const totalPrice = newPlan.priceSingle * newPlan.numberOfPR;
 
@@ -71,6 +79,7 @@ export default function Page() {
           pdfLink: "",
           numberOfPR: 0,
         });
+        setLoading(false);
       } else {
         console.error("Failed to add plan");
       }
@@ -78,9 +87,19 @@ export default function Page() {
       console.error("Error adding plan:", error);
     }
   };
+  const handleCopyLink = (planId) => {
+    navigator.clipboard.writeText(`dashboard.imcwire.com/plan/${planId}`)
+      .then(() => {
+        setSnackbarMessage("Plan ID copied to clipboard");
+        setSnackbarOpen(true);
+        handleMenuClose();
+      })
+      .catch((error) => {
+        console.error('Error copying plan ID to clipboard:', error);
+      });
+  };
 
   const handleDeleteCoupon = (planId) => {
-    console.log("work plan")
     fetch("/api/plans?_id=" + planId, {
       method: "DELETE",
     })
@@ -94,9 +113,30 @@ export default function Page() {
       })
       .catch((error) => console.error("Error deleting:", error));
   };
+  const handleMenuOpen = (event, index) => {
+    setAnchorEl((prevAnchorEl) => {
+      const newAnchorEl = [...prevAnchorEl];
+      newAnchorEl[index] = event.currentTarget;
+      return newAnchorEl;
+    });
+  };
 
+  const handleMenuClose = () => {
+    setAnchorEl(new Array(plans?.length).fill(null));
+  };
   return (
     <div className="container mx-auto">
+      <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000}
+        onClose={() => setSnackbarOpen(false)}
+        message={snackbarMessage}
+        action={
+          <IconButton size="small" aria-label="close" color="inherit" onClick={() => setSnackbarOpen(false)}>
+            <CloseIcon fontSize="small" />
+          </IconButton>
+        }
+      />
       <h1 className="text-3xl font-bold text-center mb-8">
         Manage Pricing Plans
       </h1>
@@ -104,14 +144,14 @@ export default function Page() {
       <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-5 gap-4 mb-4">
         <TextField
           label="Plan Name"
-          value={newPlan.planName}
+          value={newPlan?.planName}
           onChange={(e) => handleInputChange("planName", e.target.value)}
           fullWidth
           id="planName"
         />
         <TextField
           label="Single PR Price"
-          value={newPlan.priceSingle}
+          value={newPlan?.priceSingle}
           onChange={(e) =>
             handleInputChange("priceSingle", parseFloat(e.target.value))
           }
@@ -121,7 +161,7 @@ export default function Page() {
         />
         <TextField
           label="Number of PR"
-          value={newPlan.numberOfPR}
+          value={newPlan?.numberOfPR}
           onChange={(e) =>
             handleInputChange("numberOfPR", parseInt(e.target.value))
           }
@@ -131,32 +171,41 @@ export default function Page() {
         />
         <TextField
           label="Plan Description"
-          value={newPlan.planDescription}
+          value={newPlan?.planDescription}
           onChange={(e) => handleInputChange("planDescription", e.target.value)}
           fullWidth
           id="planDescription"
         />
         <TextField
           label="PDF Link"
-          value={newPlan.pdfLink}
+          value={newPlan?.pdfLink}
           onChange={(e) => handleInputChange("pdfLink", e.target.value)}
           fullWidth
           id="pdfLink"
         />
       </div>
       <div className="flex justify-center mb-8">
-        <button
+        {/* <button
           className="btn-grad px-5 py-3 "
           onClick={handleAddPlan}
           disabled={
-            !newPlan.planName || !newPlan.priceSingle || !newPlan.numberOfPR
+            !newPlan?.planName || !newPlan?.priceSingle || !newPlan?.numberOfPR
           }
         >
           <Add /> Add Plan
-        </button>
+        </button> */}
+           {loading?
+                <button className="px-10 uppercase py-3 mt-4" disabled={loading}>
+                  {loading ? <CircularProgress size={24} /> : ""}
+                </button>
+                :
+                <button className="btn-grad px-7 uppercase py-3 mt-4"  onClick={handleAddPlan} >
+                  <Add /> Add Plan
+                </button>
+}
       </div>
       <div className="grid gap-8 md:grid-cols-2 xl:grid-cols-3">
-        {plans.map((plan) => (
+        {plans?.map((plan,index) => (
           <div key={plan.id} className={`h-full ${plan.popular ? "dark" : ""}`}>
             <div className="relative flex flex-col h-full p-6 rounded-2xl bg-white dark:bg-slate-900 border border-slate-200 dark:border-slate-900 shadow shadow-slate-950/5">
               <div className="mb-5">
@@ -168,7 +217,7 @@ export default function Page() {
                     <div className="font-bold text-sm text-gray-600 dark:text-gray-300">
                       Total Price: ${plan.totalPlanPrice}
                     </div>
-                    <div>
+                    {/* <div>
                       <button className="bg-red-600 text-white rounded-md hover:bg-red-800" onClick={()=>handleDeleteCoupon(plan.id)}>
                         <svg
                           xmlns="http://www.w3.org/2000/svg"
@@ -182,7 +231,42 @@ export default function Page() {
                           />
                         </svg>
                       </button>
-                    </div>
+                    </div> */}
+                    <div>
+                <IconButton
+                    aria-label="more"
+                    aria-controls={`actions-menu-${index}`}
+                    aria-haspopup="true"
+                    onClick={(event) => handleMenuOpen(event, index)}
+                  >
+                    <MoreVertIcon />
+                  </IconButton>
+                  <Menu
+                    id={`actions-menu-${index}`}
+                    anchorEl={anchorEl[index]}
+                    open={Boolean(anchorEl[index])}
+                    onClose={handleMenuClose}
+                  >
+                    {/* <MenuItem
+                      onClick={() =>
+                        handleEditCoupon()
+                      }
+                    >
+                      Edit
+                    </MenuItem> */}
+                    {/* <MenuItem
+                      onClick={() =>
+                        handleDeleteCoupon(coupon.id, "")
+                      }
+                    > */}
+                      {/* Permanent Block
+                    </MenuItem> */}
+                    <MenuItem onClick={() => handleDeleteCoupon(plan?.id)}>
+                      Delete
+                    </MenuItem>
+                  <MenuItem onClick={() => handleCopyLink(plan?.id)}>Copy Link</MenuItem>
+                  </Menu>
+                </div>
                   </div>
                 </div>
                 <div className="inline-flex items-baseline mb-2">

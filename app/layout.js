@@ -3,7 +3,6 @@ import "./globals.css";
 import { DistributionProvider } from "./contexts/DistributionContext";
 import SessionProvider from "./utils/SessionProvider";
 import { DataProvider } from "./contexts/DataContext";
-import { UserProvider } from "./contexts/userData";
 import {UpdateDataProvider} from './contexts/updateDataContext'
 import 'react-toastify/dist/ReactToastify.css';
 import ToastProvider from '../app/contexts/Toastcontext'
