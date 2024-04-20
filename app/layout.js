@@ -6,6 +6,7 @@ import { DataProvider } from "./contexts/DataContext";
 import {UpdateDataProvider} from './contexts/updateDataContext'
 import 'react-toastify/dist/ReactToastify.css';
 import ToastProvider from '../app/contexts/Toastcontext'
+import { UserProvider } from "./contexts/userData";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,6 +20,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
         <SessionProvider>
+          <UserProvider>
             <DataProvider>
             <UpdateDataProvider>
               <DistributionProvider>
@@ -29,6 +31,7 @@ export default function RootLayout({ children }) {
               </DistributionProvider>
             </UpdateDataProvider>
             </DataProvider>
+            </UserProvider>
         </SessionProvider>
       </body>
     </html>
