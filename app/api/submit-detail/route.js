@@ -75,6 +75,9 @@ export async function PUT(req) {
         emailSubject = "Completed Press-Release Order";
         emailText = `Dear ${userName},\n\nYour order is completed now.`;
         break;
+        case "approved":
+          emailSubject = "Your Provided Detail is Approved";
+          emailText = "Your Provided Detail is Approved"
       default:
         emailSubject = "Updated Press-Release Order";
         emailText = `Dear ${userName},\n\nYour order is updated now with action: ${updatedData?.storeData?.action}.`;

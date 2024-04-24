@@ -1,16 +1,35 @@
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient();
+const transporter = nodemailer?.createTransport({
+  host: "smtp.hostinger.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "Orders@imcwire.com",
+    pass: "Sales@$$1aShahG!!boy,s",
+  },
+});
 
 export async function POST(req) {
   try {
     const data = await req?.json();
-    console.log(data)
     const isAdmin = true;
     if (isAdmin) {
       const planDoc = await prisma?.report?.create({ data });
-      console.log("Plan docs",planDoc)
+      await prisma?.publication?.update({
+        where: { id: planDoc.id },
+        data: { storeData: { ...planDoc.storeData, action: "completed" } },
+      });
+      const mailOptions = {
+        from: "Orders@imcwire.com",
+        to: planDoc.storeData.formDataSignUp.email,
+        subject: "Order Completed",
+        text: "You correctly complete the data",
+      };
+      await transporter.sendMail(mailOptions);
       return NextResponse.json(planDoc);
     } else {
       return NextResponse.json({});

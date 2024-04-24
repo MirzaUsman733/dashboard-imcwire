@@ -42,10 +42,10 @@ export default function Page() {
     }
   }, [sessionStatus, router]);
 
-  // const handleAddPlan = () => {
-  //   setPlans([...plans, newPlan]);
-  //   setNewPlan({});
-  // };
+  const handleAddPlan = () => {
+    setPlans([...plans, newPlan]);
+    setNewPlan({});
+  };
 
   const handleFocus = (field) => {
     setFocusedField(field);
@@ -121,13 +121,11 @@ export default function Page() {
   const handleSubmit = async (e) => {
     e.preventDefault();
     setLoading(true)
-    console.log(newPlan);
-    const selectedDetail = detail.find((data) => data.formData.email === newPlan.clientEmail);
+    const selectedDetail = detail?.find((data) => data.formData.email === newPlan.clientEmail);
     if (!selectedDetail) {
       console.error("No detail found for the selected email");
       return;
     }
-    console.log(selectedDetail)
     try {
       const response = await fetch("/api/reports", {
         method: "POST",
@@ -139,7 +137,7 @@ export default function Page() {
 
       if (response.ok) {
         handleSubmitFiles();
-        // handleAddPlan();
+        handleAddPlan();
         setUploadedImage(null);
         setUploadedExcel(null);
         setUploadedPDF(null);
@@ -158,10 +156,10 @@ export default function Page() {
       const response = await fetch("/api/submit-detail");
       if (response.ok) {
         const detailData = await response.json();
-        // const clientidData = detailData.filter(
-        //   (data) => data.storeData.clientId == plans.clientId
-        // );
-        setDetail(detailData);
+        const clientidData = detailData.filter(
+          (data) => data.storeData.action != 'completed' 
+        );
+        setDetail(clientidData);
       } else {
         console.error("Failed to fetch detail");
       }
@@ -173,7 +171,7 @@ export default function Page() {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
-  console.log(detail);
+  console.log("detailData",detail);
   if (
     session &&
     sessionStatus === "authenticated" &&
@@ -247,7 +245,7 @@ export default function Page() {
                 Select Client Email
               </MenuItem>
               {detail?.map((data) => (
-                <MenuItem key={data.id} value={data?.formData?.email} >
+                <MenuItem key={data?.id} value={data?.formData?.email} >
                   {data?.formData?.email}
                 </MenuItem>
               ))}
@@ -393,7 +391,7 @@ export default function Page() {
               className="btn-grad px-7 uppercase py-3 mt-4"
               onClick={handleSubmit}
             >
-              <Add /> Add Plan
+              <Add /> Add Reports
             </button>
           )}
         </div>

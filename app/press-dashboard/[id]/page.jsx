@@ -57,8 +57,8 @@ const Page = ({ params }) => {
       const response = await fetch("/api/submit-detail");
       if (response.ok) {
         const detailData = await response.json();
-        const clientidData = detailData.filter(
-          (data) => data.storeData.clientId == plans.clientId
+        const clientidData = detailData?.filter(
+          (data) => data?.storeData?.clientId === plans?.clientId
         );
         setDetail(clientidData);
         setDetailAvailable(true);
@@ -91,9 +91,7 @@ const Page = ({ params }) => {
       router.replace("/login");
     }
   }, [sessionStatus, router]);
-  console.log("Number of PR", plans?.matchedPlanData?.numberOfPR);
   const numberOfPRInComponents = plans?.matchedPlanData?.numberOfPR;
-  console.log("Detail Length", detail?.length);
   const lengthOfDetail = detail?.length;
   if (loading) {
     return (

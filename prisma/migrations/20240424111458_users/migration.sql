@@ -1,0 +1,5 @@
+-- AlterTable
+ALTER TABLE "Company" ALTER COLUMN "updatedAt" DROP DEFAULT;
+
+-- AlterTable
+ALTER TABLE "Report" ALTER COLUMN "updatedAt" SET DEFAULT CURRENT_TIMESTAMP;

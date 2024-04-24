@@ -5,10 +5,12 @@ import { FaUpload } from "react-icons/fa";
 import { useUser } from "../contexts/userData";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { CircularProgress } from "@mui/material";
 
 const PublicationDetail = ({ storeData, formData }) => {
   const [file, setFile] = useState(null);
   const [focusedField, setFocusedField] = useState("");
+  const [loading, setLoading] = useState(false)
   const [keywords, setKeywords] = useState([]);
   const [targetWebsite, setTargetWebsite] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -24,9 +26,10 @@ const PublicationDetail = ({ storeData, formData }) => {
           throw new Error("Failed to fetch companies");
         }
         const data = await response.json();
+        console.log(data)
         if (session) {
           const filteredCompanies = data.filter(
-            (company) => company.user.user.id === session.user.id
+            (company) => company?.user?.user?.id === session?.user?.id
           );
           setCompanies(filteredCompanies);
         }
@@ -114,6 +117,7 @@ const PublicationDetail = ({ storeData, formData }) => {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
+    setLoading(true)
     if (storeData.selectedOption === "imcwirePr") {
       const formDataContract = {
         url: targetWebsite,
@@ -138,6 +142,7 @@ const PublicationDetail = ({ storeData, formData }) => {
         if (!response.ok) {
           throw new Error("Failed to submit publication");
         }
+        setLoading(false)
       } catch (error) {
         console.error("Error submitting publication:", error);
       } finally {
@@ -275,8 +280,8 @@ const PublicationDetail = ({ storeData, formData }) => {
                     Select Company
                   </option>
                   <option value="None">None</option>
-                  {companies.map((company, index) => (
-                    <option key={index} value={company.companyName}>
+                  {companies?.map((company, index) => (
+                    <option key={index} value={company?.companyName}>
                       {company.companyName}
                     </option>
                   ))}
@@ -290,10 +295,19 @@ const PublicationDetail = ({ storeData, formData }) => {
                   </button>
                 </div>
               </div>
-              <div className="flex justify-center mx-auto text-center w-1/2 px-3 md:py-2 lg:py-4 rounded btn btn-grad mt-5">
-                <button onClick={handleSubmit} className="">
-                  Submit data
-                </button>
+              <div className="flex justify-center mx-auto text-center w-1/2 px-3 md:py-2 lg:py-4 rounded mt-5">
+                 {loading ? (
+            <button className="px-10 uppercase py-3 mt-4" disabled={loading}>
+              {loading ? <CircularProgress size={24} /> : ""}
+            </button>
+          ) : (
+            <button
+              className="btn-grad px-7 uppercase py-3 mt-4"
+              onClick={handleSubmit}
+            >
+              Submit data
+            </button>
+          )}
               </div>
               {selectedCompany && (
                 <div>
