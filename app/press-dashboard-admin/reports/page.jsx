@@ -117,6 +117,7 @@ export default function Page() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(25);
   const [plans, setPlans] = useState([]);
+  const [loading, setLoading] = useState(true);
   const { data: session, status: sessionStatus } = useSession();
 
   useEffect(() => {
@@ -151,6 +152,7 @@ export default function Page() {
       if (response.ok) {
         const plansData = await response?.json();
         setPlans(plansData);
+        setLoading(false)
       } else {
         console.error("Failed to fetch plans");
       }
@@ -164,7 +166,19 @@ export default function Page() {
       fetchPlans();
     }
   }, [session]);
-  if (session && sessionStatus === "authenticated" && plans) {
+  if (loading) {
+    return (
+      <div className="h-[80vh] flex justify-center items-center w-full">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#7E22CE"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
+  if (session && sessionStatus === "authenticated" && plans && loading === false) {
     return (
       <Container>
         <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">

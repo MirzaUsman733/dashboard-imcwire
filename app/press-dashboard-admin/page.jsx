@@ -12,6 +12,8 @@ const Page = () => {
       router.replace("/press-dashboard/pr-balance");
     } else if (sessionStatus === "unauthenticated") {
       router.replace("/login");
+    }else{
+      window.location.reload();
     }
   }, [sessionStatus, router]);
   return (

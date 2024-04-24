@@ -24,6 +24,7 @@ import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
 import { InfinitySpin } from "react-loader-spinner";
+import { truncate } from "lodash";
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
     backgroundColor: "#7E22CE",
@@ -268,7 +269,7 @@ export default function Page() {
       </div>
     );
   }
-  if (session && sessionStatus === "authenticated" && users) {
+  if (session && sessionStatus === "authenticated" && users && loading === false) {
     return (
       <Container>
         <Snackbar

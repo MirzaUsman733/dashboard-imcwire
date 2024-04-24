@@ -1,10 +1,11 @@
 'use client'
 import React, { useState, useEffect } from "react";
-import { IconButton, Menu, MenuItem, TextField } from "@mui/material";
+import { CircularProgress, IconButton, Menu, MenuItem, TextField } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
+import { InfinitySpin } from "react-loader-spinner";
 
 export default function Page() {
   const [newCoupon, setNewCoupon] = useState({
@@ -13,7 +14,8 @@ export default function Page() {
   });
 
   const [editingCouponId, setEditingCouponId] = useState(null);
-  const [loading, setLoading] = React.useState(true);
+  const [loading, setLoading] = useState(true);
+  const [loadingPost, setLoadingPost] = useState(false);
   const handleInputChange = (field, value) => {
     setNewCoupon({ ...newCoupon, [field]: value });
   };
@@ -53,7 +55,7 @@ export default function Page() {
 
   const handleAddCoupon = async () => {
     try {
-
+      setLoadingPost(true);
         // Add new coupon
         const response = await fetch("/api/coupons", {
           method: "POST",
@@ -71,6 +73,7 @@ export default function Page() {
             couponCode: "",
             discountPercentage: 0,
           });
+          setLoadingPost(false);
         } else {
           console.error("Failed to add coupon");
         }
@@ -119,6 +122,20 @@ export default function Page() {
   const handleMenuClose = () => {
     setAnchorEl(new Array(coupons.length).fill(null));
   };
+
+  if (loading) {
+    return (
+      <div className="h-[80vh] flex justify-center items-center w-full">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#7E22CE"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
+  if (session && sessionStatus === "authenticated" && coupons && loading === false) {
   return (
     <div className="container mx-auto">
       <h1 className="text-3xl font-bold text-center mb-8">Manage Coupons</h1>
@@ -143,7 +160,7 @@ export default function Page() {
         />
       </div>
       <div className="flex justify-center mb-8">
-        <button
+        {/* <button
           className="btn-grad px-5 py-3"
           onClick={handleAddCoupon}
           disabled={
@@ -152,7 +169,19 @@ export default function Page() {
           }
         >
           <Add /> {editingCouponId ? "Update" : "Add"} Coupon
-        </button>
+        </button> */}
+         {loadingPost ? (
+            <button className="px-10 uppercase py-3 mt-4" disabled={loadingPost}>
+              {loadingPost ? <CircularProgress size={24} /> : ""}
+            </button>
+          ) : (
+            <button
+              className="btn-grad px-7 uppercase py-3 mt-4"
+              onClick={handleAddCoupon}
+            >
+              <Add /> Add Coupons
+            </button>
+          )}
       </div>
       <div className="grid gap-8 lg:grid-cols-3">
         {coupons.map((coupon,index) => (
@@ -211,4 +240,10 @@ export default function Page() {
       </div>
     </div>
   );
+}
+else{
+  <>
+  <h1>Failed To fetch Data</h1>
+  </>
+}
 }

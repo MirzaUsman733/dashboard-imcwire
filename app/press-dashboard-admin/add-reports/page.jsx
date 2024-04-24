@@ -1,6 +1,6 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem } from "@mui/material";
+import { TextField, Button, FormControl, InputLabel, Select, MenuItem, CircularProgress } from "@mui/material";
 import { Add } from "@mui/icons-material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSession } from "next-auth/react";
@@ -31,7 +31,7 @@ export default function Page() {
   const [uploadedPDF, setUploadedPDF] = useState(null);
   const [uniqueId, setUniqueId] = useState("");
   const [detail, setDetail] = useState(null);
-  const [error, setError] = useState(null);
+  const [loading, setLoading] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
   useEffect(() => {
@@ -120,6 +120,7 @@ export default function Page() {
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
+    setLoading(true)
     console.log(newPlan);
     const selectedDetail = detail.find((data) => data.formData.email === newPlan.clientEmail);
     if (!selectedDetail) {
@@ -142,6 +143,7 @@ export default function Page() {
         setUploadedImage(null);
         setUploadedExcel(null);
         setUploadedPDF(null);
+        setLoading(false)
       } else {
         console.error("Failed to add data to the database");
       }
@@ -375,13 +377,25 @@ export default function Page() {
         </div>
 
         <div className="flex justify-center mb-8 mt-10">
-          <button
+          {/* <button
             className="btn-grad px-5 pt-3 pb-2 "
             onClick={handleSubmit}
             // disabled={!newPlan.planName || !newPlan.totalPlanPrice}
           >
             <Add className="mb-1" /> Add Reports
-          </button>
+          </button> */}
+          {loading ? (
+            <button className="px-10 uppercase py-3 mt-4" disabled={loading}>
+              {loading ? <CircularProgress size={24} /> : ""}
+            </button>
+          ) : (
+            <button
+              className="btn-grad px-7 uppercase py-3 mt-4"
+              onClick={handleSubmit}
+            >
+              <Add /> Add Plan
+            </button>
+          )}
         </div>
 
         <div className="grid gap-8 lg:grid-cols-3"></div>

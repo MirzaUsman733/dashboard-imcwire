@@ -144,9 +144,7 @@ export default function Page() {
       const response = await fetch("/api/compaignData");
       if (response.ok) {
         const plansData = await response?.json();
-        console.log(plansData)
         const paidPlans = plansData?.filter((plan) => plan?.status === "paid");
-        console.log("paid",paidPlans)
         setPlans(paidPlans);
         setLoading(false);
       } else {

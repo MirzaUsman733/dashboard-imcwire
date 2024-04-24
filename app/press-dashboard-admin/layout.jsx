@@ -1,6 +1,5 @@
 import React from "react";
 import SidebarDashboard from "../components/SidebarAdmin";
-import { UserProvider } from "../contexts/userData";
 
 const Layout = ({ children }) => {
   return (

@@ -117,6 +117,7 @@ export default function Page() {
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [compaignData, setCompaignData] = React.useState([]);
   const [plans, setPlans] = React.useState([]);
+  const [loading, setLoading]= React.useState(true)
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
 
@@ -139,6 +140,7 @@ export default function Page() {
       if (response.ok) {
         const plansData = await response.json();
         setPlans(plansData);
+        setLoading(false)
       } else {
         console.error("Failed to fetch plans");
       }
@@ -198,11 +200,23 @@ export default function Page() {
   );
 
   const filteredWebhookData = filterWebhookData(plans, compaignTransactionIds);
+  if (loading) {
+    return (
+      <div className="h-[80vh] flex justify-center items-center w-full">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#7E22CE"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
   if (
     session &&
     sessionStatus === "authenticated" &&
     filteredWebhookData &&
-    plans
+    plans && loading === false
   ) {
     return (
       <Container>
