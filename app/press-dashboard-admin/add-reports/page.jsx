@@ -42,10 +42,10 @@ export default function Page() {
     }
   }, [sessionStatus, router]);
 
-  const handleAddPlan = () => {
-    setPlans([...plans, newPlan]);
-    setNewPlan({});
-  };
+  // const handleAddPlan = () => {
+  //   setPlans([...plans, newPlan]);
+  //   setNewPlan({});
+  // };
 
   const handleFocus = (field) => {
     setFocusedField(field);
@@ -139,7 +139,7 @@ export default function Page() {
 
       if (response.ok) {
         handleSubmitFiles();
-        handleAddPlan();
+        // handleAddPlan();
         setUploadedImage(null);
         setUploadedExcel(null);
         setUploadedPDF(null);

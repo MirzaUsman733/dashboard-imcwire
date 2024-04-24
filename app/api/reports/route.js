@@ -6,9 +6,11 @@ const prisma = new PrismaClient();
 export async function POST(req) {
   try {
     const data = await req?.json();
+    console.log(data)
     const isAdmin = true;
     if (isAdmin) {
       const planDoc = await prisma?.report?.create({ data });
+      console.log("Plan docs",planDoc)
       return NextResponse.json(planDoc);
     } else {
       return NextResponse.json({});
