@@ -176,7 +176,7 @@ export default function Page() {
       </div>
     );
   }
-  if (session && sessionStatus === "authenticated" && plans) {
+  if (session && sessionStatus === "authenticated" && plans > 0) {
     return (
       <Container>
         <TawkTo/>
@@ -271,7 +271,11 @@ export default function Page() {
   } else {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
-        <p>Failed to fetch data.</p>
+        {plans && plans.length === 0 ? (
+          <p>No reports available yet.</p>
+        ) : (
+          <p>Failed to fetch data.</p>
+        )}
       </div>
     );
   }
