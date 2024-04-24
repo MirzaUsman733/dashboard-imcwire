@@ -150,6 +150,7 @@ export default function Page() {
         const filterData = plansData?.filter(
           (plan) => plan?.storeData.formDataSignUp.email === sessionEmail
         );
+        console.log("Filter Data :", filterData)
         setPlans(filterData);
         setLoading(false);
       } else {
@@ -176,7 +177,8 @@ export default function Page() {
       </div>
     );
   }
-  if (session && sessionStatus === "authenticated" && plans > 0) {
+  console.log(plans)
+  if (session && sessionStatus === "authenticated" && plans.length >0) {
     return (
       <Container>
         <TawkTo/>
@@ -200,7 +202,7 @@ export default function Page() {
                 <StyledTableCell className="font-bold">
                   Press Email
                 </StyledTableCell>
-                <StyledTableCell className="font-bold">Date</StyledTableCell>
+                {/* <StyledTableCell className="font-bold">Date</StyledTableCell> */}
                 <StyledTableCell className="font-bold">
                   View Reports
                 </StyledTableCell>
@@ -225,9 +227,9 @@ export default function Page() {
                   <TableCell style={{ width: 160 }}>
                     {row?.clientEmail}
                   </TableCell>
-                  <TableCell style={{ width: 160 }}>
+                  {/* <TableCell style={{ width: 160 }}>
                     {formatDate(row?.currentTime)}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell style={{ width: 160 }}>
                     <Link
                       href={`/press-dashboard/reports/${row?.id}`}
