@@ -13,7 +13,7 @@ export default function Page() {
   });
 
   const [editingCouponId, setEditingCouponId] = useState(null);
-
+  const [loading, setLoading] = React.useState(true);
   const handleInputChange = (field, value) => {
     setNewCoupon({ ...newCoupon, [field]: value });
   };
@@ -30,6 +30,7 @@ export default function Page() {
       if (response.ok) {
         const couponsData = await response.json();
         setCoupons(couponsData);
+        setLoading(false);
       } else {
         console.error("Failed to fetch coupons");
       }

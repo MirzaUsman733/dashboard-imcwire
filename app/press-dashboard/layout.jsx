@@ -5,7 +5,7 @@ const Layout = ({ children }) => {
   return (
     <>
       <div className="hidden md:block">
-        {/* <TalkTo/> */}
+        <TalkTo/>
         <SidebarDashboard>{children}</SidebarDashboard>
       </div>
       <div className="block md:hidden">
