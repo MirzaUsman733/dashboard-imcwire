@@ -151,7 +151,9 @@ export default function CompaniesTable() {
 
   useEffect(() => {
     fetchDataFromAPI().then((data) => {
-      setRows(data);
+      // setRows(data);
+      const filteredData = data.filter((company) => company?.user?.user?.email === session?.user?.email);
+      setRows(filteredData)
       setLoading(false);
     });
   }, []);
@@ -221,6 +223,8 @@ console.log(rows)
   } else if (session && sessionStatus === "authenticated" && rows) {
     return (
       <Container>
+        {rows.length > 0 ? (
+          <>
         <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
           <div className="flex justify-center gap-5">
             <FaBuilding /> <span> View Companies </span>
@@ -250,6 +254,7 @@ console.log(rows)
               </TableRow>
             </TableHead>
             <TableBody>
+              
               {(rowsPerPage > 0
                 ? rows?.slice(
                     page * rowsPerPage,
@@ -343,17 +348,18 @@ console.log(rows)
             </TableFooter>
           </Table>
         </TableContainer>
+        </>
+      ) : (
+          <div className="h-[100vh] flex justify-center items-center w-full">
+            No companies added yet
+          </div>
+        )}
       </Container>
     );
   } else {
     return (
       <div className="h-[100vh] flex justify-center items-center w-full">
-        <InfinitySpin
-          visible={true}
-          width="200"
-          color="#7E22CE"
-          ariaLabel="infinity-spin-loading"
-        />
+        Failed To fetch data
       </div>
     );
   }
