@@ -119,7 +119,7 @@ export default function Page() {
   const [rowsPerPage, setRowsPerPage] = React.useState(0);
   const [compaignData, setCompaignData] = React.useState([]);
   const [plans, setPlans] = React.useState([]);
-  const [loading, setLoading] = React.useState(true); // Loading state
+  const [loading, setLoading] = React.useState(true);
   const router = useRouter();
 
   React.useEffect(() => {
@@ -220,6 +220,8 @@ console.log(filteredWebhookData)
     return (
       <Container>
         <TawkTo/>
+        {filteredWebhookData.length > 0 ? (
+          <>
         <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
           <div className="flex justify-center gap-5">
             <GrTransaction /> <span> Transaction History </span>
@@ -302,6 +304,12 @@ console.log(filteredWebhookData)
             </TableFooter>
           </Table>
         </TableContainer>
+        </>
+      ) : (
+          <div className="h-[100vh] flex justify-center items-center w-full">
+            <p>No transactions available</p>
+          </div>
+        )}
       </Container>
     );
   } else {
