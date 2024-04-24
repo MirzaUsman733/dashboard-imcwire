@@ -7,7 +7,7 @@ import { useUpdateData } from "../../../contexts/updateDataContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
-
+import TawkTo from '../../../components/TawkTo'
 const Page = ({ params }) => {
   const id = params.slug;
   const router = useRouter();
@@ -80,6 +80,7 @@ const Page = ({ params }) => {
   }
   return (
     <div className="container-lg lg:max-w-7xl mx-auto mt-32">
+      <TawkTo/>
       <h1>Press Release Order</h1>
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-4">

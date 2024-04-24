@@ -28,6 +28,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
+import TawkTo from "../../components/TawkTo";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -207,6 +208,8 @@ console.log(rows)
   if (loading) {
     return (
       <div className="h-[100vh] flex justify-center items-center w-full">
+      <TawkTo/>
+
         <InfinitySpin
           visible={true}
           width="200"

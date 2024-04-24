@@ -2,6 +2,7 @@
 import React, { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import TawkTo from "../../../components/TawkTo";
 const Page = ({ params }) => {
   const id = params.id;
   const { data: session, status: sessionStatus } = useSession();
@@ -36,6 +37,7 @@ const Page = ({ params }) => {
   console.log(id);
   return (
     <div>
+      <TawkTo/>
       <div
         className="mx-auto mt-40 rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-2xl p-0"
         data-v0-t="card"

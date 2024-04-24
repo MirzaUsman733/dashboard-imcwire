@@ -8,6 +8,7 @@ import * as React from "react";
 import { Container } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { InfinitySpin } from "react-loader-spinner";
+import TawkTo from "../../../components/TawkTo";
 
 export default function Page({ params }) {
   const router = useRouter();
@@ -81,6 +82,7 @@ export default function Page({ params }) {
   if (session && sessionStatus === "authenticated" && plans && filterData) {
     return (
       <Container>
+        <TawkTo/>
         {plans && filterData && (
           <div className="px-4 py-8">
             <div className="flex justify-center items-center flex-col gap-5">

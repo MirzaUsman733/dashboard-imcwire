@@ -4,6 +4,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import React, { useState, useEffect } from "react";
 import { InfinitySpin, RotatingTriangles } from "react-loader-spinner";
+import TawkTo from "../../components/TawkTo";
 
 const FirstComponent = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -69,6 +70,7 @@ const UploadForm = () => {
 } else {
   return (
     <div className="h-[100vh] flex justify-center items-center w-full">
+      <TawkTo/>
       {/* <RotatingTriangles
         visible={true}
         height="80"

@@ -5,6 +5,7 @@ import { redirect, useParams, useRouter } from "next/navigation";
 import { TextField, Button, Grid } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { InfinitySpin } from "react-loader-spinner";
+import TawkTo from "../../../components/TawkTo";
 
 export default function Page() {
   const { id } = useParams();
@@ -88,6 +89,7 @@ export default function Page() {
   if (loading) {
     return (
       <div className="h-[100vh] flex justify-center items-center w-full">
+        <TawkTo/>
         <InfinitySpin
           visible={true}
           width="200"

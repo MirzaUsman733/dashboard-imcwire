@@ -149,7 +149,7 @@ export default function Page() {
     try {
       const response = await fetch("/api/reports");
       if (response.ok) {
-        const plansData = await response.json();
+        const plansData = await response?.json();
         setPlans(plansData);
       } else {
         console.error("Failed to fetch plans");
@@ -195,7 +195,7 @@ export default function Page() {
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? plans.slice(
+                ? plans?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )

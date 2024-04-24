@@ -23,6 +23,7 @@ import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin, RotatingTriangles } from "react-loader-spinner";
+import TawkTo from "../../../components/TawkTo";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -196,6 +197,7 @@ const Page = ({ params }) => {
   if (session && sessionStatus === "authenticated" && detail) {
     return (
       <Container>
+        <TawkTo/>
         <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
           <div className="flex justify-center gap-5">
             <MdInventory />

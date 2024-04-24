@@ -109,6 +109,11 @@ export default function Page() {
       return newAnchorEl;
     });
   };
+  const handleCopyCoupon = (couponCode) => {
+    navigator.clipboard.writeText(couponCode);
+    handleMenuClose()
+    // Optionally, provide some feedback to the user that the coupon code has been copied
+  };
 
   const handleMenuClose = () => {
     setAnchorEl(new Array(coupons.length).fill(null));
@@ -176,13 +181,16 @@ export default function Page() {
                     open={Boolean(anchorEl[index])}
                     onClose={handleMenuClose}
                   >
-                    <MenuItem
+                     <MenuItem onClick={() => handleCopyCoupon(coupon.couponCode)}>
+                      Copy Coupon
+                    </MenuItem>
+                    {/* <MenuItem
                       onClick={() =>
                         handleEditCoupon(coupon.id, index)
                       }
                     >
                       Edit
-                    </MenuItem>
+                    </MenuItem> */}
                     {/* <MenuItem
                       onClick={() =>
                         handleDeleteCoupon(coupon.id, "")

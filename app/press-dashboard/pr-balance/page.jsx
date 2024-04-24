@@ -23,6 +23,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
 import Link from "next/link";
+import TawkTo from "../../components/TawkTo";
 
 const StyledTableCell = styled(TableCell)(({ theme }) => ({
   [`&.${tableCellClasses.head}`]: {
@@ -64,6 +65,7 @@ function TablePaginationActions(props) {
 
   return (
     <Box sx={{ flexShrink: 0, ml: 2.5 }}>
+      <TawkTo/>
       <IconButton
         onClick={handleFirstPageButtonClick}
         disabled={page === 0}

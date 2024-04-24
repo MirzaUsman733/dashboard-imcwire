@@ -12,6 +12,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
+import TawkTo from "../../components/TawkTo";
 
 const Page = () => {
   const { data: session, status: sessionStatus } = useSession();
@@ -105,6 +106,7 @@ const Page = () => {
  
   return (
     <div className="max-w-2xl mx-auto p-6 bg-white shadow-lg rounded-md border border-1 mt-12">
+      <TawkTo/>
       <Snackbar
         open={snackbarOpen}
         autoHideDuration={6000}

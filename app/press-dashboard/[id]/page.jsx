@@ -7,6 +7,7 @@ import TimelineCreate from "../../components/TimelineDetail";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
+import TawkTo from "../../components/TawkTo";
 
 const Page = ({ params }) => {
   const id = params.id;
@@ -106,6 +107,8 @@ const Page = ({ params }) => {
   }
   return (
     <>
+      <TawkTo/>
+
       <div className="container-lg lg:max-w-7xl mx-auto mt-32">
         <h1
           className="text-6xl font-serif font-bold text-center mb-20 "
