@@ -201,7 +201,7 @@ export default function Page() {
                 <StyledTableCell className="font-bold">
                   Package Name
                 </StyledTableCell>
-                <StyledTableCell className="font-bold">Date</StyledTableCell>
+                {/* <StyledTableCell className="font-bold">Date</StyledTableCell> */}
                 <StyledTableCell className="font-bold">
                   View Reports
                 </StyledTableCell>
@@ -227,9 +227,9 @@ export default function Page() {
                     {row.packageName}
                   </TableCell>
                   {/*  */}
-                  <TableCell style={{ width: 160 }}>
+                  {/* <TableCell style={{ width: 160 }}>
                     {formatDate(row.currentTime)}
-                  </TableCell>
+                  </TableCell> */}
                   <TableCell style={{ width: 160 }}>
                     <Link  className="border border-1 border-purple-700 py-1 bg-purple-100 hover:bg-purple-700 hover:text-white hover:border-0 rounded-lg px-2" href={`/press-dashboard-admin/reports/${row.id}`}>
                         Reports
