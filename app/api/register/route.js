@@ -62,8 +62,8 @@ export const POST = async (request) => {
   
           <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
               <h2 style="color: #333;">Dear ${name},</h2>
-              <p>Welcome to the IMCWire family! We are thrilled to have you on board and are excited to partner with you in amplifying your message across the globe.</p>
-              <p>With a decade of experience in press release distribution, IMCWire is committed to connecting you with top-tier media outlets and organizations, ensuring your news reaches its intended audience effectively. Our network includes prestigious platforms like Yahoo Finance, Bloomberg, MarketWatch, and over 350+ other news and media outlets.</p>
+              <p>Welcome to the IMCWire family! We're thrilled to have you on board and eager to collaborate in amplifying your message globally.</p>
+              <p>With a decade of expertise in press release distribution, IMCWire is dedicated to linking you with premier media outlets and organizations, ensuring your news reaches its target audience effectively. Our network boasts esteemed platforms such as Yahoo Finance, Bloomberg, MarketWatch, and over 350 other prominent news and media channels.</p>
               
               <h3 style="color: #333;">Here’s what you can expect with your IMCWire membership:</h3>
               <ul>

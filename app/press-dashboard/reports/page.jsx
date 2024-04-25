@@ -178,7 +178,7 @@ export default function Page() {
     );
   }
   console.log(plans)
-  if (session && sessionStatus === "authenticated" && plans.length >0) {
+  if (session && sessionStatus === "authenticated" && plans.length > 0) {
     return (
       <Container>
         <TawkTo/>

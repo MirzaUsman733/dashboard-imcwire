@@ -1,6 +1,14 @@
 "use client";
 import { useState, useEffect, useCallback } from "react";
-import { TextField, Button, FormControl, InputLabel, Select, MenuItem, CircularProgress } from "@mui/material";
+import {
+  TextField,
+  Button,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
+  CircularProgress,
+} from "@mui/material";
 import { Add } from "@mui/icons-material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { useSession } from "next-auth/react";
@@ -24,6 +32,7 @@ const fileUploadLabelStyles = {
 
 export default function Page() {
   const [plans, setPlans] = useState([]);
+  // const [compaignEmails, setCompaignEmail] = useState([])
   const [newPlan, setNewPlan] = useState({});
   const [focusedField, setFocusedField] = useState(null);
   const [uploadedImage, setUploadedImage] = useState(null);
@@ -31,6 +40,7 @@ export default function Page() {
   const [uploadedPDF, setUploadedPDF] = useState(null);
   const [uniqueId, setUniqueId] = useState("");
   const [detail, setDetail] = useState(null);
+  const [selectedEmail, setSelectedEmail] = useState("");
   const [loading, setLoading] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -54,6 +64,10 @@ export default function Page() {
   const handleBlur = () => {
     setFocusedField(null);
   };
+  const handleEmailChange = (event) => {
+    setSelectedEmail(event.target.value); // Update the selected email state
+  };
+
   // const handleFileChange = (e, field) => {
   //   const file = e.target.files[0];
   //   switch (field) {
@@ -78,6 +92,32 @@ export default function Page() {
   //   updatedFeatures[index] = value;
   //   setNewPlan({ ...newPlan, features: updatedFeatures });
   // };
+  // const fetchPlans = async () => {
+  //   try {
+  //     const response = await fetch("/api/compaignData");
+  //     if (response?.ok) {
+  //       const plansData = await response?.json();
+  //       console.log("Full Data",plansData)
+  //       const paidPlans = plansData?.filter(
+  //         (plan) =>
+  //           plan?.status === "paid"
+  //       );
+  //       console.log("paidPlans", paidPlans)
+  //       setCompaignEmail(paidPlans);
+  //       setLoading(false);
+  //     } else {
+  //       console.error("Failed to fetch plans");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching plans:", error);
+  //   } finally {
+  //   }
+  // };
+  // useEffect(() => {
+  //   if (session) {
+  //     fetchPlans();
+  //   }
+  // }, [session]);
   useEffect(() => {
     const generatedId = generateUniqueId(24);
     setUniqueId(generatedId);
@@ -114,14 +154,18 @@ export default function Page() {
       }
     } catch (error) {
       setError(error.message);
-    }finally{
-      router.push("/press-dashboard-admin/reports")
+    } finally {
+      router.push("/press-dashboard-admin/reports");
     }
   };
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setLoading(true)
-    const selectedDetail = detail?.find((data) => data.formData.email === newPlan.clientEmail);
+    setLoading(true);
+    const selectedDetail = detail?.find(
+      (data) => data.formData.email === 
+      // selectedEmail
+      newPlan.clientEmail
+    );
     if (!selectedDetail) {
       console.error("No detail found for the selected email");
       return;
@@ -132,7 +176,11 @@ export default function Page() {
         headers: {
           "Content-Type": "application/json",
         },
-        body: JSON.stringify({ ...selectedDetail, ...newPlan, uniqueId: uniqueId }),
+        body: JSON.stringify({
+          ...selectedDetail,
+          ...newPlan,
+          uniqueId: uniqueId,
+        }),
       });
 
       if (response.ok) {
@@ -141,7 +189,7 @@ export default function Page() {
         setUploadedImage(null);
         setUploadedExcel(null);
         setUploadedPDF(null);
-        setLoading(false)
+        setLoading(false);
       } else {
         console.error("Failed to add data to the database");
       }
@@ -156,8 +204,8 @@ export default function Page() {
       const response = await fetch("/api/submit-detail");
       if (response.ok) {
         const detailData = await response.json();
-        const clientidData = detailData.filter(
-          (data) => data.storeData.action != 'completed' 
+        const clientidData = detailData?.filter(
+          (data) => data.storeData.action != "completed"
         );
         setDetail(clientidData);
       } else {
@@ -171,7 +219,6 @@ export default function Page() {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
-  console.log("detailData",detail);
   if (
     session &&
     sessionStatus === "authenticated" &&
@@ -227,7 +274,7 @@ export default function Page() {
                 </>
             ))}
           </select> */}
-          <FormControl fullWidth>
+          {/* <FormControl fullWidth>
             <InputLabel id="client-email-label">Client Email</InputLabel>
             <Select
               labelId="client-email-label"
@@ -246,11 +293,75 @@ export default function Page() {
               </MenuItem>
               {detail?.map((data) => (
                 <MenuItem key={data?.id} value={data?.formData?.email} >
+                  {data?.storeData.formDataSignUp?.email}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl> */}
+          <FormControl fullWidth>
+            <InputLabel id="client-email-label">Client Email</InputLabel>
+            <Select
+              labelId="client-email-label"
+              id="client-email"
+              onFocus={() => handleFocus("client-email")}
+              onBlur={handleBlur}
+              className={focusedField === "client-email" ? "focused" : ""}
+              // value={newPlan.clientEmail || ""}
+              value={selectedEmail}
+              // onChange={(e) =>
+              //   setNewPlan({ ...newPlan, clientEmail: e.target.value })
+              // }
+              onChange={handleEmailChange}
+              label="Client Email"
+            >
+              <MenuItem value="" disabled>
+                Select Customer Email
+              </MenuItem>
+              {Object.entries(
+                (detail ?? []).reduce((emailCount, data) => {
+                  if (!emailCount[data.storeData.formDataSignUp.email]) {
+                    emailCount[data.storeData.formDataSignUp.email] = 1;
+                  } else {
+                    emailCount[data.storeData.formDataSignUp.email]++;
+                  }
+                  return emailCount;
+                }, {})
+              ).map(([email, count]) => (
+                <MenuItem key={email} value={email}>
+                  {`${email} (${count})`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+            {selectedEmail &&
+          <FormControl fullWidth>
+            <InputLabel id="customer-email-label">Client Email</InputLabel>
+            <Select
+              labelId="customer-email-label"
+              id="customer-email"
+              onFocus={() => handleFocus("customer-email")}
+              onBlur={handleBlur}
+              className={focusedField === "customer-email" ? "focused" : ""}
+              value={newPlan.clientEmail || ""}
+              onChange={(e) =>
+                setNewPlan({ ...newPlan, clientEmail: e.target.value })
+              }
+              label="Client Email"
+            >
+              <MenuItem value="" disabled>
+                Select Client Email
+              </MenuItem>
+              {detail?.filter((data) => data.storeData.formDataSignUp.email === selectedEmail)
+              .map((data) => (
+                <MenuItem key={data?.id} value={data?.formData?.email} >
                   {data?.formData?.email}
                 </MenuItem>
               ))}
             </Select>
           </FormControl>
+  }
+
           {/* <TextField
           label="Client Email"
           value={newPlan.clientEmail || ""}
@@ -350,7 +461,7 @@ export default function Page() {
               component="span"
               startIcon={<CloudUploadIcon />}
             >
-              Upload PDF Link
+              Upload PDF
             </Button>
             <span>{uploadedPDF && uploadedPDF.name}</span>
           </label>
@@ -368,7 +479,7 @@ export default function Page() {
               component="span"
               startIcon={<CloudUploadIcon />}
             >
-              Upload Excel Link
+              Upload Excel
             </Button>
             <span>{uploadedExcel && uploadedExcel.name}</span>
           </label>

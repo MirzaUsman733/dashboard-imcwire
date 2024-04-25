@@ -79,7 +79,7 @@ export default function Page({ params }) {
       </div>
     );
   }
-  if (session && sessionStatus === "authenticated" && plans && filterData) {
+  if (session && sessionStatus === "authenticated" && plans) {
     return (
       <Container>
         <TawkTo/>
