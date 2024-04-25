@@ -50,10 +50,10 @@ export default function Page({ params }) {
         const uniqueData = await response.json();
         const modifiedUniqueData = {
           ...uniqueData,
-          image: uniqueData?.image?.replace("public\\", "/"),
           pdf: uniqueData?.pdf?.replace("public\\", "/"),
           excel: uniqueData?.excel?.replace("public\\", "/"),
         };
+        console.log(modifiedUniqueData)
         setFilterData(modifiedUniqueData);
       } else {
         console.error("Failed to fetch plans");

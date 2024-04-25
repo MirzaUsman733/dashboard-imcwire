@@ -229,6 +229,69 @@ export default function Page() {
         <h1 className="text-3xl font-bold text-center mb-8">Add Reports</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
+        <FormControl fullWidth>
+            <InputLabel id="client-email-label">Client Email</InputLabel>
+            <Select
+              labelId="client-email-label"
+              id="client-email"
+              onFocus={() => handleFocus("client-email")}
+              onBlur={handleBlur}
+              className={focusedField === "client-email" ? "focused" : ""}
+              // value={newPlan.clientEmail || ""}
+              value={selectedEmail}
+              // onChange={(e) =>
+              //   setNewPlan({ ...newPlan, clientEmail: e.target.value })
+              // }
+              onChange={handleEmailChange}
+              label="Client Email"
+            >
+              <MenuItem value="" disabled>
+                Select Customer Email
+              </MenuItem>
+              {Object.entries(
+                (detail ?? []).reduce((emailCount, data) => {
+                  if (!emailCount[data.storeData.formDataSignUp.email]) {
+                    emailCount[data.storeData.formDataSignUp.email] = 1;
+                  } else {
+                    emailCount[data.storeData.formDataSignUp.email]++;
+                  }
+                  return emailCount;
+                }, {})
+              ).map(([email, count]) => (
+                <MenuItem key={email} value={email}>
+                  {`${email} (${count})`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+
+            {selectedEmail &&
+          <FormControl fullWidth>
+            <InputLabel id="customer-email-label">Client Email</InputLabel>
+            <Select
+              labelId="customer-email-label"
+              id="customer-email"
+              onFocus={() => handleFocus("customer-email")}
+              onBlur={handleBlur}
+              className={focusedField === "customer-email" ? "focused" : ""}
+              value={newPlan.clientEmail || ""}
+              onChange={(e) =>
+                setNewPlan({ ...newPlan, clientEmail: e.target.value })
+              }
+              label="Client Email"
+            >
+              <MenuItem value="" disabled>
+                Select Client Email
+              </MenuItem>
+              {detail?.filter((data) => data.storeData.formDataSignUp.email === selectedEmail)
+              .map((data) => (
+                <MenuItem key={data?.id} value={data?.formData?.email} >
+                  {data?.formData?.email}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
+  }
           <TextField
             label="Press Release Title"
             value={newPlan.pressReleaseTitle || ""}
@@ -298,69 +361,7 @@ export default function Page() {
               ))}
             </Select>
           </FormControl> */}
-          <FormControl fullWidth>
-            <InputLabel id="client-email-label">Client Email</InputLabel>
-            <Select
-              labelId="client-email-label"
-              id="client-email"
-              onFocus={() => handleFocus("client-email")}
-              onBlur={handleBlur}
-              className={focusedField === "client-email" ? "focused" : ""}
-              // value={newPlan.clientEmail || ""}
-              value={selectedEmail}
-              // onChange={(e) =>
-              //   setNewPlan({ ...newPlan, clientEmail: e.target.value })
-              // }
-              onChange={handleEmailChange}
-              label="Client Email"
-            >
-              <MenuItem value="" disabled>
-                Select Customer Email
-              </MenuItem>
-              {Object.entries(
-                (detail ?? []).reduce((emailCount, data) => {
-                  if (!emailCount[data.storeData.formDataSignUp.email]) {
-                    emailCount[data.storeData.formDataSignUp.email] = 1;
-                  } else {
-                    emailCount[data.storeData.formDataSignUp.email]++;
-                  }
-                  return emailCount;
-                }, {})
-              ).map(([email, count]) => (
-                <MenuItem key={email} value={email}>
-                  {`${email} (${count})`}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-
-            {selectedEmail &&
-          <FormControl fullWidth>
-            <InputLabel id="customer-email-label">Client Email</InputLabel>
-            <Select
-              labelId="customer-email-label"
-              id="customer-email"
-              onFocus={() => handleFocus("customer-email")}
-              onBlur={handleBlur}
-              className={focusedField === "customer-email" ? "focused" : ""}
-              value={newPlan.clientEmail || ""}
-              onChange={(e) =>
-                setNewPlan({ ...newPlan, clientEmail: e.target.value })
-              }
-              label="Client Email"
-            >
-              <MenuItem value="" disabled>
-                Select Client Email
-              </MenuItem>
-              {detail?.filter((data) => data.storeData.formDataSignUp.email === selectedEmail)
-              .map((data) => (
-                <MenuItem key={data?.id} value={data?.formData?.email} >
-                  {data?.formData?.email}
-                </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-  }
+         
 
           {/* <TextField
           label="Client Email"
