@@ -1,4 +1,5 @@
 async function verifyCaptcha(token) {
+  console.log(token)
   const url = `https://www.google.com/recaptcha/api/siteverify?secret=${process.env.RECAPTCHA_SECRET_KEY}&response=${token}`;
 
   const response = await fetch(url, {
@@ -14,3 +15,4 @@ async function verifyCaptcha(token) {
 }
 
 export default verifyCaptcha;
+

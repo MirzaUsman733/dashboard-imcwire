@@ -151,6 +151,7 @@ export default function Auth() {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     const token = await recaptchaRef.current.executeAsync();
+    console.log(token)
     const isVerified = await verifyCaptcha(token);
     if (!isVerified) {
       setError("Please complete the reCAPTCHA verification");
@@ -170,7 +171,6 @@ export default function Auth() {
       redirect: false,
       email: emailSignIn,
       password: passwordSignIn,
-      recaptchaToken,
     });
 
     if (res?.error) {
