@@ -1,3 +1,4 @@
+import fetch from 'node-fetch';
 async function verifyCaptcha(token) {
   console.log(token)
   const url = `https://www.google.com/recaptcha/api/siteverify?secret=${`6Lddy8cpAAAAAO3ewWPTir9PbX-qoBw6u2aYufeS`}&response=${token}`;
@@ -18,4 +19,5 @@ console.log(token)
 }
 
 export default verifyCaptcha;
+
 
