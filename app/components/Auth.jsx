@@ -25,7 +25,7 @@ export default function Auth() {
   const [focusedField, setFocusedField] = useState("");
   const [viewPasswordSignIn, setViewPasswordSignIn] = useState(true);
   const [viewPasswordLogin, setViewPasswordLogin] = useState(true);
-  const [loadingSignUp, setLoadingSignUp] = useState(false); 
+  const [loadingSignUp, setLoadingSignUp] = useState(false);
   const [loadingSignIn, setLoadingSignIn] = useState(false);
   const recaptchaRef = useRef(null);
 
@@ -150,7 +150,7 @@ export default function Auth() {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     const token = await recaptchaRef?.current?.getValue();
-    console.log(token)
+    console.log(token);
     const isVerified = await verifyCaptcha(token);
     if (!isVerified) {
       setError("Please complete the reCAPTCHA verification");
@@ -184,6 +184,10 @@ export default function Auth() {
 
   return (
     <div>
+      <script
+        crossorigin="anonymous"
+        src="https://www.google.com/recaptcha/api.js"
+      ></script>
       <div>
         <div className="containerAuth" id="container">
           <div>
@@ -271,7 +275,10 @@ export default function Auth() {
                     }}
                     className={focusedField === "password" ? "focused" : ""}
                   />
-                    <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
+                  <ReCAPTCHA
+                    ref={recaptchaRef}
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  />
                 </div>
                 {loadingSignUp ? (
                   <button
@@ -360,7 +367,10 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
-                <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                />
                 <div className="flex justify-start">
                   <a
                     href="/forgot-password"
