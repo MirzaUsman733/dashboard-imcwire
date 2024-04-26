@@ -152,6 +152,7 @@ export default function Page() {
         );
         console.log("Filter Data :", filterData)
         setPlans(filterData);
+        // setPlans(filterData.sort((a, b) => b.id - a.id));
         setLoading(false);
       } else {
         console.error("Failed to fetch plans");
@@ -209,15 +210,22 @@ export default function Page() {
               </TableRow>
             </TableHead>
             <TableBody>
-              {(rowsPerPage > 0
+              {/* {(rowsPerPage > 0
                 ? plans?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
                 : plans
-              ).map((row, i) => (
+              ).map((row, i) => ( */}
+               {(rowsPerPage > 0
+                ? plans
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
+                : plans.sort((a, b) => b.id - a.id)
+              ) // Sort all data by descending order of row.id
+                .map((row, index) => (
                 <StyledTableRow key={row?.id}>
-                  <TableCell style={{ width: 100 }}>{i + 1}</TableCell>
+                  <TableCell style={{ width: 100 }}>{row.id}</TableCell>
                   <TableCell style={{ width: 260 }}>
                     {row?.pressReleaseTitle}
                   </TableCell>

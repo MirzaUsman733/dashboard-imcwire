@@ -150,7 +150,9 @@ export default function Auth() {
 
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
-    if (!recaptchaToken) {
+    const token = await recaptchaRef.current.executeAsync();
+    const isVerified = await verifyCaptcha(token);
+    if (!isVerified) {
       setError("Please complete the reCAPTCHA verification");
       return;
     }
@@ -179,10 +181,7 @@ export default function Auth() {
     }
     setLoadingSignIn(false);
   };
-  const onChange = (token) => {
-    // Set reCAPTCHA token
-    setRecaptchaToken(token);
-  };
+
   return (
     <div>
       <div>

@@ -119,15 +119,17 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const fetchDataFromAPI = async (session) => {
+const fetchDataFromAPI = async () => {
   try {
     const response = await fetch("/api/add-company");
     const data = await response.json();
-    console.log(data)
+    // console.log(data)
     // Filter data based on session email
-    const filteredData = data.filter((plan) => plan?.user?.user?.email === session?.email);
-    console.log(filteredData)
-    return filteredData;
+    // console.log("sesssion email",session.user.email)
+    // console.log(session)
+    // const filteredData = data.filter((plan) => plan?.user?.user?.email === session?.user?.email);
+    console.log(data)
+    return data;
   } catch (error) {
     console.error("Error fetching data:", error);
     return [];
@@ -148,15 +150,20 @@ export default function CompaniesTable() {
       router.replace("/login");
     }
   }, [sessionStatus, router]);
-
+console.log(session)
   useEffect(() => {
+    if(session){
     fetchDataFromAPI().then((data) => {
       // setRows(data);
+      console.log("Data Call in the api",data)
+      console.log(session)
+      console.log("Session User",session?.user?.email)
       const filteredData = data.filter((company) => company?.user?.user?.email === session?.user?.email);
       setRows(filteredData)
       setLoading(false);
     });
-  }, []);
+  }
+  }, [session]);
 
   const handleDeleteClick = (id, index) => {
     fetch(`/api/add-company`, {
@@ -255,15 +262,23 @@ console.log(rows)
             </TableHead>
             <TableBody>
               
-              {(rowsPerPage > 0
+              {/* {(rowsPerPage > 0
                 ? rows?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
                   )
                 : rows
-              ).map((row, index) => (
+                
+              ).map((row, index) => ( */}
+               {(rowsPerPage > 0
+                ? rows
+                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                    .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
+                : rows.sort((a, b) => b.id - a.id)
+              ) // Sort all data by descending order of row.id
+                .map((row, index) => (
                 <StyledTableRow key={row.id}>
-                  <TableCell>{index + 1}</TableCell>
+                  <TableCell>{row.id}</TableCell>
                   <TableCell>{row.companyName}</TableCell>
                   <TableCell>{row.contactName}</TableCell>
                   <TableCell>{row.country}</TableCell>

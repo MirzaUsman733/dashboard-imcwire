@@ -217,7 +217,7 @@ export default function Page() {
                 : plans
               ).map((row, i) => (
                 <StyledTableRow key={row.id}>
-                  <TableCell style={{ width: 100 }}>{i + 1}</TableCell>
+                  <TableCell style={{ width: 100 }}>{row.id}</TableCell>
                   <TableCell style={{ width: 260 }}>
                     {row.pressReleaseTitle}
                   </TableCell>
