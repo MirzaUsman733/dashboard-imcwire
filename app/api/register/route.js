@@ -2,6 +2,7 @@ import { PrismaClient } from "@prisma/client";
 import bcrypt from "bcryptjs";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
+import fetch from "node-fetch";
 
 const prisma = new PrismaClient();
 const transporter = nodemailer?.createTransport({

@@ -13,7 +13,6 @@ import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { FaLock } from "react-icons/fa";
 import ReCAPTCHA from "react-google-recaptcha";
-import verifyCaptcha from "../utils/recaptcha";
 
 export default function Auth() {
   const [name, setName] = useState("");
