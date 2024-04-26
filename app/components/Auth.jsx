@@ -1,12 +1,19 @@
 "use client";
-import { useState } from "react";
+import { createRef, useRef, useState } from "react";
 import { useRouter } from "next/navigation";
-import { CircularProgress, IconButton, InputAdornment, TextField } from "@mui/material";
+import {
+  CircularProgress,
+  IconButton,
+  InputAdornment,
+  TextField,
+} from "@mui/material";
 import { AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import { signIn, useSession } from "next-auth/react";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import VisibilityIcon from "@mui/icons-material/Visibility";
 import { FaLock } from "react-icons/fa";
+import ReCAPTCHA from "react-google-recaptcha";
+import verifyCaptcha from "../utils/recaptcha";
 
 export default function Auth() {
   const [name, setName] = useState("");
@@ -18,8 +25,10 @@ export default function Auth() {
   const [focusedField, setFocusedField] = useState("");
   const [viewPasswordSignIn, setViewPasswordSignIn] = useState(true);
   const [viewPasswordLogin, setViewPasswordLogin] = useState(true);
-  const [loadingSignUp, setLoadingSignUp] = useState(false); // State for sign-up loading
+  const [loadingSignUp, setLoadingSignUp] = useState(false); 
   const [loadingSignIn, setLoadingSignIn] = useState(false);
+  const [recaptchaToken, setRecaptchaToken] = useState("");
+  const recaptchaRef = createRef()
 
   const router = useRouter();
   const handleClickShowPassword = () => {
@@ -80,6 +89,12 @@ export default function Auth() {
 
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
+    const token = await recaptchaRef.current.executeAsync();
+    const isVerified = await verifyCaptcha(token);
+    if (!isVerified) {
+      setError("Please complete the reCAPTCHA verification");
+      return;
+    }
     if (!name || !email || !password) {
       setError("All fields are required");
       return;
@@ -135,7 +150,10 @@ export default function Auth() {
 
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
-
+    if (!recaptchaToken) {
+      setError("Please complete the reCAPTCHA verification");
+      return;
+    }
     if (!isValidEmail(emailSignIn)) {
       setError("Email is invalid");
       return;
@@ -150,6 +168,7 @@ export default function Auth() {
       redirect: false,
       email: emailSignIn,
       password: passwordSignIn,
+      recaptchaToken,
     });
 
     if (res?.error) {
@@ -160,7 +179,10 @@ export default function Auth() {
     }
     setLoadingSignIn(false);
   };
-
+  const onChange = (token) => {
+    // Set reCAPTCHA token
+    setRecaptchaToken(token);
+  };
   return (
     <div>
       <div>
@@ -251,15 +273,18 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
-                {loadingSignUp?
-                <button className="px-10 uppercase py-3 mt-4" disabled={loadingSignUp}>
-                  {loadingSignUp ? <CircularProgress size={24} /> : "Sign Up"}
-                </button>
-                :
-                <button className="btn-grad px-10 uppercase py-3 mt-4" >
-                  {loadingSignUp ? <CircularProgress size={24} /> : "Sign Up"}
-                </button>
-}
+                {loadingSignUp ? (
+                  <button
+                    className="px-10 uppercase py-3 mt-4"
+                    disabled={loadingSignUp}
+                  >
+                    {loadingSignUp ? <CircularProgress size={24} /> : "Sign Up"}
+                  </button>
+                ) : (
+                  <button className="btn-grad px-10 uppercase py-3 mt-4">
+                    {loadingSignUp ? <CircularProgress size={24} /> : "Sign Up"}
+                  </button>
+                )}
               </form>
             </div>
             <div className="form-container sign-in-container">
@@ -335,6 +360,7 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
+                <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
                 <div className="flex justify-start">
                   <a
                     href="/forgot-password"
@@ -349,15 +375,21 @@ export default function Auth() {
                     {error}
                   </div>
                 )}
-                {loadingSignIn?
-                <button className="px-10 uppercase py-3 mt-4" disabled={loadingSignIn}>
-                {loadingSignIn ? <CircularProgress size={24} /> : "Sign In"}
-                </button>
-                :
-                <button className="btn-grad px-10 uppercase py-3 mt-4" disabled={loadingSignIn}>
-                {loadingSignIn ? <CircularProgress size={24} /> : "Sign In"}
-                </button>
-}
+                {loadingSignIn ? (
+                  <button
+                    className="px-10 uppercase py-3 mt-4"
+                    disabled={loadingSignIn}
+                  >
+                    {loadingSignIn ? <CircularProgress size={24} /> : "Sign In"}
+                  </button>
+                ) : (
+                  <button
+                    className="btn-grad px-10 uppercase py-3 mt-4"
+                    disabled={loadingSignIn}
+                  >
+                    {loadingSignIn ? <CircularProgress size={24} /> : "Sign In"}
+                  </button>
+                )}
               </form>
             </div>
           </div>

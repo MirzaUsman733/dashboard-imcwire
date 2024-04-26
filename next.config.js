@@ -18,6 +18,12 @@ module.exports = {
     
    
   }
+  const nextConfig = {
+    experimental: {
+      serverActions: true,
+    },
+  };
+  
 
 
 // /** @type {import('next').NextConfig} */

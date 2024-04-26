@@ -151,7 +151,8 @@ export default function Page() {
       const response = await fetch("/api/reports");
       if (response.ok) {
         const plansData = await response?.json();
-        setPlans(plansData);
+        // setPlans(plansData);
+        setPlans(plansData.sort((a, b) => b.id - a.id));
         setLoading(false)
       } else {
         console.error("Failed to fetch plans");
