@@ -26,8 +26,9 @@ export default function Auth() {
   const [viewPasswordLogin, setViewPasswordLogin] = useState(true);
   const [loadingSignUp, setLoadingSignUp] = useState(false);
   const [loadingSignIn, setLoadingSignIn] = useState(false);
-  const recaptchaRef = useRef(null);
-
+  // const recaptchaRef = useRef(null);
+  const recaptchaSignUpRef = useRef(null);
+  const recaptchaSignInRef = useRef(null);
   const router = useRouter();
   const handleClickShowPassword = () => {
     setViewPasswordSignIn(!viewPasswordSignIn);
@@ -87,11 +88,10 @@ export default function Auth() {
 
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
-    const token = await recaptchaRef.current.getValue();
-    console.log(token)
-    if (!token) {
+    const signUpToken = await recaptchaSignUpRef.current.getValue();
+    if (!signUpToken) {
       setError("Captcha register failed");
-      return
+      return;
     }
     if (!name || !email || !password) {
       setError("All fields are required");
@@ -119,7 +119,7 @@ export default function Auth() {
           email,
           password,
           role: "user",
-          token: token,
+          token: signUpToken,
         }),
       });
 
@@ -149,8 +149,8 @@ export default function Auth() {
 
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
-    const token = await recaptchaRef?.current?.getValue();
-    console.log(token);
+    const signInToken = await recaptchaSignInRef.current.getValue();
+    
     // const isVerified = await verifyCaptcha(token);
     // if (!isVerified) {
     //   setError("Please complete the reCAPTCHA verification");
@@ -170,7 +170,7 @@ export default function Auth() {
       redirect: false,
       email: emailSignIn,
       password: passwordSignIn,
-      token: token,
+      token: signInToken,
     });
 
     if (res?.error) {
@@ -180,7 +180,7 @@ export default function Auth() {
       setError("");
     }
     setLoadingSignIn(false);
-    recaptchaRef.current.execute();
+    recaptchaSignInRef.current.reset();
   };
 
   return (
@@ -274,10 +274,10 @@ export default function Auth() {
                   />
                 </div>
                 <div className="w-full my-2">
-                  <ReCAPTCHA
-                    ref={recaptchaRef}
-                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
-                  />
+                <ReCAPTCHA
+                  ref={recaptchaSignUpRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                />
                 </div>
                 {loadingSignUp ? (
                   <button
@@ -367,7 +367,7 @@ export default function Auth() {
                   />
                 </div>
                 <ReCAPTCHA
-                  ref={recaptchaRef}
+                  ref={recaptchaSignInRef}
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                 />
                 <div className="flex justify-start">

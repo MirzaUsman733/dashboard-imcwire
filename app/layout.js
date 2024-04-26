@@ -20,7 +20,7 @@ export default function RootLayout({ children }) {
     <html lang="en">
       <body className={inter.className}>
       <script
-        crossorigin="anonymous"
+        crossOrigin="anonymous"
         src="https://www.google.com/recaptcha/api.js"
       ></script>
         <SessionProvider>
