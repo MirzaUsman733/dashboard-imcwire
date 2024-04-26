@@ -15,7 +15,7 @@ const transporter = nodemailer?.createTransport({
   },
 });
 export const POST = async (request) => {
-  const { name, email, password, role, approved } = await request?.json();
+  const { name, email, password, role, approved, token } = await request?.json();
 
   try {
     await prisma.$connect();
