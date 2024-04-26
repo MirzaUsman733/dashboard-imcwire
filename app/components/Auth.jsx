@@ -359,7 +359,7 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
-                <ReCAPTCHA size="invisible" ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
+                <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
                 <div className="flex justify-start">
                   <a
                     href="/forgot-password"
