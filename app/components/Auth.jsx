@@ -184,10 +184,7 @@ export default function Auth() {
 
   return (
     <div>
-      <script
-        crossorigin="anonymous"
-        src="https://www.google.com/recaptcha/api.js"
-      ></script>
+      
       <div>
         <div className="containerAuth" id="container">
           <div>
