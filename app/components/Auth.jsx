@@ -1,5 +1,5 @@
 "use client";
-import { createRef, useRef, useState } from "react";
+import { useRef, useState } from "react";
 import { useRouter } from "next/navigation";
 import {
   CircularProgress,
@@ -7,6 +7,7 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
+import fetch from "node-fetch";
 import { AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import { signIn, useSession } from "next-auth/react";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
@@ -151,11 +152,11 @@ export default function Auth() {
     e.preventDefault();
     const token = await recaptchaRef?.current?.getValue();
     console.log(token);
-    const isVerified = await verifyCaptcha(token);
-    if (!isVerified) {
-      setError("Please complete the reCAPTCHA verification");
-      return;
-    }
+    // const isVerified = await verifyCaptcha(token);
+    // if (!isVerified) {
+    //   setError("Please complete the reCAPTCHA verification");
+    //   return;
+    // }
     if (!isValidEmail(emailSignIn)) {
       setError("Email is invalid");
       return;
@@ -170,6 +171,7 @@ export default function Auth() {
       redirect: false,
       email: emailSignIn,
       password: passwordSignIn,
+      token: token
     });
 
     if (res?.error) {

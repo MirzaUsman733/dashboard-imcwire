@@ -18,6 +18,9 @@ const authOptions = {
       },
       async authorize(credentials) {
         try {
+            if (!(await verifyRecaptcha(credentials.token))) {
+                throw new Error("CAPTCHA verification failed");
+              }
           const user = await prisma.user.findUnique({
             where: { email: credentials?.email },
           });
@@ -113,6 +116,13 @@ const authOptions = {
     },
   },
 };
-
+async function verifyRecaptcha(token) {
+    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`, {
+      method: "POST"
+    });
+    const data = await response.json();
+    return data.success;
+  }
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };
