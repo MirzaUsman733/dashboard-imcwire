@@ -27,7 +27,6 @@ export default function Auth() {
   const [viewPasswordLogin, setViewPasswordLogin] = useState(true);
   const [loadingSignUp, setLoadingSignUp] = useState(false); 
   const [loadingSignIn, setLoadingSignIn] = useState(false);
-  const [recaptchaToken, setRecaptchaToken] = useState("");
   const recaptchaRef = useRef(null);
 
   const router = useRouter();
@@ -150,7 +149,7 @@ export default function Auth() {
 
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
-    const token = await recaptchaRef.current.executeAsync();
+    const token = await recaptchaRef?.current?.executeAsync();
     console.log(token)
     const isVerified = await verifyCaptcha(token);
     if (!isVerified) {
@@ -180,6 +179,7 @@ export default function Auth() {
       setError("");
     }
     setLoadingSignIn(false);
+    recaptchaRef.current.execute();
   };
 
   return (
