@@ -28,7 +28,7 @@ export default function Auth() {
   const [loadingSignUp, setLoadingSignUp] = useState(false); 
   const [loadingSignIn, setLoadingSignIn] = useState(false);
   const [recaptchaToken, setRecaptchaToken] = useState("");
-  const recaptchaRef = createRef()
+  const recaptchaRef = useRef(null);
 
   const router = useRouter();
   const handleClickShowPassword = () => {
