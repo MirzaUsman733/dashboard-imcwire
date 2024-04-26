@@ -88,6 +88,7 @@ export default function Auth() {
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     const token = await recaptchaRef.current.getValue();
+    console.log(token)
     if (!token) {
       setError("Captcha register failed");
       return
