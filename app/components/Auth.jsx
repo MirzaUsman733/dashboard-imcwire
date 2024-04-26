@@ -7,7 +7,6 @@ import {
   InputAdornment,
   TextField,
 } from "@mui/material";
-import fetch from "node-fetch";
 import { AiOutlineMail, AiOutlineUser } from "react-icons/ai";
 import { signIn, useSession } from "next-auth/react";
 import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";

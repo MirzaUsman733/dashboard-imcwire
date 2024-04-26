@@ -3,6 +3,7 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import bcrypt from "bcryptjs";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
+import fetch from "node-fetch";
 
 const prisma = new PrismaClient();
 
