@@ -271,6 +271,7 @@ export default function Auth() {
                     }}
                     className={focusedField === "password" ? "focused" : ""}
                   />
+                    <ReCAPTCHA size="invisible" ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
                 </div>
                 {loadingSignUp ? (
                   <button
@@ -359,7 +360,7 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
-                <ReCAPTCHA ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
+                <ReCAPTCHA size="invisible" ref={recaptchaRef} sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY} />
                 <div className="flex justify-start">
                   <a
                     href="/forgot-password"
