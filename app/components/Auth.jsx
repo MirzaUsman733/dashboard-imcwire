@@ -175,7 +175,7 @@ export default function Auth() {
 
     if (res?.error) {
       setError(res?.error);
-      if (!res?.error) router?.replace("/frontend");
+      if (!res?.error) router?.replace("/press-dashboard/pr-balance");
     } else {
       setError("");
     }
