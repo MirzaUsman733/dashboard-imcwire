@@ -18,7 +18,9 @@ export const POST = async (request) => {
 
   try {
     await prisma.$connect();
-
+    if (!(await verifyRecaptcha(token))) {
+      throw new Error("CAPTCHA verification failed");
+    }
     // Check if the user already exists
     const existingUser = await prisma?.user?.findUnique({ where: { email } });
     if (existingUser) {
@@ -287,4 +289,14 @@ export async function DELETE(req) {
       message: "Internal Server Error",
     });
   }
+}
+
+async function verifyRecaptcha(token) {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`, {
+    method: "POST",
+    body: JSON.stringify({ token }),
+  });
+  const data = await response.json();
+  return data.success;
 }

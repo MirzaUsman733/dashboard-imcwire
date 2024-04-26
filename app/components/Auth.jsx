@@ -89,11 +89,7 @@ export default function Auth() {
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     const token = await recaptchaRef.current.getValue();
-    const isVerified = await verifyCaptcha(token);
-    if (!isVerified) {
-      setError("Please complete the reCAPTCHA verification");
-      return;
-    }
+
     if (!name || !email || !password) {
       setError("All fields are required");
       return;
@@ -120,6 +116,7 @@ export default function Auth() {
           email,
           password,
           role: "user",
+          token: token,
         }),
       });
 
@@ -170,7 +167,7 @@ export default function Auth() {
       redirect: false,
       email: emailSignIn,
       password: passwordSignIn,
-      token: token
+      token: token,
     });
 
     if (res?.error) {
@@ -185,7 +182,6 @@ export default function Auth() {
 
   return (
     <div>
-      
       <div>
         <div className="containerAuth" id="container">
           <div>
@@ -273,6 +269,8 @@ export default function Auth() {
                     }}
                     className={focusedField === "password" ? "focused" : ""}
                   />
+                </div>
+                <div className="w-full my-2">
                   <ReCAPTCHA
                     ref={recaptchaRef}
                     sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
