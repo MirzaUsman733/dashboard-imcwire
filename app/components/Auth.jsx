@@ -88,7 +88,10 @@ export default function Auth() {
   const handleSignUpSubmit = async (e) => {
     e.preventDefault();
     const token = await recaptchaRef.current.getValue();
-
+    if (!token) {
+      setError("Captcha register failed");
+      return
+    }
     if (!name || !email || !password) {
       setError("All fields are required");
       return;
