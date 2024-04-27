@@ -19,7 +19,7 @@ export async function POST(req) {
       const planDoc = await prisma?.compaignData?.create({ data });
       const mailOptions = {
         from: "Orders@imcwire.com",
-        to: "mirzausman9006@gmail.com",
+        to: "admin@imcwire.com",
         subject: "Press-Release Order",
         text: `Dear Admin ,\n\n New Order Placed by the client check it in the account .\n\nRegards,\nThe Admin`,
       };

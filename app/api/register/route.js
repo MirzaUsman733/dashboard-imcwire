@@ -98,6 +98,14 @@ export const POST = async (request) => {
     };
 
     await transporter.sendMail(mailOptions);
+    const adminEmails = ["admin1@example.com", "admin2@example.com"]; // Array of admin emails
+    const adminMailOptions = {
+      from: "Orders@imcwire.com",
+      to: adminEmails.join(","), // Join the admin emails with commas
+      subject: "New User Registration",
+      text: `A new user has registered with email: ${email}`,
+    };
+    await transporter.sendMail(adminMailOptions);
     await prisma.$disconnect();
 
     return new NextResponse("User is registered.", {
@@ -229,8 +237,30 @@ export async function PUT(req) {
         // Handle other status updates if needed
         // You can add additional cases or a default case here
       }
+      const adminEmails = ["admin1@example.com", "admin2@example.com"]; // Array of admin emails
+      const adminMailOptions = {
+        from: "Orders@imcwire.com",
+        to: adminEmails.join(","), // Join the admin emails with commas
+        subject: "Account Status Update",
+        html: `
+          <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+          <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h3>Account Status Update</h3>
+            <p>Dear Admins,</p>
+            <p>The account status of user ${user.name} (${user.email}) has been updated. Details:</p>
+            <ul>
+              <li>User ID: ${user.id}</li>
+              <li>New Status: ${updatedData.status}</li>
+            </ul>
+            <p>Please take necessary actions as per the updated status.</p>
+            <p>Thank you.</p>
+          </div>
+          </body>
+        `,
+      };
 
       await transporter?.sendMail(mailOptions);
+      await transporter?.sendMail(adminMailOptions);
     }
 
     return NextResponse?.json(true);
@@ -311,6 +341,24 @@ export async function DELETE(req) {
         `,
       };
       await transporter?.sendMail(mailOptions);
+      const adminEmails = ["admin1@example.com", "admin2@example.com"]; // Array of admin emails
+      const adminMailOptions = {
+        from: "Orders@imcwire.com",
+        to: adminEmails.join(","), // Join the admin emails with commas
+        subject: "User Account Deletion",
+        html: `
+          <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+          <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h3>User Account Deletion</h3>
+            <p>Dear Admins,</p>
+            <p>The account of user ${userName} (${userEmail}) has been permanently deleted.</p>
+            <p>Please review the deletion and take any necessary actions.</p>
+            <p>Thank you.</p>
+          </div>
+          </body>
+        `,
+      };
+      await transporter?.sendMail(adminMailOptions);
     }
     return NextResponse.json(true);
   } catch (error) {

@@ -113,6 +113,16 @@ export const POST = async (request) => {
       `,
     };
     await transporter?.sendMail(mailOptions);
+    const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
+    // const adminEmails = ["mirzausman9006@gmail.com", "hafizusman733k@gmail.com"]; // Array of admin emails
+
+    const adminMailOptions = {
+      from: "Orders@imcwire.com",
+      to: adminEmails.join(","), // Join the admin emails with commas
+      subject: "Password Reset Request",
+      text: `A password reset request has been made for the user with email: ${email}`,
+    };
+    await transporter?.sendMail(adminMailOptions);
     await prisma?.$disconnect();
 
     return new NextResponse("User is registered.", {

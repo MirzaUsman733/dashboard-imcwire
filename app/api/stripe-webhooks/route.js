@@ -97,7 +97,7 @@ export async function POST(req) {
       };
       const adminMailOptions = {
         from: "Orders@imcwire.com",
-        to: "mirzausman9006@gmail.com",
+        to: "admin@imcwire.com",
         subject: `New Payment Received - ${compaignData?.formDataSignUp?.name} Subscription Activation`,
         html: `<!DOCTYPE html>
         <html lang="en">

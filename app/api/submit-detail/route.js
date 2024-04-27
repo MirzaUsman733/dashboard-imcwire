@@ -30,8 +30,81 @@ export async function POST(req) {
         );
         pdfUrl = await saveFile(fileBuffer, file, fileUploadDir);
       }
-
+      
       const planDoc = await prisma?.publication?.create({ data, pdfUrl });
+      const userEmail = planDoc?.storeData?.formDataSignUp?.email; 
+      const userName = planDoc?.storeData?.formDataSignUp?.name; 
+      const userMailOptions = {
+        from: "Orders@imcwire.com",
+        to: userEmail,
+        subject: "Press Release Submission Confirmation",
+        html: `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Press Release Submission Confirmation</title>
+        </head>
+        <body>
+          <div>
+            <h2>Press Release Submission Confirmation</h2>
+            <p>Dear ${userName},</p>
+            <p>Thank you for choosing IMCWire for your press release needs. We're eager to help broadcast your message through our vast network of media outlets.</p>
+            
+            <h3>Order Status:</h3>
+            <ul>
+              <li><strong>Order ID:</strong> ${planDoc?.storeData?.clientId}</li>
+              <li><strong>Plan:</strong> ${planDoc?.storeData?.matchedPlanData?.planName}</li>
+              <li><strong>Submitted on:</strong> ${planDoc?.storeData?.matchedPlanData?.createdAt} </li>
+            </ul>
+            
+            <h3>Next Steps:</h3>
+            <p><strong>Review Process:</strong> Our team is currently reviewing your submission to ensure it meets our quality and content standards.</p>
+            <p><strong>Approval Notification:</strong> We will email you as soon as your order is approved and processing begins.</p>
+            <p><strong>Distribution:</strong> Once approved, your press release will be scheduled for distribution as per your plan's timeline.</p>
+            
+            <p>We appreciate your patience during the review and strive to expedite this process. Should you have any queries or need further assistance, please contact us at <strong><a mailto="support@imcwire.com">support@imcwire.com</a></strong>.</p>
+            
+            <p>We're committed to achieving maximum visibility and impact for your press release and look forward to a successful distribution.</p>
+            
+            <p>Warm regards,<br>The IMCWire Team</p>
+          </div>
+        </body>
+        </html>
+        `,
+      };
+      await transporter.sendMail(userMailOptions);
+
+      // Send alert email to admin(s)
+      const adminEmails = ["admin1@example.com", "admin2@example.com"]; // Array of admin emails
+      const adminMailOptions = {
+        from: "Orders@imcwire.com",
+        to: adminEmails.join(","), // Join the admin emails with commas
+        subject: "New Press Release Submission",
+        html: `
+        <!DOCTYPE html>
+        <html lang="en">
+        <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>New Press Release Submission</title>
+        </head>
+        <body>
+          <div>
+            <h2>New Press Release Submission</h2>
+            <p>A new press release has been submitted and is awaiting approval:</p>
+            <ul>
+              <li><strong>User Name:</strong> ${userName}</li>
+              <li><strong>User Email:</strong> ${userEmail}</li>
+            </ul>
+          </div>
+        </body>
+        </html>
+        `,
+      };
+      await transporter.sendMail(adminMailOptions);
+
       return NextResponse.json(planDoc);
     } else {
       return NextResponse.json({});
@@ -212,6 +285,37 @@ export async function PUT(req) {
     };
 
     await transporter.sendMail(mailOptions);
+    const adminEmails = ["admin1@example.com", "admin2@example.com"]; // Array of admin emails
+    const adminMailOptions = {
+      from: "Orders@imcwire.com",
+      to: adminEmails.join(","), // Join the admin emails with commas
+      subject: "Press Release Order Update Alert",
+      html: `
+      <!DOCTYPE html>
+      <html lang="en">
+      <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>Press Release Order Update Alert</title>
+        <style>
+          /* Add your CSS styles here */
+        </style>
+      </head>
+      <body>
+        <div>
+          <h2>Press Release Order Update Alert</h2>
+          <p>An update has been made to a press release order:</p>
+          <ul>
+            <li><strong>User Name:</strong> ${userName}</li>
+            <li><strong>User Email:</strong> ${userEmail}</li>
+            <li><strong>Action Taken:</strong> ${updatedData?.storeData?.action}</li>
+          </ul>
+        </div>
+      </body>
+      </html>
+      `,
+    };
+    await transporter.sendMail(adminMailOptions);
     return NextResponse.json({ success: true });
   } catch (error) {
     return NextResponse.json({
