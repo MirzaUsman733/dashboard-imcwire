@@ -182,23 +182,16 @@ export async function PUT(req) {
           <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
           <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
             <p>Dear ${user.name},</p>
-            <p>We hope this message finds you well. At IMCWire, we are committed to maintaining a secure, respectful, and professional environment for all our users and partners. It is with a sense of responsibility that we uphold these standards to ensure the integrity and quality of our services.</p>
-            <p>Following a thorough review, it has been determined that your account has engaged in activities that violate our Terms of Service and Community Standards. Specifically, [briefly describe the nature of the violations, e.g., "the distribution of unauthorized content, misuse of our platform for prohibited activities, etc."]. Despite previous warnings/notices, these behaviors have continued, leading us to take action to protect our community and services.</p>
-            <p>Effective immediately, your account has been permanently blocked from accessing IMCWire services. This decision has been made due to:</p>
+            <p>We regret to inform you that your IMCWire account has been permanently blocked due to violations of our Terms of Service. Specifically, you have been engaging in repeated unauthorized distribution of copyrighted material, which is in direct violation of our intellectual property policies. Despite previous warnings, these issues have persisted, compelling us to take this measure to uphold our community’s safety and integrity.
+            </p>
+            <h3><strong>Implications:</strong></h3>
             <ul>
-              <li>Repeated violations despite prior warnings.</li>
-              <li>Activities that jeopardize the safety and integrity of our platform and its users.</li>
-              <li>Non-compliance with our stated policies and guidelines.</li>
+              <li>Your access to all IMCWire services is revoked immediately.</li>
+              <li>Any subscriptions or services linked to your account are terminated.</li>
+              <li>This decision is final and binding.</li>
             </ul>
-            <p><strong>What This Means:</strong></p>
-            <ul>
-              <li>You will no longer be able to access your IMCWire account or use any of our services.</li>
-              <li>Any active subscriptions or services associated with your account have been terminated.</li>
-              <li>This action is final and non-negotiable.</li>
-            </ul>
-            <p>We understand this news may be disappointing. This decision was not made lightly, but was necessary to maintain the standards and safety of our platform. We must prioritize the well-being and security of our entire community.</p>
-            <p>If you believe this decision has been made in error, or if you have any questions, you are welcome to contact our support team for a detailed explanation at [Support Email/Contact Form]. Please note, while we are open to discussion, the likelihood of reversing this decision is minimal given the circumstances.</p>
-            <p>Thank you for your understanding.</p>
+            <p>We understand this may be disappointing, but it is necessary to protect our platform and users. If you have questions or believe this decision to be in error, please contact us at <a mailto="support@imcwire.com">support@imcwire.com</a> for clarification.</p>
+           <p>Thank you for your understanding.</p>
             <p>Sincerely,<br/>The IMCWire Team</p>
             </div>
             </body>
@@ -217,14 +210,14 @@ export async function PUT(req) {
           <h3><strong>Impact of Suspension:</strong></h3>
             <ul>
               <li>During this period, you will not have access to your IMCWire account or be able to use any of our services.</li>
-              <li>We encourage you to take this time to familiarize yourself with our Terms of Service and Community Standards, which can be found [link to guidelines].</li>
+              <li>We encourage you to take this time to familiarize yourself with our Terms of Service and Community Standards, which can be found <a href="https://imcwire.com/guidelines/">Guidelines</a>.</li>
               <li>Following the suspension period, your account will be automatically reinstated, and you will be able to access and use IMCWire services once again.</li>
             </ul>
             <p>We understand that this may come as a disappointment. However, these measures are essential for maintaining the quality and safety of our platform for all users. We appreciate your understanding and cooperation in this matter.</p>
             <p><strong>Next Steps:</strong></p>
             <ul>
               <li>Please consider this temporary suspension as an opportunity to review our policies.</li>
-              <li>Should you wish to discuss this matter further or if you have any questions regarding the suspension, you are welcome to contact our support team at [Support Email/Contact Form].</li>
+              <li>Should you wish to discuss this matter further or if you have any questions regarding the suspension, you are welcome to contact our support team at <a mailto="support@imcwire.com">support@imcwire.com</a>.</li>
             </ul>
             <p>We look forward to welcoming you back to IMCWire after the suspension period has ended. Thank you for your attention to this matter and for your understanding.</p>
             <p>Sincerely,<br/>The IMCWire Team</p>
@@ -266,9 +259,9 @@ export async function GET() {
 export async function DELETE(req) {
   try {
     const url = new URL(req?.url);
-    console.log("URL",url)
+    console.log("URL", url);
     const id = url?.searchParams?.get("_id");
-    console.log("ID : ", id)
+    console.log("ID : ", id);
     const isAdmin = true;
     if (isAdmin) {
       const userDelete = await prisma?.user?.findUnique({
@@ -291,7 +284,7 @@ export async function DELETE(req) {
         <meta name="viewport" content="width=device-width, initial-scale=1.0">
         <title>IMCWire Account Deletion Notification</title>
         </head>
-        <body>
+        <body  style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
         
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <p>Dear ${userName}, </p>
@@ -304,7 +297,7 @@ export async function DELETE(req) {
                 <li>You no longer have access to our services or any previously available content.</li>
             </ul>
         
-            <p>If you believe this decision was made in error, or if you wish to discuss this matter further, please contact us at <a href="[Support Email/Contact Form]">[Support Email/Contact Form]</a> within [time frame].</p>
+            <p>If you believe this decision was made in error, or if you wish to discuss this matter further, please contact us at <a mailto="support@imcwire.com">support@imcwire.com</a> within [time frame].</p>
         
             <p>We value the time you spent with us and regret any inconvenience this decision may cause. Thank you for your understanding as we strive to maintain a secure and respectful platform.</p>
         
@@ -315,7 +308,7 @@ export async function DELETE(req) {
         
         </body>
         </html>
-        `
+        `,
       };
       await transporter?.sendMail(mailOptions);
     }

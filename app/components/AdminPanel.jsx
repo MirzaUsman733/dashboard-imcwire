@@ -1,6 +1,60 @@
-import React from "react";
+import { useSession } from "next-auth/react";
+import React, { useCallback, useEffect, useState } from "react";
 
 function AdminPanel() {
+  const { data: session, status: sessionStatus } = useSession();
+  const [totalRevenue, setTotalRevenue] = useState(0);
+  const [compaignData, setCompaignData] = useState(null)
+  const [detail, setDetail] = useState(null)
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch("/api/compaignData");
+      if (response.ok) {
+        const plansData = await response?.json();
+        const paidPlans = plansData?.filter((plan) => plan?.status === "paid");
+        setCompaignData(paidPlans);
+        // setLoading(false);
+      } else {
+        console.error("Failed to fetch plans");
+      }
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    }
+  };
+  useEffect(() => {
+    if (session) {
+      fetchPlans();
+    }
+  }, [session]);
+  const fetchDetail = useCallback(async () => {
+    try {
+      const response = await fetch("/api/submit-detail");
+      if (response.ok) {
+        const detailData = await response.json();
+        const clientidData = detailData?.filter(
+          (data) => data.storeData.action != "completed"
+        );
+        setDetail(clientidData);
+      } else {
+        console.error("Failed to fetch detail");
+      }
+    } catch (error) {
+      console.error("Error fetching detail:", error);
+    }
+  }, []);
+
+  useEffect(() => {
+    fetchDetail();
+  }, [fetchDetail]);
+  useEffect(() => {
+    if (compaignData) {
+      const total = compaignData.reduce((acc, campaign) => acc + campaign.totalPrice, 0);
+      setTotalRevenue(total);
+    }
+  }, [compaignData]);
+  // console.log(compaignData)
+  console.log(totalRevenue)
+  console.log(detail)
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div
@@ -28,7 +82,7 @@ function AdminPanel() {
           </svg>
         </div>
         <div className="p-6">
-          <div className="text-2xl font-bold">$45,231.89</div>
+          <div className="text-2xl font-bold">${totalRevenue}</div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
             +20.1% from last month
           </p>
@@ -62,7 +116,7 @@ function AdminPanel() {
           </svg>
         </div>
         <div className="p-6">
-          <div className="text-2xl font-bold">+2350</div>
+          <div className="text-2xl font-bold">{compaignData?.length}</div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
             +180.1% from last month
           </p>
@@ -125,7 +179,7 @@ function AdminPanel() {
           </svg>
         </div>
         <div className="p-6">
-          <div className="text-2xl font-bold">+573</div>
+          <div className="text-2xl font-bold">+{detail?.length}</div>
           <p className="text-xs text-gray-500 dark:text-gray-400">
             +201 since last hour
           </p>

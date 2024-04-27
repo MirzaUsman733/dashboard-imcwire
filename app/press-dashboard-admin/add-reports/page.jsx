@@ -205,7 +205,7 @@ export default function Page() {
       if (response.ok) {
         const detailData = await response.json();
         const clientidData = detailData?.filter(
-          (data) => data.storeData.action != "completed"
+          (data) => data.storeData.action === "inprogress"
         );
         setDetail(clientidData);
       } else {
