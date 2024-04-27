@@ -1,5 +1,5 @@
 "use client";
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useRef, useState } from "react";
 import {
   Button,
   Dialog,
@@ -8,11 +8,17 @@ import {
   DialogTitle,
   TextField,
   Backdrop,
+  IconButton,
+  InputAdornment,
 } from "@mui/material";
 import { useDistributionContext } from "../contexts/DistributionContext";
 import { useUser } from "../contexts/userData";
 import { signIn, useSession } from "next-auth/react";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
+import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useRouter } from "next/navigation";
+import ReCAPTCHA from "react-google-recaptcha";
+import { FaLock } from "react-icons/fa";
 
 function SignupForm() {
   const router = useRouter();
@@ -42,7 +48,12 @@ function SignupForm() {
   const [isChecked, setIsChecked] = useState(false);
   const [isAgency, setIsAgency] = useState(false);
   const [agencyName, setAgencyName] = useState("");
+  const [viewPassword, setViewPassword] = useState(true);
+  const recaptchaRef = useRef(null);
 
+  const handleClickShowPassword = () => {
+    setViewPassword(!viewPassword);
+  };
   const toggleTermsPopup = () => {
     setShowTermsPopup(!showTermsPopup);
   };
@@ -133,7 +144,11 @@ function SignupForm() {
       console.log("Password must be at least 8 characters long");
       return;
     }
-
+    const token = await recaptchaRef.current.getValue();
+    if (!token) {
+      setError("Captcha register failed");
+      return;
+    }
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -145,6 +160,7 @@ function SignupForm() {
           email: email,
           password: password,
           role: "user",
+          token: token,
         }),
       });
 
@@ -212,10 +228,15 @@ function SignupForm() {
       console.log("Password is invalid");
       return;
     }
-
+    const token = await recaptchaSignUpRef.current.getValue();
+    if (!token) {
+      setError("Captcha register failed");
+      return;
+    }
     const res = await signIn("credentials", {
       email: email,
       password: password,
+      token: token,
     });
     if (res?.error) {
       console.log(res.error);
@@ -268,7 +289,7 @@ function SignupForm() {
         if (!session) {
           if (!isEmailAvailable) {
             await handleCheckout();
-            await handleSignInSubmit(email, password);
+            // await handleSignInSubmit(email, password);
             redirectToCheckout();
           } else {
             handleSignUpSubmit(name, email, password);
@@ -326,7 +347,7 @@ function SignupForm() {
                 onBlur={handleBlur}
                 className={focusedField === "email" ? "focused" : ""}
               />
-              <TextField
+              {/* <TextField
                 label="Password"
                 type="password"
                 placeholder="Enter the Password"
@@ -336,7 +357,47 @@ function SignupForm() {
                 onFocus={() => handleFocus("password")}
                 onBlur={handleBlur}
                 className={focusedField === "password" ? "focused" : ""}
-              />
+              /> */}
+               <TextField
+                    label="Password"
+                    variant="outlined"
+                    type={viewPassword ? "password" : "text"}
+                    name="password"
+                    autoComplete="off"
+                    placeholder="Enter the Password"
+                    value={password}
+                    onChange={handlePasswordChange}
+                    fullWidth
+                    onFocus={() => handleFocus("password")}
+                    onBlur={handleBlur}
+                    InputProps={{
+                      placeholder:
+                        focusedField !== "password" ? "Password" : "",
+                      startAdornment: <FaLock className="text-gray-400 me-2" />,
+                      endAdornment: (
+                        <InputAdornment position="end">
+                          <IconButton
+                            aria-label="toggle password visibility"
+                            onClick={handleClickShowPassword}
+                            edge="end"
+                          >
+                            {viewPassword ? (
+                              <VisibilityOffIcon />
+                            ) : (
+                              <VisibilityIcon />
+                            )}
+                          </IconButton>
+                        </InputAdornment>
+                      ),
+                    }}
+                    className={focusedField === "password" ? "focused" : ""}
+                  />
+               <div className="w-full my-2">
+                <ReCAPTCHA
+                  ref={recaptchaRef}
+                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                />
+                </div>
             </>
           )}
           <Dialog
