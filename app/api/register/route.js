@@ -15,7 +15,8 @@ const transporter = nodemailer?.createTransport({
   },
 });
 export const POST = async (request) => {
-  const { name, email, password, role, approved, token } = await request?.json();
+  const { name, email, password, role, approved, token } =
+    await request?.json();
   try {
     await prisma.$connect();
     if (!(await verifyRecaptcha(token))) {
@@ -63,27 +64,31 @@ export const POST = async (request) => {
           <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
   
           <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-              <h2 style="color: #333;">Dear ${name},</h2>
+              <h2 style="color: #333; font-weight: bold;">Dear ${name},</h2>
               <p>Welcome to the IMCWire family! We're thrilled to have you on board and eager to collaborate in amplifying your message globally.</p>
               <p>With a decade of expertise in press release distribution, IMCWire is dedicated to linking you with premier media outlets and organizations, ensuring your news reaches its target audience effectively. Our network boasts esteemed platforms such as Yahoo Finance, Bloomberg, MarketWatch, and over 350 other prominent news and media channels.</p>
               
-              <h3 style="color: #333;">Here’s what you can expect with your IMCWire membership:</h3>
+              <h3 style="color: #333; font-weight: bold;">As a member, here's what you can anticipate:</h3>
               <ul>
-                  <li>Unparalleled Distribution: Your press releases will be distributed to leading news outlets, ensuring maximum visibility.</li>
-                  <li>Customized Plans: Choose from our Basic, Pro+, and Corporate plans to match your visibility and influence needs.</li>
-                  <li>Expert Support: Our team is here to assist you every step of the way, from crafting your press release to tracking its impact.</li>
+                  <li>Extensive Distribution: Your press releases will reach leading news outlets, maximizing visibility.</li>
+                  <li>Tailored Plans: Choose from our plans, and Corporate plans to suit your visibility and influence requirements.</li>
+                  <li>Professional Support: Our team is available to guide you every step of the way, from crafting your press release to analyzing its impact.</li>
               </ul>
               
-              <h3 style="color: #333;">Getting Started:</h3>
+              <h3 style="color: #333; font-weight: bold;">To kick-start your IMCWire experience, we suggest the following steps:</h3>
               <ol>
-                  <li>Explore Your Dashboard: Log in to your account to access your dashboard, where you can manage your press releases and view their performance.</li>
-                  <li>Schedule Your First Release: Ready to launch? Submit your first press release directly through your dashboard or contact our support team for guidance.</li>
-                  <li>Reach Out: Have questions or need assistance? Our dedicated support team is just an email or phone call away.</li>
+                  <li>Explore Your Dashboard: Log in to your account to manage your press releases and track performance.</li>
+                  <li>Schedule Your First Release: Ready to go live? Submit your debut press release through your dashboard or contact our support team for assistance.</li>
+                  <li>Reach Out: Questions or need help? Our dedicated support team is just an email or phone call away.</li>
               </ol>
               
-              <p><strong>Thank You:</strong> Thank you for choosing IMCWire. We’re honored to play a part in your story and are committed to ensuring your voice is heard loud and clear across the globe.</p>
+              <p><strong>Thank you for choosing IMCWire. We're honored to be part of your journey and committed to ensuring your voice resonates worldwide.</p>
               
-              <p><strong>Let’s make headlines together!</strong></p>
+              <p><strong>Let's make headlines together!</strong></p>
+              <div class="display: flex; justify-content: space-between; ">
+              <div>Warm regards,</div>
+              <div>The IMCWire Team</div>
+              </div>
             
           </div>
   
@@ -207,11 +212,9 @@ export async function PUT(req) {
           html: `
           <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
           <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
-            <p>Dear ${user?.name},</p>
-            <p>We hope this message finds you well. At IMCWire, we are dedicated to creating and maintaining a safe, respectful, and professional environment for all our users. To uphold these values, we periodically review user activities in accordance with our Terms of Service and Community Standards.</p>
-            <p>Upon review, it has been determined that actions associated with your account have violated our policies. Specifically, [briefly describe the nature of the violation, such as "the posting of content that goes against our community guidelines", "engaging in behaviors that disrupt our platform’s integrity", etc.]. These actions necessitate immediate attention to prevent further issues.</p>
-            <p>As a result, your account has been temporarily blocked for a period of [duration of the temporary block]. This decision is aimed at addressing the current concerns while also giving you an opportunity to review and understand our community guidelines.</p>
-            <p><strong>What This Means:</strong></p>
+            <h3 class="font-weight: bold;">Dear ${user?.name},</h3>
+            <p>We are committed to maintaining a safe and respectful environment at IMCWire. It has been observed that your recent activities have breached our Terms of Service and Community Standards, spestincifically due to po ignappropriate content that does not comply with our guidelines.</p>
+          <h3><strong>Impact of Suspension:</strong></h3>
             <ul>
               <li>During this period, you will not have access to your IMCWire account or be able to use any of our services.</li>
               <li>We encourage you to take this time to familiarize yourself with our Terms of Service and Community Standards, which can be found [link to guidelines].</li>
@@ -263,22 +266,56 @@ export async function GET() {
 export async function DELETE(req) {
   try {
     const url = new URL(req?.url);
+    console.log("URL",url)
     const id = url?.searchParams?.get("_id");
+    console.log("ID : ", id)
     const isAdmin = true;
     if (isAdmin) {
-      const user = await prisma?.user?.findUnique({
+      const userDelete = await prisma?.user?.findUnique({
         where: { id: parseInt(id) },
       });
-      await prisma.user.delete({
+      await prisma.user?.delete({
         where: { id: parseInt(id) },
       });
-      const userEmail = user?.email;
-      const userName = user?.name;
+      const userEmail = userDelete?.email;
+      const userName = userDelete?.name;
       const mailOptions = {
         from: "Orders@imcwire.com",
         to: userEmail,
         subject: "Press-Release Order",
-        text: `Dear + ${userName} + ,\n\nYour Account is Deleted now you cannot access our account`,
+        // text: `Dear + ${userName} + ,\n\nYour Account is Deleted now you cannot access our account`,
+        html: `<!DOCTYPE html>
+        <html lang="en">
+        <head>
+        <meta charset="UTF-8">
+        <meta name="viewport" content="width=device-width, initial-scale=1.0">
+        <title>IMCWire Account Deletion Notification</title>
+        </head>
+        <body>
+        
+        <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+            <p>Dear ${userName}, </p>
+        
+            <p>We regret to inform you that your IMCWire account has been permanently deleted due to repeated violations of our community guidelines, including posting unauthorized content despite multiple warnings. This measure is essential to uphold our Terms of Service and ensure a safe environment for all users.</p>
+        
+            <h2 style="color: #ff0000;">Important Points:</h2>
+            <ul>
+                <li>All personal data associated with your account has been removed from our systems in compliance with data protection laws.</li>
+                <li>You no longer have access to our services or any previously available content.</li>
+            </ul>
+        
+            <p>If you believe this decision was made in error, or if you wish to discuss this matter further, please contact us at <a href="[Support Email/Contact Form]">[Support Email/Contact Form]</a> within [time frame].</p>
+        
+            <p>We value the time you spent with us and regret any inconvenience this decision may cause. Thank you for your understanding as we strive to maintain a secure and respectful platform.</p>
+        
+            <div style="text-align: right; margin-top: 20px;">
+                <p>Best regards,<br>The IMCWire Team</p>
+            </div>
+        </div>
+        
+        </body>
+        </html>
+        `
       };
       await transporter?.sendMail(mailOptions);
     }
@@ -303,13 +340,16 @@ export async function DELETE(req) {
 
 async function verifyRecaptcha(token) {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-  const response = await fetch(`https://www.google.com/recaptcha/api/siteverify`, {
-    method: "POST",
-    headers: {
-      "Content-Type": "application/x-www-form-urlencoded"
-    },
-    body: `secret=${secretKey}&response=${token}`
-  });
+  const response = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify`,
+    {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/x-www-form-urlencoded",
+      },
+      body: `secret=${secretKey}&response=${token}`,
+    }
+  );
   const data = await response.json();
   return data.success;
 }

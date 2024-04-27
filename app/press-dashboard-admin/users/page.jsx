@@ -189,6 +189,7 @@ export default function Page() {
   }, []);
 
   const handleDeleteClick = (id, index) => {
+    console.log(id)
     fetch("/api/register?_id=" + id, {
       method: "DELETE",
     })
