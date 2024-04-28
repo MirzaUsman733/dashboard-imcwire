@@ -24,7 +24,7 @@ export async function POST(req) {
         data: { storeData: { ...planDoc.storeData, action: "completed" } },
       });
       const mailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: planDoc.storeData.formDataSignUp.email,
         subject: "Order Completed",
         text: "You correctly complete the data",

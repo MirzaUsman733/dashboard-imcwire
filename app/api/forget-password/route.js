@@ -35,7 +35,7 @@ export const POST = async (request) => {
       data: { resetToken, tokenExpiration },
     });
     const mailOptions = {
-      from: "Orders@imcwire.com",
+      from: "IMCWire <Orders@imcwire.com>",
       to: email,
       subject: "Forget Password",
       html: `<!DOCTYPE html>
@@ -117,7 +117,7 @@ export const POST = async (request) => {
     // const adminEmails = ["mirzausman9006@gmail.com", "hafizusman733k@gmail.com"]; // Array of admin emails
 
     const adminMailOptions = {
-      from: "Orders@imcwire.com",
+      from: "IMCWire <Orders@imcwire.com>",
       to: adminEmails.join(","), // Join the admin emails with commas
       subject: "Password Reset Request",
       text: `A password reset request has been made for the user with email: ${email}`,

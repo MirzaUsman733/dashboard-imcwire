@@ -49,7 +49,7 @@ export async function POST(req) {
       });
       const receiptEmail = event?.data?.object?.customer_email;
       const mailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: receiptEmail,
         subject:
           "Your Payment Has Been Successfully Processed - Welcome to IMCWire!",
@@ -96,7 +96,7 @@ export async function POST(req) {
         </html>`,
       };
       const adminMailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: "admin@imcwire.com",
         subject: `New Payment Received - ${compaignData?.formDataSignUp?.name} Subscription Activation`,
         html: `<!DOCTYPE html>

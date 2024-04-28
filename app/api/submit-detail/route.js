@@ -35,7 +35,7 @@ export async function POST(req) {
       const userEmail = planDoc?.storeData?.formDataSignUp?.email; 
       const userName = planDoc?.storeData?.formDataSignUp?.name; 
       const userMailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: userEmail,
         subject: "Press Release Submission Confirmation",
         html: `
@@ -79,7 +79,7 @@ export async function POST(req) {
       // Send alert email to admin(s)
       const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
       const adminMailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","), // Join the admin emails with commas
         subject: "New Press Release Submission",
         html: `
@@ -278,7 +278,7 @@ export async function PUT(req) {
     }
 
     const mailOptions = {
-      from: "Orders@imcwire.com",
+      from: "IMCWire <Orders@imcwire.com>",
       to: userEmail,
       subject: emailSubject,
       html: emailText,
@@ -287,7 +287,7 @@ export async function PUT(req) {
     await transporter.sendMail(mailOptions);
     const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
     const adminMailOptions = {
-      from: "Orders@imcwire.com",
+      from: "IMCWire <Orders@imcwire.com>",
       to: adminEmails.join(","), // Join the admin emails with commas
       subject: "Press Release Order Update Alert",
       html: `

@@ -20,7 +20,7 @@ console.log(data)
     await prisma?.userInfo?.create({data});
 
     // const mailOptions = {
-    //   from: "Orders@imcwire.com",
+    //   from: "IMCWire <Orders@imcwire.com>",
     //   to: email,
     //   subject: "Welcome to IMCWire",
     //   text: `Dear + ${name} + ,\n\nThank you for registering on our platform. Your account is pending approval by the admin. You will receive another email once your account is approved.\n\nRegards,\nThe Admin`,
@@ -55,7 +55,7 @@ console.log(data)
 //       const userEmail = user.email;
 //       const userName = user.name;
 //       const mailOptions = {
-//         from: "Orders@imcwire.com",
+//         from: "IMCWire <Orders@imcwire.com>",
 //         to: userEmail,
 //         subject: "Press-Release Order",
 //         text: `Dear + ${userName} + ,\n\nYour Status is updated now your status is ${updatedData.status} Becuase of any reason`,

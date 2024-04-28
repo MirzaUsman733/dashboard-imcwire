@@ -44,13 +44,13 @@ export const POST = async (request) => {
     });
 
     // const mailOptions = {
-    //   from: "Orders@imcwire.com",
+    //   from: "IMCWire <Orders@imcwire.com>",
     //   to: email,
     //   subject: "Welcome to IMCWire",
     //   text: `Dear + ${name} + ,\n\nThank you for registering on our platform. Your account is pending approval by the admin. You will receive another email once your account is approved.\n\nRegards,\nThe Admin`,
     // };
     const mailOptions = {
-      from: "Orders@imcwire.com",
+      from: "IMCWire <Orders@imcwire.com>",
       to: email,
       subject: "Welcome to IMCWire",
       html: `
@@ -100,7 +100,7 @@ export const POST = async (request) => {
     await transporter.sendMail(mailOptions);
     const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
     const adminMailOptions = {
-      from: "Orders@imcwire.com",
+      from: "IMCWire <Orders@imcwire.com>",
       to: adminEmails.join(","), // Join the admin emails with commas
       subject: "New User Registration",
       text: `A new user has registered with email: ${email}`,
@@ -135,7 +135,7 @@ export const POST = async (request) => {
 //       const userEmail = user.email;
 //       const userName = user.name;
 //       const mailOptions = {
-//         from: "Orders@imcwire.com",
+//         from: "IMCWire <Orders@imcwire.com>",
 //         to: userEmail,
 //         subject: "Press-Release Order",
 //         text: `Dear + ${userName} + ,\n\nYour Status is updated now your status is ${updatedData.status} Becuase of any reason`,
@@ -183,7 +183,7 @@ export async function PUT(req) {
 
       if (updatedData?.status === "Permanent Block") {
         mailOptions = {
-          from: "Orders@imcwire.com",
+          from: "IMCWire <Orders@imcwire.com>",
           to: user?.email,
           subject: "Important Account Notification",
           html: `
@@ -207,7 +207,7 @@ export async function PUT(req) {
         };
       } else if (updatedData?.status === "Temporary Block") {
         mailOptions = {
-          from: "Orders@imcwire.com",
+          from: "IMCWire <Orders@imcwire.com>",
           to: user?.email,
           subject: "Temporary Suspension of Your IMCWire Account",
           html: `
@@ -239,7 +239,7 @@ export async function PUT(req) {
       }
       const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
       const adminMailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","), // Join the admin emails with commas
         subject: "Account Status Update",
         html: `
@@ -303,7 +303,7 @@ export async function DELETE(req) {
       const userEmail = userDelete?.email;
       const userName = userDelete?.name;
       const mailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: userEmail,
         subject: "Press-Release Order",
         // text: `Dear + ${userName} + ,\n\nYour Account is Deleted now you cannot access our account`,
@@ -343,7 +343,7 @@ export async function DELETE(req) {
       await transporter?.sendMail(mailOptions);
       const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
       const adminMailOptions = {
-        from: "Orders@imcwire.com",
+        from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","), // Join the admin emails with commas
         subject: "User Account Deletion",
         html: `
