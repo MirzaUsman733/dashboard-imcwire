@@ -5,7 +5,15 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 const endpointSecret = process?.env?.STRIPE_WEBHOOK_SECRET;
-
+const transporter = nodemailer.createTransport({
+  host: "smtp.hostinger.com",
+  port: 465,
+  secure: true,
+  auth: {
+    user: "Orders@imcwire.com",
+    pass: "Sales@$$1aShahG!!boy,s",
+  },
+});
 export async function POST(req) {
   const rawBody = await req?.text();
   const stripeSignature = req?.headers?.get("stripe-signature");
@@ -149,15 +157,6 @@ export async function POST(req) {
       };
 
       // Send email
-      const transporter = nodemailer.createTransport({
-        host: "smtp.hostinger.com",
-        port: 465,
-        secure: true,
-        auth: {
-          user: "Orders@imcwire.com",
-          pass: "Sales@$$1aShahG!!boy,s",
-        },
-      });
       await transporter?.sendMail(mailOptions);
       await transporter?.sendMail(adminMailOptions);
     }
