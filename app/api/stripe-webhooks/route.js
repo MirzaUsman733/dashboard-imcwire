@@ -47,6 +47,9 @@ export async function POST(req) {
         where: { clientId: clientReferenceId },
         data: { status: "paid", transactionId: clientReferenceId },
       });
+      const formattedAmount = (event?.data?.object?.amount_total / 100).toFixed(
+        2
+      );
       const receiptEmail = event?.data?.object?.customer_email;
       const mailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
@@ -74,7 +77,7 @@ export async function POST(req) {
             <ul>
                 <li><strong>Plan Name:</strong> ${compaignData?.matchedPlanData?.planName}</li>
                 <li><strong>Number Of:</strong> You are buying the ${compaignData?.matchedPlanData?.numberOfPR} </li>
-                <li><strong>Total Amount Paid:</strong> $ ${event?.data?.object?.amount_total}</li>
+                <li><strong>Total Amount Paid:</strong> $ ${formattedAmount}</li>
             </ul>
             
             <p>Your decision to choose IMCWire as your press release distribution partner marks the beginning of an exciting journey. We are committed to providing you with the highest level of service and ensuring your news reaches your targeted audience through premier outlets like Yahoo Finance, Bloomberg, MarketWatch, and many more.</p>
@@ -124,7 +127,7 @@ export async function POST(req) {
             
             <h3>Payment Details:</h3>
             <ul>
-                <li><strong>Amount Paid:</strong> ${event?.data?.object?.amount_total}</li>
+            <li><strong>Total Amount Paid:</strong> $ ${formattedAmount}</li>
                 <li><strong>Transaction ID:</strong> ${clientReferenceId}</li>
             </ul>
             

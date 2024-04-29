@@ -142,7 +142,9 @@ export default function Page() {
       const response = await fetch("/api/stripe-webhooks");
       if (response.ok) {
         const plansData = await response.json();
-        setPlans(plansData);
+        const filteredData = plansData?.filter((transaction) => transaction?.eventData?.object?.customer_email === session?.user?.email);
+        setPlans(filteredData);
+        setLoading(false)
       } else {
         console.error("Failed to fetch plans");
       }
@@ -151,54 +153,54 @@ export default function Page() {
     }
   };
 
-  const fetchCompaignData = async () => {
-    try {
-      const response = await fetch("/api/compaignData");
-      if (response.ok) {
-        const plansData = await response.json();
-        const filteredCompaignData = filterCompaignData(
-          plansData,
-          session?.user?.email
-        );
-        setCompaignData(filteredCompaignData);
-        setLoading(false); // Set loading to false after fetching data
-      } else {
-        console.error("Failed to fetch campaign data");
-      }
-    } catch (error) {
-      console.error("Error fetching campaign data:", error);
-    }
-  };
+  // const fetchCompaignData = async () => {
+  //   try {
+  //     const response = await fetch("/api/compaignData");
+  //     if (response.ok) {
+  //       const plansData = await response.json();
+  //       const filteredCompaignData = filterCompaignData(
+  //         plansData,
+  //         session?.user?.email
+  //       );
+  //       setCompaignData(filteredCompaignData);  
+  //       setLoading(false); // Set loading to false after fetching data
+  //     } else {
+  //       console.error("Failed to fetch campaign data");
+  //     }
+  //   } catch (error) {
+  //     console.error("Error fetching campaign data:", error);
+  //   }
+  // };
 
-  const filterCompaignData = (data, email) => {
-    return data?.filter(
-      (plan) => plan.status === "paid" && plan.formDataSignUp.email === email
-    );
-  };
+  // const filterCompaignData = (data, email) => {
+  //   return data?.filter(
+  //     (plan) => plan.status === "paid" && plan.formDataSignUp.email === email
+  //   );
+  // };
 
-  const filterWebhookData = (data, ids) => {
-    return data.filter((item) => ids.includes(item.eventData.id));
-  };
+  // const filterWebhookData = (data, ids) => {
+  //   return data.filter((item) => ids.includes(item.eventData.id));
+  // };
 
-  React.useEffect(() => {
-    if (session) {
-      fetchCompaignData();
-    }
-  }, [session]);
+  // React.useEffect(() => {
+  //   if (session) {
+  //     fetchCompaignData();
+  //   }
+  // }, [session]);
 
   React.useEffect(() => {
     fetchPlans();
-  }, []);
+  }, [session]);
 
-  const compaignTransactionIds = compaignData.flatMap(
-    (item) => item.transactionIds
-  );
+  // const compaignTransactionIds = compaignData.flatMap(
+  //   (item) => item.transactionIds
+  // );
 
-  const filteredWebhookData = filterWebhookData(plans, compaignTransactionIds);
-console.log(filteredWebhookData)
+  // const filteredWebhookData = filterWebhookData(plans, compaignTransactionIds);
+// console.log(filteredWebhookData)
   const emptyRows =
     rowsPerPage -
-    Math.min(rowsPerPage, filteredWebhookData.length - page * rowsPerPage);
+    Math.min(rowsPerPage, plans.length - page * rowsPerPage);
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -214,13 +216,12 @@ console.log(filteredWebhookData)
   if (
     session &&
     sessionStatus === "authenticated" &&
-    filteredWebhookData &&
     plans
   ) {
     return (
       <Container>
         <TawkTo/>
-        {filteredWebhookData.length > 0 ? (
+        {plans.length > 0 ? (
           <>
         <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
           <div className="flex justify-center gap-5">
@@ -251,10 +252,10 @@ console.log(filteredWebhookData)
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? filteredWebhookData
+                ? plans
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
                     .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
-                : filteredWebhookData.sort((a, b) => b.id - a.id)
+                : plans.sort((a, b) => b.id - a.id)
               ) // Sort all data by descending order of row.id
                 .map((row) => (
                   <StyledTableRow key={row.id}>
@@ -287,7 +288,7 @@ console.log(filteredWebhookData)
                 <TablePagination
                   rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
                   colSpan={9}
-                  count={filteredWebhookData.length}
+                  count={plans.length}
                   rowsPerPage={rowsPerPage}
                   page={page}
                   SelectProps={{
