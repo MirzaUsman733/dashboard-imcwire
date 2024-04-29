@@ -192,6 +192,7 @@ const Page = ({ params }) => {
       </div>
     );
   }
+
   if (session && sessionStatus === "authenticated" && detail) {
   return (
     <Container>

@@ -5,7 +5,7 @@ import { NextResponse } from "next/server";
 
 const prisma = new PrismaClient();
 const endpointSecret = process?.env?.STRIPE_WEBHOOK_SECRET;
-const transporter = nodemailer.createTransport({
+const transporter = nodemailer?.createTransport({
   host: "smtp.hostinger.com",
   port: 465,
   secure: true,
@@ -106,9 +106,10 @@ export async function POST(req) {
         </body>
         </html>`,
       };
+      const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; 
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
-        to: "admin@imcwire.com",
+        to: adminEmails.join(","),
         subject: `New Payment Received - ${compaignData?.formDataSignUp?.name} Subscription Activation`,
         html: `<!DOCTYPE html>
         <html lang="en">

@@ -322,7 +322,7 @@ const Page = ({ params }) => {
                   ) : (
                     ""
                   )}
-                  {row?.storeData?.action === "improgress" ? (
+                  {row?.storeData?.action === "inprogress" ? (
                     <TableCell style={{ width: 160 }}>
                       <span className="bg-yellow-600 px-2 py-1 rounded-lg text-white">
                         {row?.storeData?.action}

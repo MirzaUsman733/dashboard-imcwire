@@ -30,10 +30,10 @@ export async function POST(req) {
         );
         pdfUrl = await saveFile(fileBuffer, file, fileUploadDir);
       }
-      
+
       const planDoc = await prisma?.publication?.create({ data, pdfUrl });
-      const userEmail = planDoc?.storeData?.formDataSignUp?.email; 
-      const userName = planDoc?.storeData?.formDataSignUp?.name; 
+      const userEmail = planDoc?.storeData?.formDataSignUp?.email;
+      const userName = planDoc?.storeData?.formDataSignUp?.name;
       const userMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
         to: userEmail,
@@ -271,7 +271,6 @@ export async function PUT(req) {
 </html>
         .`;
         break;
-
       default:
         emailSubject = "Updated Press-Release Order";
         emailText = `Dear ${userName},\n\nYour order is updated now with action: ${updatedData?.storeData?.action}.`;
@@ -288,7 +287,7 @@ export async function PUT(req) {
     const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
     const adminMailOptions = {
       from: "IMCWire <Orders@imcwire.com>",
-      to: adminEmails.join(","), // Join the admin emails with commas
+      to: adminEmails.join(","), 
       subject: "Press Release Order Update Alert",
       html: `
       <!DOCTYPE html>
@@ -301,8 +300,8 @@ export async function PUT(req) {
           /* Add your CSS styles here */
         </style>
       </head>
-      <body>
-        <div>
+      <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+        <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
           <h2>Press Release Order Update Alert</h2>
           <p>An update has been made to a press release order:</p>
           <ul>

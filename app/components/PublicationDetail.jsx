@@ -10,7 +10,7 @@ import { CircularProgress } from "@mui/material";
 const PublicationDetail = ({ storeData, formData }) => {
   const [file, setFile] = useState(null);
   const [focusedField, setFocusedField] = useState("");
-  const [loading, setLoading] = useState(false)
+  const [loading, setLoading] = useState(false);
   const [keywords, setKeywords] = useState([]);
   const [targetWebsite, setTargetWebsite] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("");
@@ -26,7 +26,7 @@ const PublicationDetail = ({ storeData, formData }) => {
           throw new Error("Failed to fetch companies");
         }
         const data = await response.json();
-        console.log(data)
+        console.log(data);
         if (session) {
           const filteredCompanies = data.filter(
             (company) => company?.user?.user?.id === session?.user?.id
@@ -68,6 +68,11 @@ const PublicationDetail = ({ storeData, formData }) => {
         event.target.value = "";
       }
     }
+  };
+  const handleRemoveKeyword = (indexToRemove) => {
+    setKeywords((prevKeywords) =>
+      prevKeywords.filter((_, index) => index !== indexToRemove)
+    );
   };
 
   const handleTargetWebsiteChange = (event) => {
@@ -113,11 +118,9 @@ const PublicationDetail = ({ storeData, formData }) => {
   //   }
   // };
 
-
-
   const handleSubmit = async (event) => {
     event.preventDefault();
-    setLoading(true)
+    setLoading(true);
     if (storeData.selectedOption === "imcwirePr") {
       const formDataContract = {
         url: targetWebsite,
@@ -138,31 +141,30 @@ const PublicationDetail = ({ storeData, formData }) => {
           },
           body: JSON.stringify(combinedData),
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to submit publication");
         }
-        setLoading(false)
+        setLoading(false);
       } catch (error) {
         console.error("Error submitting publication:", error);
       } finally {
-
         setKeywords([]);
         setSelectedCompany("");
         setTargetWebsite("");
-        router.push("/press-dashboard/pr-balance")
+        router.push("/press-dashboard/pr-balance");
       }
     } else {
       // If the option is for file upload, upload the file to the database
       const formDataFileUpload = new FormData();
       formDataFileUpload.append("file", file);
-  
+
       try {
         const response = await fetch("/api/upload-file", {
           method: "POST",
           body: formDataFileUpload,
         });
-  
+
         if (!response.ok) {
           throw new Error("Failed to upload file");
         }
@@ -184,46 +186,46 @@ const PublicationDetail = ({ storeData, formData }) => {
   const handleFileSubmit = async (event) => {
     event.preventDefault();
     const formDataFileUpload = new FormData();
-    formDataFileUpload.append('file', file);
-  
+    formDataFileUpload.append("file", file);
+
     try {
-      const response = await fetch('/api/upload-file', {
-        method: 'POST',
+      const response = await fetch("/api/upload-file", {
+        method: "POST",
         body: formDataFileUpload,
       });
-  
+
       if (!response.ok) {
-        throw new Error('Failed to upload file');
+        throw new Error("Failed to upload file");
       }
     } catch (error) {
-      console.error('Error uploading file:', error);
+      console.error("Error uploading file:", error);
     } finally {
       setFile(null);
     }
   };
-  
+
   const renderForm = () => {
     if (storeData.selectedOption === "ownPr") {
       return (
         <div>
-        <h2 className="text-2xl font-bold my-4">Distribute Only</h2>
-        <p>
-          Ready to distribute your PR globally? Upload Your High-Quality
-          Journalist's writing PR in Document.
-        </p>
-        <label
-          htmlFor="file-upload"
-          className="custom-file-upload flex items-center justify-center bg-green-700 text-white rounded-md py-3 px-4 mt-4 cursor-pointer"
-        >
-          <FaUpload size={30} className="mr-2" />
-          <span>Upload Your PR in doc file</span>
-        </label>
-        <input type="file" id="file-upload" className="hidden" />
-      </div>
+          <h2 className="text-2xl font-bold my-4">Distribute Only</h2>
+          <p>
+            Ready to distribute your PR globally? Upload Your High-Quality
+            Journalist's writing PR in Document.
+          </p>
+          <label
+            htmlFor="file-upload"
+            className="custom-file-upload flex items-center justify-center bg-green-700 text-white rounded-md py-3 px-4 mt-4 cursor-pointer"
+          >
+            <FaUpload size={30} className="mr-2" />
+            <span>Upload Your PR in doc file</span>
+          </label>
+          <input type="file" id="file-upload" className="hidden" />
+        </div>
       );
     } else {
       return (
-          <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md border border-1">
+        <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md border border-1">
           <h2 className="text-2xl font-bold my-4 text-center">
             Submit Your Keyword and URL
           </h2>
@@ -248,6 +250,12 @@ const PublicationDetail = ({ storeData, formData }) => {
                       className="border border-gray-400 p-1 px-2 bg-gray-300 rounded-2xl"
                     >
                       {keyword}
+                      <button
+                        onClick={() => handleRemoveKeyword(index)}
+                        className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
+                      >
+                        &times; {/* Close icon */}
+                      </button>
                     </div>
                   ))}
                 </div>
@@ -296,18 +304,21 @@ const PublicationDetail = ({ storeData, formData }) => {
                 </div>
               </div>
               <div className="flex justify-center mx-auto text-center w-1/2 px-3 md:py-2 lg:py-4 rounded mt-5">
-                 {loading ? (
-            <button className="px-10 uppercase py-3 mt-4" disabled={loading}>
-              {loading ? <CircularProgress size={24} /> : ""}
-            </button>
-          ) : (
-            <button
-              className="btn-grad px-7 uppercase py-3 mt-4"
-              onClick={handleSubmit}
-            >
-              Submit data
-            </button>
-          )}
+                {loading ? (
+                  <button
+                    className="px-10 uppercase py-3 mt-4"
+                    disabled={loading}
+                  >
+                    {loading ? <CircularProgress size={24} /> : ""}
+                  </button>
+                ) : (
+                  <button
+                    className="btn-grad px-7 uppercase py-3 mt-4"
+                    onClick={handleSubmit}
+                  >
+                    Submit data
+                  </button>
+                )}
               </div>
               {selectedCompany && (
                 <div>
@@ -326,9 +337,7 @@ const PublicationDetail = ({ storeData, formData }) => {
     }
   };
 
-  return( 
-  <div>{storeData?.selectedOption && renderForm()}</div>
-)
+  return <div>{storeData?.selectedOption && renderForm()}</div>;
 };
 
 export default PublicationDetail;
