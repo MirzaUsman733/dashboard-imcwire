@@ -92,21 +92,19 @@ export const DistributionProvider = ({ children }) => {
 
   const calculateTotalPrice = () => {
     let total = selectedPrice || 0;
+  total += calculateSubtotal(selectedCategories);
+  total += calculateSubtotal(selectedCountries);
   
-    total += calculateSubtotal(selectedCategories);
-    total += calculateSubtotal(selectedCountries);
-  
-    selectedCountryTranslations.forEach((country) => {
-      total += country.translationPrice || 0;
-    });
-    total += cost * matchedPlanData?.numberOfPR;
+  selectedCountryTranslations.forEach((country) => {
+    total += country.translationPrice || 0;
+  });
+  total += cost
   
     // Apply coupon discount if a coupon is applied
     if (coupon) {
       const discountAmount = (total * coupon.discountPercentage) / 100;
       total -= discountAmount;
     }
-  
     return total;
   };
   
@@ -140,7 +138,7 @@ export const DistributionProvider = ({ children }) => {
     storeMatchedPlanData,
     selectedOption,
     setSelectedOption,
-    applyCoupon, // Expose applyCoupon function
+    applyCoupon, 
     coupon, 
     categorySubtotal: calculateSubtotal(selectedCategories),
     countrySubtotal: calculateSubtotal(selectedCountries),

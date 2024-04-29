@@ -162,9 +162,10 @@ export default function Page() {
     e.preventDefault();
     setLoading(true);
     const selectedDetail = detail?.find(
-      (data) => data.formData.email === 
-      // selectedEmail
-      newPlan.clientEmail
+      (data) =>
+        data.formData.email ===
+        // selectedEmail
+        newPlan.clientEmail
     );
     if (!selectedDetail) {
       console.error("No detail found for the selected email");
@@ -219,6 +220,18 @@ export default function Page() {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
+  const removeFile = (fileType) => {
+    switch (fileType) {
+      case "pdf":
+        setUploadedPDF(null);
+        break;
+      case "excel":
+        setUploadedExcel(null);
+        break;
+      default:
+        break;
+    }
+  };
   if (
     session &&
     sessionStatus === "authenticated" &&
@@ -229,7 +242,7 @@ export default function Page() {
         <h1 className="text-3xl font-bold text-center mb-8">Add Reports</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
-        <FormControl fullWidth>
+          <FormControl fullWidth>
             <InputLabel id="client-email-label">Client Email</InputLabel>
             <Select
               labelId="client-email-label"
@@ -265,33 +278,37 @@ export default function Page() {
             </Select>
           </FormControl>
 
-            {selectedEmail &&
-          <FormControl fullWidth>
-            <InputLabel id="customer-email-label">Client Email</InputLabel>
-            <Select
-              labelId="customer-email-label"
-              id="customer-email"
-              onFocus={() => handleFocus("customer-email")}
-              onBlur={handleBlur}
-              className={focusedField === "customer-email" ? "focused" : ""}
-              value={newPlan.clientEmail || ""}
-              onChange={(e) =>
-                setNewPlan({ ...newPlan, clientEmail: e.target.value })
-              }
-              label="Client Email"
-            >
-              <MenuItem value="" disabled>
-                Select Client Email
-              </MenuItem>
-              {detail?.filter((data) => data.storeData.formDataSignUp.email === selectedEmail)
-              .map((data) => (
-                <MenuItem key={data?.id} value={data?.formData?.email} >
-                  {data?.formData?.email}
+          {selectedEmail && (
+            <FormControl fullWidth>
+              <InputLabel id="customer-email-label">Client Email</InputLabel>
+              <Select
+                labelId="customer-email-label"
+                id="customer-email"
+                onFocus={() => handleFocus("customer-email")}
+                onBlur={handleBlur}
+                className={focusedField === "customer-email" ? "focused" : ""}
+                value={newPlan.clientEmail || ""}
+                onChange={(e) =>
+                  setNewPlan({ ...newPlan, clientEmail: e.target.value })
+                }
+                label="Client Email"
+              >
+                <MenuItem value="" disabled>
+                  Select Client Email
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-  }
+                {detail
+                  ?.filter(
+                    (data) =>
+                      data.storeData.formDataSignUp.email === selectedEmail
+                  )
+                  .map((data) => (
+                    <MenuItem key={data?.id} value={data?.formData?.email}>
+                      {data?.formData?.email}
+                    </MenuItem>
+                  ))}
+              </Select>
+            </FormControl>
+          )}
           <TextField
             label="Press Release Title"
             value={newPlan.pressReleaseTitle || ""}
@@ -361,7 +378,6 @@ export default function Page() {
               ))}
             </Select>
           </FormControl> */}
-         
 
           {/* <TextField
           label="Client Email"
@@ -464,7 +480,12 @@ export default function Page() {
             >
               Upload PDF
             </Button>
-            <span>{uploadedPDF && uploadedPDF.name}</span>
+            {uploadedPDF && (
+              <span className="flex items-center">
+                {uploadedPDF.name}{" "}
+                <button className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none" onClick={() => removeFile("pdf")}>&times;</button>
+              </span>
+            )}
           </label>
           <input
             type="file"
@@ -482,7 +503,12 @@ export default function Page() {
             >
               Upload Excel
             </Button>
-            <span>{uploadedExcel && uploadedExcel.name}</span>
+            {uploadedExcel && (
+              <span className="flex items-center">
+                {uploadedExcel.name}{" "}
+                <button className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none" onClick={() => removeFile("excel")}>&times;</button>
+              </span>
+            )}
           </label>
         </div>
 

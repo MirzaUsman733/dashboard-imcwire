@@ -71,6 +71,7 @@ const Page = ({ params }) => {
   };
   
   const matchedPlan = plans?.find((plan) => plan?.id == id);
+  console.log(matchedPlan)
   useEffect(() => {
     fetchPlans();
   }, []);
