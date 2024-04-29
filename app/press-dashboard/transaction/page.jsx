@@ -142,9 +142,14 @@ export default function Page() {
       const response = await fetch("/api/stripe-webhooks");
       if (response.ok) {
         const plansData = await response.json();
-        const filteredData = plansData?.filter((transaction) => transaction?.eventData?.object?.customer_email === session?.user?.email);
+        const filteredData = plansData?.filter(
+          (transaction) =>
+            transaction?.eventData?.object?.customer_email ===
+            session?.user?.email
+        );
+        setRowsPerPage(filteredData.length)
         setPlans(filteredData);
-        setLoading(false)
+        setLoading(false);
       } else {
         console.error("Failed to fetch plans");
       }
@@ -162,7 +167,7 @@ export default function Page() {
   //         plansData,
   //         session?.user?.email
   //       );
-  //       setCompaignData(filteredCompaignData);  
+  //       setCompaignData(filteredCompaignData);
   //       setLoading(false); // Set loading to false after fetching data
   //     } else {
   //       console.error("Failed to fetch campaign data");
@@ -197,10 +202,9 @@ export default function Page() {
   // );
 
   // const filteredWebhookData = filterWebhookData(plans, compaignTransactionIds);
-// console.log(filteredWebhookData)
+  // console.log(filteredWebhookData)
   const emptyRows =
-    rowsPerPage -
-    Math.min(rowsPerPage, plans.length - page * rowsPerPage);
+    rowsPerPage - Math.min(rowsPerPage, plans.length - page * rowsPerPage);
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -213,100 +217,110 @@ export default function Page() {
       </div>
     );
   }
-  if (
-    session &&
-    sessionStatus === "authenticated" &&
-    plans
-  ) {
+  if (session && sessionStatus === "authenticated" && plans) {
     return (
       <Container>
-        <TawkTo/>
+        <TawkTo />
         {plans.length > 0 ? (
           <>
-        <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
-          <div className="flex justify-center gap-5">
-            <GrTransaction /> <span> Transaction History </span>
-          </div>
-        </h1>
-        <TableContainer component={Paper} className="shadow-lg">
-          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-            <TableHead>
-              <TableRow>
-              <StyledTableCell className="font-bold">
-                  #
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Customer Name
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Customer Email
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Transaction Id
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Paid Amount
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">Status</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              {(rowsPerPage > 0
-                ? plans
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
-                : plans.sort((a, b) => b.id - a.id)
-              ) // Sort all data by descending order of row.id
-                .map((row) => (
-                  <StyledTableRow key={row.id}>
-                    <TableCell style={{ width: 160 }}>{row.id}</TableCell>
-                    <TableCell style={{ width: 160 }}>
-                      {row?.eventData?.object?.customer_details?.name}
-                    </TableCell>
-                    <TableCell style={{ width: 160 }}>
-                      {row?.eventData?.object?.customer_details?.email}
-                    </TableCell>
-                    <TableCell style={{ width: 160 }}>
-                    {row.eventData.object.client_reference_id}
-                    </TableCell>
-                    <TableCell style={{ width: 160 }}>
-                     ${row?.eventData?.object?.amount_total}
-                    </TableCell>
-                    <TableCell style={{ width: 160 }}>
-                      {row?.eventData?.object?.payment_status}
-                    </TableCell>
-                  </StyledTableRow>
-                ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={6} />
-                </TableRow>
-              )}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={9}
-                  count={plans.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      "aria-label": "rows per page",
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-        </>
-      ) : (
+            <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
+              <div className="flex justify-center gap-5">
+                <GrTransaction /> <span> Transaction History </span>
+              </div>
+            </h1>
+            <TableContainer component={Paper} className="shadow-lg">
+              <Table
+                sx={{ minWidth: 500 }}
+                aria-label="custom pagination table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell className="font-bold">#</StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Customer Name
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Customer Email
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Transaction Id
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Paid Amount
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Status
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {(rowsPerPage > 0
+                    ? plans
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
+                    : plans.sort((a, b) => b.id - a.id)
+                  ) // Sort all data by descending order of row.id
+                    .map((row) => (
+                      <StyledTableRow key={row.id}>
+                        <TableCell style={{ width: 160 }}>{row.id}</TableCell>
+                        <TableCell style={{ width: 160 }}>
+                          {row?.eventData?.object?.customer_details?.name}
+                        </TableCell>
+                        <TableCell style={{ width: 160 }}>
+                          {row?.eventData?.object?.customer_details?.email}
+                        </TableCell>
+                        <TableCell style={{ width: 160 }}>
+                          {row.eventData.object.client_reference_id}
+                        </TableCell>
+                        <TableCell style={{ width: 160 }}>
+                          $
+                          {(
+                            (row?.eventData?.object?.amount_total || 0) / 100
+                          ).toFixed(2)}
+                        </TableCell>
+                        <TableCell style={{ width: 160 }}>
+                          {row?.eventData?.object?.payment_status}
+                        </TableCell>
+                      </StyledTableRow>
+                    ))}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={6} />
+                    </TableRow>
+                  )}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[
+                        5,
+                        10,
+                        25,
+                        { label: "All", value: -1 },
+                      ]}
+                      colSpan={9}
+                      count={plans.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      SelectProps={{
+                        inputProps: {
+                          "aria-label": "rows per page",
+                        },
+                        native: true,
+                      }}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      ActionsComponent={TablePaginationActions}
+                    />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          </>
+        ) : (
           <div className="h-[100vh] flex justify-center items-center w-full">
             <p>No transactions available</p>
           </div>

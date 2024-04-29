@@ -1,11 +1,14 @@
 import { useSession } from "next-auth/react";
 import React, { useCallback, useEffect, useState } from "react";
+import { InfinitySpin } from "react-loader-spinner";
 
 function AdminPanel() {
   const { data: session, status: sessionStatus } = useSession();
   const [totalRevenue, setTotalRevenue] = useState(0);
-  const [compaignData, setCompaignData] = useState(null)
-  const [detail, setDetail] = useState(null)
+  const [compaignData, setCompaignData] = useState(null);
+  const [detail, setDetail] = useState(null);
+  const [loading, setLoading] = useState(true);
+  const [apiCallsCompleted, setApiCallsCompleted] = useState(0);
   const fetchPlans = async () => {
     try {
       const response = await fetch("/api/compaignData");
@@ -13,7 +16,7 @@ function AdminPanel() {
         const plansData = await response?.json();
         const paidPlans = plansData?.filter((plan) => plan?.status === "paid");
         setCompaignData(paidPlans);
-        // setLoading(false);
+        setApiCallsCompleted((prevCount) => prevCount + 1);
       } else {
         console.error("Failed to fetch plans");
       }
@@ -21,11 +24,11 @@ function AdminPanel() {
       console.error("Error fetching plans:", error);
     }
   };
-  useEffect(() => {
-    if (session) {
-      fetchPlans();
-    }
-  }, [session]);
+  // useEffect(() => {
+  //   if (session) {
+  //     fetchPlans();
+  //   }
+  // }, [session]);
   const fetchDetail = useCallback(async () => {
     try {
       const response = await fetch("/api/submit-detail");
@@ -35,6 +38,7 @@ function AdminPanel() {
           (data) => data.storeData.action != "completed"
         );
         setDetail(clientidData);
+        setApiCallsCompleted((prevCount) => prevCount + 1);
       } else {
         console.error("Failed to fetch detail");
       }
@@ -44,17 +48,38 @@ function AdminPanel() {
   }, []);
 
   useEffect(() => {
-    fetchDetail();
-  }, [fetchDetail]);
+    if (session) {
+      fetchPlans();
+      fetchDetail();
+    }
+  }, [session]);
   useEffect(() => {
     if (compaignData) {
-      const total = compaignData.reduce((acc, campaign) => acc + campaign.totalPrice, 0);
+      const total = compaignData.reduce(
+        (acc, campaign) => acc + campaign.totalPrice,
+        0
+      );
       setTotalRevenue(total);
+      setApiCallsCompleted((prevCount) => prevCount + 1);
     }
   }, [compaignData]);
-  // console.log(compaignData)
-  console.log(totalRevenue)
-  console.log(detail)
+  useEffect(() => {
+    if (apiCallsCompleted === 2) {
+      setLoading(false);
+    }
+  }, [apiCallsCompleted]);
+  if (loading) {
+    return (
+      <div className="h-[80vh] flex justify-center items-center w-full">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#7E22CE"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
   return (
     <div className="grid gap-4 md:grid-cols-2 lg:grid-cols-4">
       <div

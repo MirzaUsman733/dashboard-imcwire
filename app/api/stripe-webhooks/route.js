@@ -52,7 +52,7 @@ export async function POST(req) {
       );
       const receiptEmail = event?.data?.object?.customer_email;
       const mailOptions = {
-        from: "IMCWire <Orders@imcwire.com>",
+        from: "IMCWire <Orders@imcwire  .com>",
         to: receiptEmail,
         subject:
           "Your Payment Has Been Successfully Processed - Welcome to IMCWire!",

@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useEffect, useState } from "react";
 import PropTypes from "prop-types";
 import { useTheme } from "@mui/material/styles";
@@ -123,12 +123,6 @@ const fetchDataFromAPI = async () => {
   try {
     const response = await fetch("/api/add-company");
     const data = await response.json();
-    // console.log(data)
-    // Filter data based on session email
-    // console.log("sesssion email",session.user.email)
-    // console.log(session)
-    // const filteredData = data.filter((plan) => plan?.user?.user?.email === session?.user?.email);
-    console.log(data)
     return data;
   } catch (error) {
     console.error("Error fetching data:", error);
@@ -150,19 +144,16 @@ export default function CompaniesTable() {
       router.replace("/login");
     }
   }, [sessionStatus, router]);
-console.log(session)
   useEffect(() => {
-    if(session){
-    fetchDataFromAPI().then((data) => {
-      // setRows(data);
-      console.log("Data Call in the api",data)
-      console.log(session)
-      console.log("Session User",session?.user?.email)
-      const filteredData = data.filter((company) => company?.user?.user?.email === session?.user?.email);
-      setRows(filteredData)
-      setLoading(false);
-    });
-  }
+    if (session) {
+      fetchDataFromAPI().then((data) => {
+        const filteredData = data.filter(
+          (company) => company?.user?.user?.email === session?.user?.email
+        );
+        setRows(filteredData);
+        setLoading(false);
+      });
+    }
   }, [session]);
 
   const handleDeleteClick = (id, index) => {
@@ -210,14 +201,13 @@ console.log(session)
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
-console.log(rows)
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
   if (loading) {
     return (
       <div className="h-[100vh] flex justify-center items-center w-full">
-      <TawkTo/>
+        <TawkTo />
 
         <InfinitySpin
           visible={true}
@@ -232,37 +222,44 @@ console.log(rows)
       <Container>
         {rows.length > 0 ? (
           <>
-        <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
-          <div className="flex justify-center gap-5">
-            <FaBuilding /> <span> View Companies </span>
-          </div>
-        </h1>
-        <TableContainer
-          component={Paper}
-          className="shadow-lg"
-        >
-          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-            <TableHead>
-              <TableRow>
-                <StyledTableCell className="font-bold">#</StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Company Name
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">Name</StyledTableCell>
-                <StyledTableCell className="font-bold">Country</StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Address1 / Address2
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">State</StyledTableCell>
-                <StyledTableCell className="font-bold">
-                  Email / Phone
-                </StyledTableCell>
-                <StyledTableCell className="font-bold">Action</StyledTableCell>
-              </TableRow>
-            </TableHead>
-            <TableBody>
-              
-              {/* {(rowsPerPage > 0
+            <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
+              <div className="flex justify-center gap-5">
+                <FaBuilding /> <span> View Companies </span>
+              </div>
+            </h1>
+            <TableContainer component={Paper} className="shadow-lg">
+              <Table
+                sx={{ minWidth: 500 }}
+                aria-label="custom pagination table"
+              >
+                <TableHead>
+                  <TableRow>
+                    <StyledTableCell className="font-bold">#</StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Company Name
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Name
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Country
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Address1 / Address2
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      State
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Email / Phone
+                    </StyledTableCell>
+                    <StyledTableCell className="font-bold">
+                      Action
+                    </StyledTableCell>
+                  </TableRow>
+                </TableHead>
+                <TableBody>
+                  {/* {(rowsPerPage > 0
                 ? rows?.slice(
                     page * rowsPerPage,
                     page * rowsPerPage + rowsPerPage
@@ -270,101 +267,112 @@ console.log(rows)
                 : rows
                 
               ).map((row, index) => ( */}
-               {(rowsPerPage > 0
-                ? rows
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
-                : rows.sort((a, b) => b.id - a.id)
-              ) // Sort all data by descending order of row.id
-                .map((row, index) => (
-                <StyledTableRow key={row.id}>
-                  <TableCell>{row.id}</TableCell>
-                  <TableCell>{row.companyName}</TableCell>
-                  <TableCell>{row.contactName}</TableCell>
-                  <TableCell>{row.country}</TableCell>
-                  <TableCell>
-                    <div> {row.address1} </div>
-                    <div> {row.address2} </div>
-                  </TableCell>
-                  <TableCell>{row.state}</TableCell>
-                  <TableCell>
-                    <div> {row.email} </div> {row.phone}
-                  </TableCell>
-                  <TableCell>
-                    <IconButton
-                      aria-label="more"
-                      aria-controls={`actions-menu-${index}`}
-                      aria-haspopup="true"
-                      onClick={(event) => handleMenuOpen(event, index)}
-                    >
-                      <MoreVertIcon />
-                    </IconButton>
-                    <Menu
-                      id={`actions-menu-${index}`}
-                      anchorEl={anchorEl[index]}
-                      open={Boolean(anchorEl[index])}
-                      onClose={() => handleMenuClose(index)}
-                    >
-                      <MenuItem>
-                        <Link
-                          className="flex"
-                          href={`/press-dashboard/view-companies/${row.id}`}
-                        >
-                          <FaEdit
-                            title="Edit"
-                            size={20}
-                            className="text-blue-500"
-                            cursor="pointer"
-                          />
-                          &nbsp; <span className="text-blue-500">Edit </span>
-                        </Link>
-                      </MenuItem>
-                      <MenuItem>
-                        <MdDelete
-                          title="Delete"
-                          size={20}
-                          color="#C82333"
-                          className="cursor-pointer"
-                        />
-                        <DeleteButton
-                          label="Delete"
-                          onDelete={() => handleDeleteClick(row.id, index)}
-                        />
-                      </MenuItem>
-                    </Menu>
-                  </TableCell>
-                </StyledTableRow>
-              ))}
-              {emptyRows > 0 && (
-                <TableRow style={{ height: 53 * emptyRows }}>
-                  <TableCell colSpan={8} />
-                </TableRow>
-              )}
-            </TableBody>
-            <TableFooter>
-              <TableRow>
-                <TablePagination
-                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                  colSpan={8}
-                  count={rows.length}
-                  rowsPerPage={rowsPerPage}
-                  page={page}
-                  SelectProps={{
-                    inputProps: {
-                      "aria-label": "rows per page",
-                    },
-                    native: true,
-                  }}
-                  onPageChange={handleChangePage}
-                  onRowsPerPageChange={handleChangeRowsPerPage}
-                  ActionsComponent={TablePaginationActions}
-                />
-              </TableRow>
-            </TableFooter>
-          </Table>
-        </TableContainer>
-        </>
-      ) : (
+                  {(rowsPerPage > 0
+                    ? rows
+                        .slice(
+                          page * rowsPerPage,
+                          page * rowsPerPage + rowsPerPage
+                        )
+                        .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
+                    : rows.sort((a, b) => b.id - a.id)
+                  ) // Sort all data by descending order of row.id
+                    .map((row, index) => (
+                      <StyledTableRow key={row.id}>
+                        <TableCell>{row.id}</TableCell>
+                        <TableCell>{row.companyName}</TableCell>
+                        <TableCell>{row.contactName}</TableCell>
+                        <TableCell>{row.country}</TableCell>
+                        <TableCell>
+                          <div> {row.address1} </div>
+                          <div> {row.address2} </div>
+                        </TableCell>
+                        <TableCell>{row.state}</TableCell>
+                        <TableCell>
+                          <div> {row.email} </div> {row.phone}
+                        </TableCell>
+                        <TableCell>
+                          <IconButton
+                            aria-label="more"
+                            aria-controls={`actions-menu-${index}`}
+                            aria-haspopup="true"
+                            onClick={(event) => handleMenuOpen(event, index)}
+                          >
+                            <MoreVertIcon />
+                          </IconButton>
+                          <Menu
+                            id={`actions-menu-${index}`}
+                            anchorEl={anchorEl[index]}
+                            open={Boolean(anchorEl[index])}
+                            onClose={() => handleMenuClose(index)}
+                          >
+                            <MenuItem>
+                              <Link
+                                className="flex"
+                                href={`/press-dashboard/view-companies/${row.id}`}
+                              >
+                                <FaEdit
+                                  title="Edit"
+                                  size={20}
+                                  className="text-blue-500"
+                                  cursor="pointer"
+                                />
+                                &nbsp;{" "}
+                                <span className="text-blue-500">Edit </span>
+                              </Link>
+                            </MenuItem>
+                            <MenuItem>
+                              <MdDelete
+                                title="Delete"
+                                size={20}
+                                color="#C82333"
+                                className="cursor-pointer"
+                              />
+                              <DeleteButton
+                                label="Delete"
+                                onDelete={() =>
+                                  handleDeleteClick(row.id, index)
+                                }
+                              />
+                            </MenuItem>
+                          </Menu>
+                        </TableCell>
+                      </StyledTableRow>
+                    ))}
+                  {emptyRows > 0 && (
+                    <TableRow style={{ height: 53 * emptyRows }}>
+                      <TableCell colSpan={8} />
+                    </TableRow>
+                  )}
+                </TableBody>
+                <TableFooter>
+                  <TableRow>
+                    <TablePagination
+                      rowsPerPageOptions={[
+                        5,
+                        10,
+                        25,
+                        { label: "All", value: -1 },
+                      ]}
+                      colSpan={8}
+                      count={rows.length}
+                      rowsPerPage={rowsPerPage}
+                      page={page}
+                      SelectProps={{
+                        inputProps: {
+                          "aria-label": "rows per page",
+                        },
+                        native: true,
+                      }}
+                      onPageChange={handleChangePage}
+                      onRowsPerPageChange={handleChangeRowsPerPage}
+                      ActionsComponent={TablePaginationActions}
+                    />
+                  </TableRow>
+                </TableFooter>
+              </Table>
+            </TableContainer>
+          </>
+        ) : (
           <div className="h-[100vh] flex justify-center items-center w-full">
             No companies added yet
           </div>

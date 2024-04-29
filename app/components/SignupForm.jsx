@@ -49,6 +49,7 @@ function SignupForm() {
   const [isAgency, setIsAgency] = useState(false);
   const [agencyName, setAgencyName] = useState("");
   const [viewPassword, setViewPassword] = useState(true);
+  const [isLoading, setIsLoading] = useState(false);
   const recaptchaRef = useRef(null);
 
   const handleClickShowPassword = () => {
@@ -250,7 +251,7 @@ function SignupForm() {
 
   const handleSubmit = async (event) => {
     event.preventDefault();
-
+    setIsLoading(true);
     const formDataSignUp = {
       name: name,
       email: email,
@@ -300,6 +301,7 @@ function SignupForm() {
           await handleCheckout();
           redirectToCheckout();
         }
+        setIsLoading(false);
         await handleCheckout();
         redirectToCheckout();
       } else {
@@ -358,46 +360,45 @@ function SignupForm() {
                 onBlur={handleBlur}
                 className={focusedField === "password" ? "focused" : ""}
               /> */}
-               <TextField
-                    label="Password"
-                    variant="outlined"
-                    type={viewPassword ? "password" : "text"}
-                    name="password"
-                    autoComplete="off"
-                    placeholder="Enter the Password"
-                    value={password}
-                    onChange={handlePasswordChange}
-                    fullWidth
-                    onFocus={() => handleFocus("password")}
-                    onBlur={handleBlur}
-                    InputProps={{
-                      placeholder:
-                        focusedField !== "password" ? "Password" : "",
-                      startAdornment: <FaLock className="text-gray-400 me-2" />,
-                      endAdornment: (
-                        <InputAdornment position="end">
-                          <IconButton
-                            aria-label="toggle password visibility"
-                            onClick={handleClickShowPassword}
-                            edge="end"
-                          >
-                            {viewPassword ? (
-                              <VisibilityOffIcon />
-                            ) : (
-                              <VisibilityIcon />
-                            )}
-                          </IconButton>
-                        </InputAdornment>
-                      ),
-                    }}
-                    className={focusedField === "password" ? "focused" : ""}
-                  />
-               <div className="w-full my-2">
+              <TextField
+                label="Password"
+                variant="outlined"
+                type={viewPassword ? "password" : "text"}
+                name="password"
+                autoComplete="off"
+                placeholder="Enter the Password"
+                value={password}
+                onChange={handlePasswordChange}
+                fullWidth
+                onFocus={() => handleFocus("password")}
+                onBlur={handleBlur}
+                InputProps={{
+                  placeholder: focusedField !== "password" ? "Password" : "",
+                  startAdornment: <FaLock className="text-gray-400 me-2" />,
+                  endAdornment: (
+                    <InputAdornment position="end">
+                      <IconButton
+                        aria-label="toggle password visibility"
+                        onClick={handleClickShowPassword}
+                        edge="end"
+                      >
+                        {viewPassword ? (
+                          <VisibilityOffIcon />
+                        ) : (
+                          <VisibilityIcon />
+                        )}
+                      </IconButton>
+                    </InputAdornment>
+                  ),
+                }}
+                className={focusedField === "password" ? "focused" : ""}
+              />
+              <div className="w-full my-2">
                 <ReCAPTCHA
                   ref={recaptchaRef}
                   sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
                 />
-                </div>
+              </div>
             </>
           )}
           <Dialog
@@ -405,21 +406,23 @@ function SignupForm() {
             onClose={handleCloseTermsPopup}
             BackdropComponent={Backdrop}
           >
-            <DialogTitle fontSize={30} className="text-center font-bold">Terms and Conditions</DialogTitle>
+            <DialogTitle fontSize={30} className="text-center font-bold">
+              Terms and Conditions
+            </DialogTitle>
             <DialogContent>
               <div>
                 <p>
                   <span className="font-bold">
                     Non-Refundable Payment Policy:
-                  </span> &nbsp;
-                   Please note that once a payment is made for our press release
-                  distribution services, it is not refundable. This policy is in
-                  place due to the immediate action we take to distribute your
-                  content across our extensive network, including premier sites
-                  like Yahoo Finance, Bloomberg, MarketWatch, and many others.
-                  We encourage you to review your selections carefully and reach
-                  out to our support team for any clarifications before making a
-                  payment.
+                  </span>{" "}
+                  &nbsp; Please note that once a payment is made for our press
+                  release distribution services, it is not refundable. This
+                  policy is in place due to the immediate action we take to
+                  distribute your content across our extensive network,
+                  including premier sites like Yahoo Finance, Bloomberg,
+                  MarketWatch, and many others. We encourage you to review your
+                  selections carefully and reach out to our support team for any
+                  clarifications before making a payment.
                 </p>
                 <p>
                   For more information about our services and policies, please
@@ -462,13 +465,21 @@ function SignupForm() {
               className={focusedField === "agencyName" ? "focused" : ""}
             />
           )}
-          <button
+          {/* <button
             type="button"
             disabled={!acceptedTerms || !isChecked}
             onClick={handleSubmit}
             className="btn-grad inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
           >
             Submit
+          </button> */}
+          <button
+            type="button"
+            disabled={!acceptedTerms || !isChecked || isLoading} // Disable button when loading
+            onClick={handleSubmit}
+            className="btn-grad inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
+          >
+            {isLoading ? "Loading..." : "Submit"}{" "}
           </button>
         </div>
       </form>

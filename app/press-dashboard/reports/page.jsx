@@ -145,12 +145,11 @@ export default function Page() {
       const response = await fetch("/api/reports");
       if (response.ok) {
         const plansData = await response.json();
-        console.log("All Data", plansData);
         const sessionEmail = session?.user?.email;
         const filterData = plansData?.filter(
           (plan) => plan?.storeData.formDataSignUp.email === sessionEmail
         );
-        console.log("Filter Data :", filterData)
+        setRowsPerPage(filterData.length)
         setPlans(filterData);
         // setPlans(filterData.sort((a, b) => b.id - a.id));
         setLoading(false);
