@@ -9,10 +9,12 @@ const prisma = new PrismaClient();
 
 export async function POST(req) {
   const formData = await req.formData();
+  console.log(formData);
   // const image = formData.get("image");
-  const pdf = formData.get("pdf");
-//   const excel = formData.get("excel");
-//   const uniqueId = formData.get("id");
+  const pdf = formData.get("file");
+  console.log(pdf);
+  //   const excel = formData.get("excel");
+  //   const uniqueId = formData.get("id");
   if (!pdf) {
     return NextResponse.json(
       { error: "No PDF file provided." },
@@ -21,7 +23,7 @@ export async function POST(req) {
   }
 
   let //  imageUrl,
-    pdfUrl
+    pdfUrl;
 
   if (pdf) {
     const fileBuffer = Buffer.from(await pdf.arrayBuffer());

@@ -220,33 +220,7 @@ const PublicationDetail = ({ storeData, formData }) => {
             <FaUpload size={30} className="mr-2" />
             <span>Upload Your PR in doc file</span>
           </label>
-          <div>
-            {/* Input for PDF file */}
-            <input
-              type="file"
-              id="pdf-upload"
-              onChange={handleFileChange}
-              style={{ display: "none" }}
-            />
-            <label
-              htmlFor="pdf-upload"
-              className="custom-file-upload flex items-center justify-center bg-green-700 text-white rounded-md py-3 px-4 mt-4 cursor-pointer"
-            >
-              <FaUpload size={30} className="mr-2" />
-              <span>Upload Your PDF</span>
-            </label>
-          </div>
-
-          {/* Button to submit PDF */}
-          <div className="flex justify-center mt-4">
-            <button
-              onClick={handleSubmitPDF}
-              disabled={!file || loading}
-              className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded"
-            >
-              {loading ? <CircularProgress size={24} /> : "Submit PDF"}
-            </button>
-          </div>
+          <input type="file" id="file-upload" className="hidden" />
         </div>
       );
     } else {
@@ -280,7 +254,7 @@ const PublicationDetail = ({ storeData, formData }) => {
                         onClick={() => handleRemoveKeyword(index)}
                         className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
                       >
-                        &times;
+                        &times; {/* Close icon */}
                       </button>
                     </div>
                   ))}
