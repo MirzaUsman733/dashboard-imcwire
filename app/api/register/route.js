@@ -286,20 +286,120 @@ export async function GET() {
   }
 }
 
+// export async function DELETE(req) {
+//   try {
+//     const url = new URL(req?.url);
+//     console.log("URL", url);
+//     const id = url?.searchParams?.get("_id");
+//     console.log("ID : ", id);
+//     const isAdmin = true;
+//     if (isAdmin) {
+//       // const userDelete = await prisma?.user?.findUnique({
+//       //   where: { id: parseInt(id) },
+//       // });
+//       await prisma.user?.delete({
+//         where: { id: id },
+//       });
+// const userEmail = userDelete?.email;
+// const userName = userDelete?.name;
+// const mailOptions = {
+//   from: "IMCWire <Orders@imcwire.com>",
+//   to: userEmail,
+//   subject: "Press-Release Order",
+//   // text: `Dear + ${userName} + ,\n\nYour Account is Deleted now you cannot access our account`,
+//   html: `<!DOCTYPE html>
+//   <html lang="en">
+//   <head>
+//   <meta charset="UTF-8">
+//   <meta name="viewport" content="width=device-width, initial-scale=1.0">
+//   <title>IMCWire Account Deletion Notification</title>
+//   </head>
+//   <body  style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+
+//   <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
+//       <p>Dear ${userName}, </p>
+
+//       <p>We regret to inform you that your IMCWire account has been permanently deleted due to repeated violations of our community guidelines, including posting unauthorized content despite multiple warnings. This measure is essential to uphold our Terms of Service and ensure a safe environment for all users.</p>
+
+//       <h2 style="color: #ff0000;">Important Points:</h2>
+//       <ul>
+//           <li>All personal data associated with your account has been removed from our systems in compliance with data protection laws.</li>
+//           <li>You no longer have access to our services or any previously available content.</li>
+//       </ul>
+
+//       <p>If you believe this decision was made in error, or if you wish to discuss this matter further, please contact us at <a mailto="support@imcwire.com">support@imcwire.com</a> within [time frame].</p>
+
+//       <p>We value the time you spent with us and regret any inconvenience this decision may cause. Thank you for your understanding as we strive to maintain a secure and respectful platform.</p>
+
+//       <div style="text-align: right; margin-top: 20px;">
+//           <p>Best regards,<br>The IMCWire Team</p>
+//       </div>
+//   </div>
+
+//   </body>
+//   </html>
+//   `,
+// };
+// await transporter?.sendMail(mailOptions);
+// const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+// const adminMailOptions = {
+//   from: "IMCWire <Orders@imcwire.com>",
+//   to: adminEmails.join(","), // Join the admin emails with commas
+//   subject: "User Account Deletion",
+//   html: `
+//     <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+//     <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+//       <h3>User Account Deletion</h3>
+//       <p>Dear Admins,</p>
+//       <p>The account of user ${userName} (${userEmail}) has been permanently deleted.</p>
+//       <p>Please review the deletion and take any necessary actions.</p>
+//       <p>Thank you.</p>
+//     </div>
+//     </body>
+//   `,
+// };
+// await transporter?.sendMail(adminMailOptions);
+//     }
+//     return NextResponse.json(true);
+//   } catch (error) {
+//     return NextResponse.json({
+//       status: 500,
+//       message: "Internal Server Error",
+//     });
+//   }
+// }
+
+// async function verifyRecaptcha(token) {
+//   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+//   const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`, {
+//     method: "POST",
+//     body: JSON.stringify({ token }),
+//   });
+//   const data = await response.json();
+//   return data.success;
+// }
 export async function DELETE(req) {
   try {
-    const url = new URL(req?.url);
-    console.log("URL", url);
-    const id = url?.searchParams?.get("_id");
-    console.log("ID : ", id);
+    const url = new URL(req.url);
+    const id = url.searchParams.get("_id");
     const isAdmin = true;
+
     if (isAdmin) {
+      // Check for related login logs
+      const loginLogs = await prisma.loginLog.findMany({
+        where: { userId: parseInt(id) },
+      });
+
+      // Delete related login logs
+      await prisma.loginLog.deleteMany({
+        where: { userId: parseInt(id) },
+      });
+
+      // Delete the user
       const userDelete = await prisma?.user?.findUnique({
         where: { id: parseInt(id) },
       });
-      await prisma.user?.delete({
-        where: { id: parseInt(id) },
-      });
+      await prisma.user.delete({ where: { id: parseInt(id) } });
       const userEmail = userDelete?.email;
       const userName = userDelete?.name;
       const mailOptions = {
@@ -315,27 +415,27 @@ export async function DELETE(req) {
         <title>IMCWire Account Deletion Notification</title>
         </head>
         <body  style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
-        
+      
         <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
             <p>Dear ${userName}, </p>
-        
+      
             <p>We regret to inform you that your IMCWire account has been permanently deleted due to repeated violations of our community guidelines, including posting unauthorized content despite multiple warnings. This measure is essential to uphold our Terms of Service and ensure a safe environment for all users.</p>
-        
+      
             <h2 style="color: #ff0000;">Important Points:</h2>
             <ul>
                 <li>All personal data associated with your account has been removed from our systems in compliance with data protection laws.</li>
                 <li>You no longer have access to our services or any previously available content.</li>
             </ul>
-        
+      
             <p>If you believe this decision was made in error, or if you wish to discuss this matter further, please contact us at <a mailto="support@imcwire.com">support@imcwire.com</a> within [time frame].</p>
-        
+      
             <p>We value the time you spent with us and regret any inconvenience this decision may cause. Thank you for your understanding as we strive to maintain a secure and respectful platform.</p>
-        
+      
             <div style="text-align: right; margin-top: 20px;">
                 <p>Best regards,<br>The IMCWire Team</p>
             </div>
         </div>
-        
+      
         </body>
         </html>
         `,
@@ -360,24 +460,13 @@ export async function DELETE(req) {
       };
       await transporter?.sendMail(adminMailOptions);
     }
-    return NextResponse.json(true);
+
+    return new NextResponse(null, { status: 200 });
   } catch (error) {
-    return NextResponse.json({
-      status: 500,
-      message: "Internal Server Error",
-    });
+    console.error("Error:", error);
+    return new NextResponse("Internal Server Error", { status: 500 });
   }
 }
-
-// async function verifyRecaptcha(token) {
-//   const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-//   const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`, {
-//     method: "POST",
-//     body: JSON.stringify({ token }),
-//   });
-//   const data = await response.json();
-//   return data.success;
-// }
 
 async function verifyRecaptcha(token) {
   const secretKey = process.env.RECAPTCHA_SECRET_KEY;

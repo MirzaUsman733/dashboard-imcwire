@@ -41,6 +41,8 @@ export default function Page() {
   const [uniqueId, setUniqueId] = useState("");
   const [detail, setDetail] = useState(null);
   const [selectedEmail, setSelectedEmail] = useState("");
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
+  const [snackbarMessage, setSnackbarMessage] = useState("");
   const [loading, setLoading] = useState(false);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -155,6 +157,8 @@ export default function Page() {
       return true;
     } catch (error) {
       console.log(error);
+      setSnackbarMessage("Failed to upload files. Please try again.");
+      setSnackbarOpen(true);
       return false;
     } finally {
       router.push("/press-dashboard-admin/reports");
