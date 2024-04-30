@@ -35,12 +35,12 @@ export async function POST(req) {
 
   if (pdf) {
     const fileBuffer = Buffer.from(await pdf?.arrayBuffer());
-    const fileUploadDir = join("public", `/uploads/pdf/${getDatePath()}`);
+    const fileUploadDir = join("public", `/uploads/pdf/`);
     pdfUrl = await saveFile(fileBuffer, pdf, fileUploadDir);
   }
   if (excel) {
     const excelBuffer = Buffer.from(await excel.arrayBuffer());
-    const excelUploadDir = join("public", `/uploads/excel/${getDatePath()}`);
+    const excelUploadDir = join("public", `/uploads/excel`);
     excelUrl = await saveFile(excelBuffer, excel, excelUploadDir);
   }
   try {

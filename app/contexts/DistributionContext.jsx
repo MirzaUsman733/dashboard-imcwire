@@ -98,7 +98,7 @@ export const DistributionProvider = ({ children }) => {
   selectedCountryTranslations.forEach((country) => {
     total += country.translationPrice || 0;
   });
-  total += cost
+  total += cost * matchedPlanData?.numberOfPR;
   
     // Apply coupon discount if a coupon is applied
     if (coupon) {
