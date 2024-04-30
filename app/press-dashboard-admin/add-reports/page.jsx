@@ -153,7 +153,7 @@ export default function Page() {
         throw new Error("Failed to upload image");
       }
     } catch (error) {
-      setError(error.message);
+      console.log(error);
     } finally {
       router.push("/press-dashboard-admin/reports");
     }
@@ -172,6 +172,7 @@ export default function Page() {
       return;
     }
     try {
+      handleSubmitFiles();
       const response = await fetch("/api/reports", {
         method: "POST",
         headers: {
@@ -185,7 +186,6 @@ export default function Page() {
       });
 
       if (response.ok) {
-        handleSubmitFiles();
         handleAddPlan();
         setUploadedImage(null);
         setUploadedExcel(null);
@@ -483,7 +483,12 @@ export default function Page() {
             {uploadedPDF && (
               <span className="flex items-center">
                 {uploadedPDF.name}{" "}
-                <button className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none" onClick={() => removeFile("pdf")}>&times;</button>
+                <button
+                  className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
+                  onClick={() => removeFile("pdf")}
+                >
+                  &times;
+                </button>
               </span>
             )}
           </label>
@@ -506,7 +511,12 @@ export default function Page() {
             {uploadedExcel && (
               <span className="flex items-center">
                 {uploadedExcel.name}{" "}
-                <button className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none" onClick={() => removeFile("excel")}>&times;</button>
+                <button
+                  className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
+                  onClick={() => removeFile("excel")}
+                >
+                  &times;
+                </button>
               </span>
             )}
           </label>

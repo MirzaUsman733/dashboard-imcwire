@@ -160,7 +160,8 @@ const Page = ({ params }) => {
         const clientidData = detailData.filter(
           (data) => data.storeData.clientId == plans.clientId
         );
-        setDetail(clientidData);
+        const sortedData = clientidData?.sort((a, b) => b.id - a.id);
+        setDetail(sortedData);
       } else {
         console.error("Failed to fetch detail");
       }

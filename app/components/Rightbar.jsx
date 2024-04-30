@@ -13,6 +13,10 @@ const Rightbar = () => {
     totalPrice,
     selectedPrice,
     applyCoupon,
+    cost,
+    matchedPlanData,
+    selectedOption
+    
   } = useDistributionContext();
   const [coupons, setCoupons] = useState([]);
   const [couponCode, setCouponCode] = useState("");
@@ -60,6 +64,7 @@ const Rightbar = () => {
     }
     setSnackbarOpen(false);
   };
+  const planPrice = cost * matchedPlanData?.numberOfPR;
   console.log(coupons);
   return (
     <div className="rightbar-container bg-white border border-1 shadow-lg rounded-lg p-6">
@@ -135,6 +140,25 @@ const Rightbar = () => {
                 <div>Subtotal:</div>
                 <div>${countrySubtotal}</div>
               </li>
+            </ul>
+          </div>
+        )}
+        {planPrice > 0 && (
+          <div className="mt-4">
+            <h2 className="text-lg font-semibold mb-2">
+              <TbWorldCheck size={25} className="inline mr-2 mb-1" /> Selected
+              PR Plan
+            </h2>
+            <ul>
+              {selectedOption && planPrice &&
+                <>
+                  <li className="flex justify-between">
+                    <div>Plan By {selectedOption} </div>
+                    <div>${cost} * {matchedPlanData?.numberOfPR} =  ${planPrice}</div>
+                  </li>
+                  <hr className="my-1" />
+                </>
+              }
             </ul>
           </div>
         )}

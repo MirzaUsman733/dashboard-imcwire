@@ -167,7 +167,8 @@ const Page = ({ params }) => {
         const clientidData = detailData?.filter(
           (data) => data?.storeData?.clientId == plans?.clientId
         );
-        setDetail(clientidData);
+        const sortedData = clientidData?.sort((a, b) => b.id - a.id);
+        setDetail(sortedData);
         setLoading(false);
       } else {
         console.error("Failed to fetch detail");
@@ -222,11 +223,12 @@ const Page = ({ params }) => {
               ? detail?.slice(
                   page * rowsPerPage,
                   page * rowsPerPage + rowsPerPage
+                  
                 )
               : detail
             )?.map((row, index) => (
               <StyledTableRow key={row?.id}>
-                <TableCell style={{ width: 100 }}>{index + 1}</TableCell>
+                <TableCell style={{ width: 100 }}>{row?.id}</TableCell>
                 <TableCell style={{ width: 160 }}>
                   {row?.formData?.name}
                 </TableCell>
