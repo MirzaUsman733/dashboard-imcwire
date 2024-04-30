@@ -152,8 +152,10 @@ export default function Page() {
       if (!response.ok) {
         throw new Error("Failed to upload image");
       }
+      return true;
     } catch (error) {
       console.log(error);
+      return false;
     } finally {
       router.push("/press-dashboard-admin/reports");
     }

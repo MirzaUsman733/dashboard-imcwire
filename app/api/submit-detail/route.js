@@ -46,8 +46,8 @@ export async function POST(req) {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>Press Release Submission Confirmation</title>
         </head>
-        <body>
-          <div>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+          <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
             <h2>Press Release Submission Confirmation</h2>
             <p>Dear ${userName},</p>
             <p>Thank you for choosing IMCWire for your press release needs. We're eager to help broadcast your message through our vast network of media outlets.</p>
@@ -90,8 +90,8 @@ export async function POST(req) {
           <meta name="viewport" content="width=device-width, initial-scale=1.0">
           <title>New Press Release Submission</title>
         </head>
-        <body>
-          <div>
+        <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+          <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
             <h2>New Press Release Submission</h2>
             <p>A new press release has been submitted and is awaiting approval:</p>
             <ul>
