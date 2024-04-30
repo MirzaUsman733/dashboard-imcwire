@@ -39,7 +39,7 @@ export const DistributionProvider = ({ children }) => {
     { name: "Relationships & Dating", price: 40 },
     { name: "Spirituality & Religion", price: 40 },
   ];
-
+// jkdsfk
   const countries = [
     { name: "global", price: 0 },
     { name: "Brazil ", price: 100 },
