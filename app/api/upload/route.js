@@ -32,16 +32,29 @@ export async function POST(req) {
   //   imageUrl = await saveFile(imageBuffer, image, imageUploadDir);
   // }
 
+  // if (pdf) {
+  //   const fileBuffer = Buffer.from(await pdf?.arrayBuffer());
+  //   const fileUploadDir = join("assets", `/uploads/pdf`);
+  //   pdfUrl = await saveFile(fileBuffer, pdf, fileUploadDir);
+  // }
+  // if (excel) {
+  //   const excelBuffer = Buffer.from(await excel.arrayBuffer());
+  //   const excelUploadDir = join("assets", `/uploads/excel`);
+  //   excelUrl = await saveFile(excelBuffer, excel, excelUploadDir);
+  // }
   if (pdf) {
-    const fileBuffer = Buffer.from(await pdf?.arrayBuffer());
-    const fileUploadDir = join("assets", `/uploads/pdf`);
-    pdfUrl = await saveFile(fileBuffer, pdf, fileUploadDir);
+    const pdfBuffer = Buffer.from(await pdf.arrayBuffer());
+    const pdfUploadDir =
+      "/var/www/www-root/data/www/dashboard.imcwire.com/assets/uploads/pdf/";
+    pdfUrl = await saveFile(pdfBuffer, pdf, pdfUploadDir);
   }
   if (excel) {
     const excelBuffer = Buffer.from(await excel.arrayBuffer());
-    const excelUploadDir = join("assets", `/uploads/excel`);
+    const excelUploadDir =
+      "/var/www/www-root/data/www/dashboard.imcwire.com/assets/uploads/excel/";
     excelUrl = await saveFile(excelBuffer, excel, excelUploadDir);
   }
+
   try {
     // Save to database
     if (prisma?.file && prisma?.file?.create) {

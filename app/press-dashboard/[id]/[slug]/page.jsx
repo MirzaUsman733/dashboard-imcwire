@@ -104,6 +104,7 @@ const Page = ({ params }) => {
                   publicationData={publicationData}
                   setPublicationData={setPublicationData}
                   formData={formData}
+                  setFormData = {setFormData}
                   detail={detail}
                   handleEditSubmit={handleEditSubmit}
                 />

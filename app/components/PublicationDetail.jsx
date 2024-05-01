@@ -7,7 +7,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { CircularProgress } from "@mui/material";
 
-const PublicationDetail = ({ storeData, formData }) => {
+const PublicationDetail = ({ storeData, formData, setFormData }) => {
   const [file, setFile] = useState(null);
   const [focusedField, setFocusedField] = useState("");
   const [loading, setLoading] = useState(false);
@@ -152,6 +152,14 @@ const PublicationDetail = ({ storeData, formData }) => {
         setKeywords([]);
         setSelectedCompany("");
         setTargetWebsite("");
+        setFormData({
+          companyName: "",
+          name: "",
+          email: "",
+          websiteUrl: "",
+          phone: "",
+          address: "",
+        });
         router.push("/press-dashboard/pr-balance");
       }
     } else {

@@ -12,6 +12,7 @@ const Page = ({ params }) => {
   );
   const { data: session, status: sessionStatus } = useSession();
   const [loading, setLoading] = useState(true);
+  const [loadingButton, setLoadingButton] = useState(false);
   const router = useRouter();
   useEffect(() => {
     if (session?.user?.role === "user") {
@@ -25,7 +26,6 @@ const Page = ({ params }) => {
       const response = await fetch("/api/submit-detail?_id=" + id);
       if (response.ok) {
         const detailData = await response.json();
-
         setDetail(detailData);
         setLoading(false);
       } else {
@@ -41,6 +41,7 @@ const Page = ({ params }) => {
   }, [fetchDetail]);
   console.log(detail);
   const handleStatusChange = async () => {
+    setLoadingButton(true)
     try {
       const updatedDetail = {
         ...detail,
@@ -55,6 +56,7 @@ const Page = ({ params }) => {
       });
       if (response.ok) {
         setDetail(updatedDetail);
+        setLoadingButton(false)
       } else {
         console.error("Failed to update status");
       }
@@ -62,15 +64,6 @@ const Page = ({ params }) => {
       console.error("Error updating status:", error);
     }
   };
-  if (!detail) {
-    return (
-      <div className="container-lg lg:max-w-7xl mx-auto mt-32">
-        <h1 className="text-3xl font-bold text-center">
-          Details are not available yet.
-        </h1>
-      </div>
-    );
-  }
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -394,7 +387,7 @@ const Page = ({ params }) => {
                 onClick={handleStatusChange}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none shadow-2xl focus:shadow-outline"
               >
-                Update Status
+              {loadingButton? "Loading..." : "Update Status" }  
               </button>
             </div>
           </div>

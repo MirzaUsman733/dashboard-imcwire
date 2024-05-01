@@ -153,7 +153,7 @@ const Rightbar = () => {
               {selectedOption && planPrice &&
                 <>
                   <li className="flex justify-between">
-                    <div>Plan By {selectedOption} </div>
+                    <div>PR Writing Charges </div>
                     <div>${cost} * {matchedPlanData?.numberOfPR} =  ${planPrice}</div>
                   </li>
                   <hr className="my-1" />
