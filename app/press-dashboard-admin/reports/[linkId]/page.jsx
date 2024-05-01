@@ -50,8 +50,8 @@ export default function Page({ params }) {
         const uniqueData = await response.json();
         const modifiedUniqueData = {
           ...uniqueData,
-          pdf: uniqueData?.pdf?.replace("public\\", "/"),
-          excel: uniqueData?.excel?.replace("public\\", "/"),
+          pdf: uniqueData?.pdf?.replace("assets\\", "/"),
+          excel: uniqueData?.excel?.replace("assets\\", "/"),
         };
         console.log(modifiedUniqueData)
         setFilterData(modifiedUniqueData);
