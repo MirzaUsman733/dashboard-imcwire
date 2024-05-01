@@ -53,10 +53,15 @@ const Page = () => {
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+    
     // Check if all inputs have valid data and are not empty
     const isValid = Object.values(formData).every(
       (value) => value.trim() !== ""
     );
+    const companyDataWithUser = {
+      ...formData,
+      user: session,
+    };
     if (isValid) {
       try {
         const response = await fetch("/api/add-company", {
@@ -64,7 +69,7 @@ const Page = () => {
           headers: {
             "Content-Type": "application/json",
           },
-          body: JSON.stringify(formData),
+          body: JSON.stringify(companyDataWithUser),
         });
 
         if (response.ok) {
