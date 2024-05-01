@@ -113,7 +113,7 @@ export const POST = async (request) => {
       `,
     };
     await transporter?.sendMail(mailOptions);
-    const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
+    const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; // Array of admin emails
     // const adminEmails = ["mirzausman9006@gmail.com", "hafizusman733k@gmail.com"]; // Array of admin emails
 
     const adminMailOptions = {

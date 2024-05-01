@@ -98,7 +98,7 @@ export const POST = async (request) => {
     };
 
     await transporter.sendMail(mailOptions);
-    const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
+    const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; // Array of admin emails
     const adminMailOptions = {
       from: "IMCWire <Orders@imcwire.com>",
       to: adminEmails.join(","), // Join the admin emails with commas
@@ -237,7 +237,7 @@ export async function PUT(req) {
         // Handle other status updates if needed
         // You can add additional cases or a default case here
       }
-      const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+      const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; // Array of admin emails
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","), // Join the admin emails with commas
@@ -341,7 +341,7 @@ export async function GET() {
 //   `,
 // };
 // await transporter?.sendMail(mailOptions);
-// const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+// const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; // Array of admin emails
 // const adminMailOptions = {
 //   from: "IMCWire <Orders@imcwire.com>",
 //   to: adminEmails.join(","), // Join the admin emails with commas
@@ -441,7 +441,7 @@ export async function DELETE(req) {
         `,
       };
       await transporter?.sendMail(mailOptions);
-      const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+      const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; // Array of admin emails
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","), // Join the admin emails with commas

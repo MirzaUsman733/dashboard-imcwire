@@ -77,7 +77,7 @@ export async function POST(req) {
       await transporter.sendMail(userMailOptions);
 
       // Send alert email to admin(s)
-      const adminEmails = ["Abdulaziz.zaidee@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+      const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; // Array of admin emails
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","), // Join the admin emails with commas
@@ -284,7 +284,7 @@ export async function PUT(req) {
     };
 
     await transporter.sendMail(mailOptions);
-    const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; // Array of admin emails
+    const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; // Array of admin emails
     const adminMailOptions = {
       from: "IMCWire <Orders@imcwire.com>",
       to: adminEmails.join(","), 

@@ -106,7 +106,7 @@ export async function POST(req) {
         </body>
         </html>`,
       };
-      const adminEmails = ["admin@imcwire.com", "Abdulaziz.zaidee@gmail.com"]; 
+      const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; 
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","),
