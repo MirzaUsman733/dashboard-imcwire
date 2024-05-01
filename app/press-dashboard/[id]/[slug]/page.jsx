@@ -1,4 +1,4 @@
-'use client'
+"use client";
 import React, { useCallback, useEffect, useState } from "react";
 import PublicationdetailUpdate from "../../../components/PublicationsDetailUpdate";
 import CompanyInfoPersonalUpdate from "../../../components/CompanyInfoPersonalUpdate";
@@ -7,7 +7,7 @@ import { useUpdateData } from "../../../contexts/updateDataContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
-import TawkTo from '../../../components/TawkTo'
+import TawkTo from "../../../components/TawkTo";
 const Page = ({ params }) => {
   const id = params.slug;
   const router = useRouter();
@@ -17,7 +17,7 @@ const Page = ({ params }) => {
   const [showSecondComponent, setShowSecondComponent] = useState(false);
   const [detail, setDetail] = useState(null);
   const [fetchingDetail, setFetchingDetail] = useState(true);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
   const { data: session, status: sessionStatus } = useSession();
   const handleNextButtonClick = () => {
     setShowFirstComponent(false);
@@ -80,8 +80,10 @@ const Page = ({ params }) => {
   }
   return (
     <div className="container-lg lg:max-w-7xl mx-auto mt-32">
-      <TawkTo/>
-      <h1>Press Release Order</h1>
+      <TawkTo />
+      <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
+        Press Release Order
+      </h1>
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-3 sm:col-span-4 md:col-span-3">
@@ -104,7 +106,7 @@ const Page = ({ params }) => {
                   publicationData={publicationData}
                   setPublicationData={setPublicationData}
                   formData={formData}
-                  setFormData = {setFormData}
+                  setFormData={setFormData}
                   detail={detail}
                   handleEditSubmit={handleEditSubmit}
                 />

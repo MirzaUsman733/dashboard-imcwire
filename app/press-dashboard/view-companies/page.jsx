@@ -222,7 +222,7 @@ export default function CompaniesTable() {
       <Container>
         {rows.length > 0 ? (
           <>
-            <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
+            <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
               <div className="flex justify-center gap-5">
                 <FaBuilding /> <span> View Companies </span>
               </div>

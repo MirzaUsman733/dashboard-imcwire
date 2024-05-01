@@ -122,6 +122,7 @@ export default function Page() {
   const [rowsPerPage, setRowsPerPage] = React.useState(25);
   const [dense, setDense] = React.useState(false);
   const [users, setUsers] = React.useState([]);
+  const [loadingDeletion, setLoadingDeletion] = React.useState(false);
   const [anchorEl, setAnchorEl] = React.useState(
     new Array(rows.length).fill(null)
   );
@@ -189,7 +190,7 @@ export default function Page() {
   }, []);
 
   const handleDeleteClick = (id, index) => {
-    console.log(id)
+    setLoadingDeletion(true)
     fetch("/api/register?_id=" + id, {
       method: "DELETE",
     })
@@ -198,8 +199,14 @@ export default function Page() {
           // Update the users state after successful deletion
           const updatedUsers = users.filter((user) => user.id !== id);
           setUsers(updatedUsers);
+          setSnackbarSeverity("success");
+          setSnackbarMessage("User deleted successfully.");
+          setSnackbarOpen(true);
+          setLoadingDeletion(false)
         } else {
-          console.error("Failed to delete");
+          setSnackbarSeverity("error");
+          setSnackbarMessage("Failed to delete user.");
+          setSnackbarOpen(true);
         }
       })
       .catch((error) => console.error("Error deleting:", error))
@@ -270,7 +277,12 @@ export default function Page() {
       </div>
     );
   }
-  if (session && sessionStatus === "authenticated" && users && loading === false) {
+  if (
+    session &&
+    sessionStatus === "authenticated" &&
+    users &&
+    loading === false
+  ) {
     return (
       <Container>
         <Snackbar
@@ -291,7 +303,7 @@ export default function Page() {
             {snackbarMessage}
           </MuiAlert>
         </Snackbar>
-        <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
+        <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
           Manage All Users
         </h1>
 
@@ -375,7 +387,12 @@ export default function Page() {
             <TableFooter>
               <TableRow>
                 <TablePagination
-                  rowsPerPageOptions={[25, 50, 100, { label: "All", value: -1 }]}
+                  rowsPerPageOptions={[
+                    25,
+                    50,
+                    100,
+                    { label: "All", value: -1 },
+                  ]}
                   colSpan={5}
                   count={users.length}
                   rowsPerPage={rowsPerPage}

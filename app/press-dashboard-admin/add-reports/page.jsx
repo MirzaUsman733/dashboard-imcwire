@@ -244,7 +244,7 @@ export default function Page() {
   ) {
     return (
       <div className="container mx-auto">
-        <h1 className="text-3xl font-bold text-center mb-8">Add Reports</h1>
+        <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">Add Reports For Customers</h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
           <FormControl fullWidth>

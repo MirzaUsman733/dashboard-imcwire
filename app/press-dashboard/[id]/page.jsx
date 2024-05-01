@@ -109,7 +109,7 @@ const Page = ({ params }) => {
 
       <div className="container-lg lg:max-w-7xl mx-auto mt-32">
         <h1
-          className="text-6xl font-serif font-bold text-center mb-20 "
+          className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10"
           style={{
             backgroundImage: `url('https://images.unsplash.com/photo-1517504734587-2890819debab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHVycGxlJTIwYWVzdGhldGljfGVufDB8fDB8fHww')`,
             backgroundSize: "cover",

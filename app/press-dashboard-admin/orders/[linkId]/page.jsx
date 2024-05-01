@@ -200,7 +200,7 @@ const Page = ({ params }) => {
       <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
         <div className="flex justify-center gap-5">
           <MdInventory />
-          <span> Manage Your Press Release </span>
+          <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20"> Manage Your Press Release </h1>
         </div>
       </h1>
       <TableContainer component={Paper} className="shadow-lg">

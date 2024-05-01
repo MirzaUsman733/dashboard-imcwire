@@ -171,7 +171,7 @@ export default function Page() {
             </IconButton>
           }
         />
-        <h1 className="text-3xl font-bold text-center mb-8">
+        <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
           Manage Pricing Plans
         </h1>
 

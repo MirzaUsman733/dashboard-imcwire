@@ -130,8 +130,8 @@ const Page = () => {
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
-      <h2 className="text-4xl font-bold mb-7 text-center font-serif">
-        Your Company Information
+      <h2 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
+       Add Your Company Information
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <div className="grid grid-cols-2 gap-8">

@@ -220,7 +220,7 @@ export default function Page() {
   ) {
     return (
       <Container>
-        <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
+        <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
           <div className="flex justify-center gap-5">
             <GrTransaction /> <span> Transaction History </span>
           </div>
@@ -244,7 +244,7 @@ export default function Page() {
                 <StyledTableCell className="font-bold">
                   Paid Amount
                 </StyledTableCell>
-                <StyledTableCell className="font-bold">Status</StyledTableCell>
+                <StyledTableCell className="font-bold">Payment Id</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
@@ -274,10 +274,13 @@ export default function Page() {
                       {row?.eventData?.object?.payment_intent}
                     </TableCell>
                     <TableCell style={{ width: 160 }}>
-                      {row?.eventData?.object?.amount_total}
+                       $
+                          {(
+                            (row?.eventData?.object?.amount_total || 0) / 100
+                          ).toFixed(2)}
                     </TableCell>
                     <TableCell style={{ width: 160 }}>
-                      {row?.eventData?.object?.payment_status}
+                    {row.eventData.object.client_reference_id}
                     </TableCell>
                   </StyledTableRow>
                 ))}
