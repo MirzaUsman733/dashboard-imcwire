@@ -154,14 +154,13 @@ export default function Page() {
       if (!response.ok) {
         throw new Error("Failed to upload image");
       }
-      return true;
+      router.push("/press-dashboard-admin/reports");
+      // return true;
     } catch (error) {
       console.log(error);
       setSnackbarMessage("Failed to upload files. Please try again.");
       setSnackbarOpen(true);
       return false;
-    } finally {
-      router.push("/press-dashboard-admin/reports");
     }
   };
   const handleSubmit = async (e) => {
@@ -177,8 +176,8 @@ export default function Page() {
       console.error("No detail found for the selected email");
       return;
     }
+    handleSubmitFiles();
     try {
-      handleSubmitFiles();
       const response = await fetch("/api/reports", {
         method: "POST",
         headers: {

@@ -6,7 +6,6 @@ import { NextResponse } from "next/server";
 // import _, { uniqueId } from "lodash";
 
 const prisma = new PrismaClient();
-
 export async function POST(req) {
   const formData = await req?.formData();
   // const image = formData.get("image");
@@ -35,12 +34,12 @@ export async function POST(req) {
 
   if (pdf) {
     const fileBuffer = Buffer.from(await pdf?.arrayBuffer());
-    const fileUploadDir = join("public", `/uploads/pdf`);
+    const fileUploadDir = join("assets", `/uploads/pdf`);
     pdfUrl = await saveFile(fileBuffer, pdf, fileUploadDir);
   }
   if (excel) {
     const excelBuffer = Buffer.from(await excel.arrayBuffer());
-    const excelUploadDir = join("public", `/uploads/excel`);
+    const excelUploadDir = join("assets", `/uploads/excel`);
     excelUrl = await saveFile(excelBuffer, excel, excelUploadDir);
   }
   try {
