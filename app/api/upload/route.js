@@ -44,7 +44,7 @@ export async function POST(req) {
   // }
   if (pdf) {
     const pdfBuffer = Buffer.from(await pdf.arrayBuffer());
-    const pdfUploadDir = join("assets", `/uploads/excel`);
+    const pdfUploadDir = join("assets", `/uploads/pdf`);
     pdfUrl = await saveFile(pdfBuffer, pdf, pdfUploadDir);
   }
   if (excel) {
