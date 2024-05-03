@@ -44,14 +44,12 @@ export async function POST(req) {
   // }
   if (pdf) {
     const pdfBuffer = Buffer.from(await pdf.arrayBuffer());
-    const pdfUploadDir =
-      "/var/www/www-root/data/www/dashboard.imcwire.com/assets/uploads/pdf/";
+    const pdfUploadDir = join("assets", `/uploads/excel`);
     pdfUrl = await saveFile(pdfBuffer, pdf, pdfUploadDir);
   }
   if (excel) {
     const excelBuffer = Buffer.from(await excel.arrayBuffer());
-    const excelUploadDir =
-      "/var/www/www-root/data/www/dashboard.imcwire.com/assets/uploads/excel/";
+    const excelUploadDir = join("assets", `/uploads/excel`);
     excelUrl = await saveFile(excelBuffer, excel, excelUploadDir);
   }
 
