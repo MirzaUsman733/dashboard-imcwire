@@ -171,16 +171,13 @@
 //   }
 // }
 
-
-
-
-
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from "@supabase/supabase-js";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 
-const supabaseUrl = 'postgres://postgres.inyhkgnpatnukqwcqwjr:mirzausman786@aws-0-us-west-1.pooler.supabase.com:5432/postgres?pgbouncer=true';
-const supabaseKey = 'postgres://postgres.inyhkgnpatnukqwcqwjr:mirzausman786@aws-0-us-west-1.pooler.supabase.com:5432/postgres?pgbouncer=true';
+const supabaseUrl = "https://inyhkgnpatnukqwcqwjr.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlueWhrZ25wYXRudWtxd2Nxd2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMzNTE4NzcsImV4cCI6MjAyODkyNzg3N30.aPE4oEg-I62l1WODiymFiPLUIM9DmRP3RzuyQXz79Ws";
 const supabase = createClient(supabaseUrl, supabaseKey);
 
 const prisma = new PrismaClient();
@@ -191,7 +188,7 @@ export async function POST(req) {
     const pdf = formData?.get("pdf");
     const excel = formData?.get("excel");
     const uniqueId = formData?.get("id");
-    
+    console.log(uniqueId);
     if (!pdf && !excel) {
       return NextResponse.json(
         { error: "No PDF or Excel file provided." },
@@ -202,34 +199,55 @@ export async function POST(req) {
     let pdfUrl, excelUrl;
 
     if (pdf) {
-      const pdfBuffer = Buffer.from(await pdf.arrayBuffer());
-      const { data: pdfUploadResponse, error: pdfUploadError } = await supabase.storage
-        .from('assets') // Replace 'bucketName' with your actual Supabase storage bucket name
-        .upload(`pdf/${uniqueId}.pdf`, pdfBuffer); // Adjust the file path and name as needed
-      if (pdfUploadError) {
-        return NextResponse.json(
-          { error: "Failed to upload PDF file to Supabase storage." },
-          { status: 500 }
-        );
+      const timestamp = new Date().getTime();
+      const pdfName = `${timestamp}-${pdf.name}`;
+      try {
+        const { data, error } = await supabase.storage
+          .from("reports")
+          .upload(`pdf/${pdfName}`);
+        if (error) {
+          console.log(
+            "First Failed to upload PDF file to Supabase storage.",
+            error
+          );
+          return NextResponse.json(
+            { error: "Failed to upload PDF file to Supabase storage." },
+            { status: 500 }
+          );
+        }
+        console.log(data);
+        pdfUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
+      } catch (error) {
+        console.log("supabase storage cannot proper work in pdf", error);
       }
-      pdfUrl = pdfUploadResponse.Key;
     }
 
     if (excel) {
-      const excelBuffer = Buffer.from(await excel.arrayBuffer());
-      const { data: excelUploadResponse, error: excelUploadError } = await supabase.storage
-        .from('assets') // Replace 'bucketName' with your actual Supabase storage bucket name
-        .upload(`excel/${uniqueId}.xlsx`, excelBuffer); // Adjust the file path and name as needed
-      if (excelUploadError) {
-        return NextResponse.json(
-          { error: "Failed to upload Excel file to Supabase storage." },
-          { status: 500 }
-        );
-      }
-      excelUrl = excelUploadResponse.Key;
-    }
+      try {
+        const timestamp = new Date().getTime();
+        const excelName = `${timestamp}-${excel.name}`;
+        const { data, error } = await supabase.storage
+          .from("reports")
+          .upload(`excel/${excelName}`);
+        if (error) {
+          console.log(
+            "Failed to upload Excel file to Supabase storage.",
+            error
+          );
+          return NextResponse.json(
+            { error: "Failed to upload Excel file to Supabase storage." },
+            { status: 500 }
+          );
+        }
 
-    // Save file URLs to database
+        excelUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
+      } catch (error) {
+        console.log("Supabase error in excel", error);
+      }
+    }
+    console.log("Check Unique ID", uniqueId);
+    console.log("Check PDF URL", pdfUrl);
+    console.log("Check Excel URL", excelUrl);
     const result = await prisma?.file?.create({
       data: {
         id: uniqueId,
@@ -245,5 +263,34 @@ export async function POST(req) {
       { error: "Failed to process the request." },
       { status: 500 }
     );
+  }
+}
+
+export async function GET(req) {
+  try {
+    const url = new URL(req?.url);
+    const id = url?.searchParams?.get("_id");
+    if (id) {
+      const publications = await prisma?.file?.findUnique({
+        where: { id: id },
+      });
+      // const { data } = await supabase.storage
+      //   .from("reports")
+      //   .getPublicUrl("pdf/Resume-Mirza-Usman.pdf", {
+      //     download: true,
+      //     format: "pdf",
+      //   });
+      //   console.log("Data",data)
+      //   console.log(error)
+      return NextResponse.json(publications);
+    } else {
+      const publications = await prisma?.file?.findMany();
+      return NextResponse.json(publications);
+    }
+  } catch (error) {
+    return NextResponse.json({
+      status: 500,
+      message: "Internal Server Error",
+    });
   }
 }

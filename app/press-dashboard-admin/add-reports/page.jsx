@@ -152,7 +152,7 @@ export default function Page() {
       });
 
       if (!response.ok) {
-        throw new Error("Failed to upload image");
+        throw new Error("Failed to upload Data");
       }
       router.push("/press-dashboard-admin/reports");
       // return true;
@@ -160,7 +160,7 @@ export default function Page() {
       console.log(error);
       setSnackbarMessage("Failed to upload files. Please try again.");
       setSnackbarOpen(true);
-      return false;
+      return null;
     }
   };
   const handleSubmit = async (e) => {
@@ -168,40 +168,47 @@ export default function Page() {
     setLoading(true);
     const selectedDetail = detail?.find(
       (data) =>
-        data.formData.email ===
-        // selectedEmail
-        newPlan.clientEmail
+      data.formData.email ===
+      // selectedEmail
+      newPlan.clientEmail
     );
     if (!selectedDetail) {
       console.error("No detail found for the selected email");
       return;
     }
-    handleSubmitFiles();
-    try {
-      const response = await fetch("/api/reports", {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          ...selectedDetail,
-          ...newPlan,
-          uniqueId: uniqueId,
-        }),
-      });
-
-      if (response.ok) {
-        handleAddPlan();
-        setUploadedImage(null);
-        setUploadedExcel(null);
-        setUploadedPDF(null);
-        setLoading(false);
-      } else {
-        console.error("Failed to add data to the database");
+    // const fileUploadation = handleSubmitFiles();
+    // if(fileUploadation){
+      try {
+        const response = await fetch("/api/reports", {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+          },
+          body: JSON.stringify({
+            ...selectedDetail,
+            ...newPlan,
+            uniqueId: uniqueId,
+          }),
+        });
+  
+        if (response.ok) {
+          handleAddPlan();
+          handleSubmitFiles()
+          setUploadedImage(null);
+          setUploadedExcel(null);
+          setUploadedPDF(null);
+          setLoading(false);
+        } else {
+          console.error("Failed to add data to the database");
+        }
+      } catch (error) {
+        console.error("Error adding data to the database:", error);
       }
-    } catch (error) {
-      console.error("Error adding data to the database:", error);
-    }
+    // }else{
+    //   setSnackbarMessage("Failed to upload files. Please try again.");
+    //   setSnackbarOpen(true);
+    // }
+    
   };
 
   // All Sub data

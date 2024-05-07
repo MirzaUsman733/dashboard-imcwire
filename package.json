@@ -16,7 +16,7 @@
     "@mui/lab": "^5.0.0-alpha.163",
     "@mui/material": "^5.15.7",
     "@mui/x-date-pickers": "^7.1.0",
-    "@prisma/client": "^5.12.1",
+    "@prisma/client": "^5.13.0",
     "@stripe/stripe-js": "^3.0.6",
     "@supabase/supabase-js": "^2.43.1",
     "@types/react-google-recaptcha": "^2.1.9",

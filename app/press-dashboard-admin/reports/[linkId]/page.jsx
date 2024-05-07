@@ -49,13 +49,13 @@ export default function Page({ params }) {
       if (response.ok) {
         const uniqueData = await response.json();
         console.log("Unique Data",uniqueData)
-        const modifiedUniqueData = {
-          ...uniqueData,
-          pdf: uniqueData?.pdf?.replace("app\\", "/"),
-          excel: uniqueData?.excel?.replace("app\\", "/"),
-        };
-        console.log(modifiedUniqueData)
-        setFilterData(modifiedUniqueData);
+        // const modifiedUniqueData = {
+        //   ...uniqueData,
+        //   pdf: uniqueData?.pdf?.replace("app\\", "/"),
+        //   excel: uniqueData?.excel?.replace("app\\", "/"),
+        // };
+        // console.log(modifiedUniqueData)
+        setFilterData(uniqueData);
       } else {
         console.error("Failed to fetch plans");
       }

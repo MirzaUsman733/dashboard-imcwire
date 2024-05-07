@@ -140,10 +140,9 @@ model Publication {
 
 model File {
   // id              String    @id @default(cuid())
-  id        String   @id
+  id        String   @id 
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
-  image     String?  @db.Text
   pdf       String?
   excel     String?
   // uniqueId  String?
