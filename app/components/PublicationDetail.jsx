@@ -459,7 +459,7 @@ const PublicationDetail = ({
                   </button>
                 )}
               </div>
-              {selectedCompany && (
+              {selectedCompany && agencyName != ""  && (
                 <div>
                   <h3 className="text-xl font-bold mt-4">{selectedCompany}</h3>
                 </div>

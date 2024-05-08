@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
 import TawkTo from "../../../../components/TawkTo";
+import { FaRegFilePdf } from "react-icons/fa";
 
 const Page = ({ params }) => {
   const id = params.id;
@@ -12,7 +13,8 @@ const Page = ({ params }) => {
   const router = useRouter();
   const { data: session, status: sessionStatus } = useSession();
   const [detail, setDetail] = useState(null);
-  const [loading, setLoading] = useState(true); 
+  const [loading, setLoading] = useState(true);
+  const [filterData, setFilterData] = useState(null);
 
   const fetchDetail = useCallback(async () => {
     try {
@@ -25,7 +27,7 @@ const Page = ({ params }) => {
       }
     } catch (error) {
       console.error("Error fetching detail:", error);
-    } finally{
+    } finally {
       setLoading(false);
     }
   }, []);
@@ -33,6 +35,29 @@ const Page = ({ params }) => {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
+  console.log(detail);
+  const fetchFiles = async () => {
+    if (detail?.formDataContract.file != null) {
+      try {
+        const uniId = detail?.formDataContract?.file;
+        const response = await fetch("/api/uploadPdf?_id=" + uniId);
+        if (response.ok) {
+          const uniqueData = await response.json();
+          console.log("Unique Data", uniqueData);
+          setFilterData(uniqueData);
+        } else {
+          console.error("Failed to fetch plans");
+        }
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+      }
+    }
+  };
+  useEffect(() => {
+    if (detail?.formDataContract?.file) {
+      fetchFiles();
+    }
+  }, [detail]);
   useEffect(() => {
     if (sessionStatus === "unauthenticated") {
       router.replace("/login");
@@ -53,7 +78,7 @@ const Page = ({ params }) => {
   if (session && sessionStatus === "authenticated" && detail) {
     return (
       <>
-      <TawkTo/>
+        <TawkTo />
         <div className="container-lg lg:max-w-7xl mx-auto mt-32">
           <h1
             className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10 "
@@ -102,9 +127,9 @@ const Page = ({ params }) => {
                       </p>
                       <p>
                         <span className="font-bold text-lg"> Website: </span>
-                        <a href={detail?.formData?.websiteUrl} target="_blank">
+                        <Link href={detail?.formData?.websiteUrl} target="_blank">
                           {detail?.formData?.websiteUrl}
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </div>
@@ -203,27 +228,7 @@ const Page = ({ params }) => {
                   </div>
                 </div>
 
-                {/* Form Data Contract Section */}
-                <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
-                  <div className="p-6">
-                    <h2 className="text-2xl font-bold mb-4 text-center font-serif">
-                      Form Data Contract
-                    </h2>
-                    <div className="text-gray-600">
-                      <p>
-                        <span className="font-bold text-lg">
-                          Selected Company:
-                        </span>
-                        {detail?.formDataContract?.selectedCompany}
-                      </p>
-                      <p>
-                        <span className="font-bold text-lg">Company URL: </span>
-                        {detail?.formDataContract?.url}
-                      </p>
-                    </div>
-                  </div>
-                </div>
-
+             
                 {/* Selected Categories Section */}
                 <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                   <div className="p-6">
@@ -312,6 +317,41 @@ const Page = ({ params }) => {
                     </div>
                   </div>
                 </div>
+                   {/* Form Data Contract Section */}
+                   {detail?.formDataContract?.file != null && !filterData?.pdf ? (
+                  <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
+                    <div className="p-6">
+                      <h2 className="text-2xl font-bold mb-4 text-center font-serif">
+                        Form Data Contract
+                      </h2>
+                      <div className="text-gray-600">
+                        <p>
+                          <span className="font-bold text-lg">
+                            Selected Company:
+                          </span>
+                          {detail?.formDataContract?.selectedCompany}
+                        </p>
+                        <p>
+                          <span className="font-bold text-lg">
+                            Company URL:{" "}
+                          </span>
+                          {detail?.formDataContract?.url}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <Link
+                      href={filterData?.pdf}
+                      // download
+                      download="excel-file.pptx"
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                    >
+                       <FaRegFilePdf /> <span> Download PDF Report </span>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
             {detail?.storeData?.action === "pending" ? (

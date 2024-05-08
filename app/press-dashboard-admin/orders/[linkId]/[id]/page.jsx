@@ -1,7 +1,9 @@
 "use client";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
 import React, { useCallback, useEffect, useState } from "react";
+import { FaRegFilePdf } from "react-icons/fa";
 import { InfinitySpin } from "react-loader-spinner";
 
 const Page = ({ params }) => {
@@ -13,6 +15,7 @@ const Page = ({ params }) => {
   const { data: session, status: sessionStatus } = useSession();
   const [loading, setLoading] = useState(true);
   const [loadingButton, setLoadingButton] = useState(false);
+  const [filterData, setFilterData] = useState(null);
   const router = useRouter();
   useEffect(() => {
     if (session?.user?.role === "user") {
@@ -40,6 +43,28 @@ const Page = ({ params }) => {
     fetchDetail();
   }, [fetchDetail]);
   console.log(detail);
+  const fetchFiles = async () => {
+    if (detail?.formDataContract.file != null) {
+      try {
+        const uniId = detail?.formDataContract?.file;
+        const response = await fetch("/api/uploadPdf?_id=" + uniId);
+        if (response.ok) {
+          const uniqueData = await response.json();
+          console.log("Unique Data", uniqueData);
+          setFilterData(uniqueData);
+        } else {
+          console.error("Failed to fetch plans");
+        }
+      } catch (error) {
+        console.error("Error fetching plans:", error);
+      }
+    }
+  };
+  useEffect(() => {
+    if (detail) {
+      fetchFiles();
+    }
+  }, [detail]);
   const handleStatusChange = async () => {
     setLoadingButton(true)
     try {
@@ -244,27 +269,7 @@ const Page = ({ params }) => {
                   </div>
                 </div>
 
-                {/* Form Data Contract Section */}
-                <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
-                  <div className="p-6">
-                    <h2 className="text-2xl font-bold mb-4 text-center font-serif">
-                      Selected Company
-                    </h2>
-                    <div className="text-gray-600 gap-1 flex flex-col">
-                      <p>
-                        <span className="font-bold text-lg">
-                          Selected Company: 
-                        </span> &nbsp; 
-                        {detail?.formDataContract?.selectedCompany}
-                      </p>
-                      <hr />
-                      <p>
-                        <span className="font-bold text-lg">Company URL: </span>
-                        {detail?.formDataContract?.url}
-                      </p>
-                    </div>
-                  </div>
-                </div>
+            
 
                 {/* Selected Categories Section */}
                 <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
@@ -363,6 +368,41 @@ const Page = ({ params }) => {
                     </div>
                   </div>
                 </div>
+                   {/* Form Data Contract Section */}
+                   {detail?.formDataContract?.file != null && !filterData?.pdf ? (
+                  <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
+                    <div className="p-6">
+                      <h2 className="text-2xl font-bold mb-4 text-center font-serif">
+                        Form Data Contract
+                      </h2>
+                      <div className="text-gray-600">
+                        <p>
+                          <span className="font-bold text-lg">
+                            Selected Company:
+                          </span>
+                          {detail?.formDataContract?.selectedCompany}
+                        </p>
+                        <p>
+                          <span className="font-bold text-lg">
+                            Company URL:{" "}
+                          </span>
+                          {detail?.formDataContract?.url}
+                        </p>
+                      </div>
+                    </div>
+                  </div>
+                ) : (
+                  <div>
+                    <Link
+                      href={filterData?.pdf}
+                      // download
+                      download="excel-file.pptx"
+                      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                    >
+                       <FaRegFilePdf /> <span> Download PDF Report </span>
+                    </Link>
+                  </div>
+                )}
               </div>
             </div>
             <hr className="py-2" />

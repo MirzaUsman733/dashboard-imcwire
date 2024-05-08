@@ -376,13 +376,13 @@ export default function Page({ params }) {
       const response = await fetch("/api/upload?_id=" + uniId);
       if (response.ok) {
         const uniqueData = await response.json();
-        const modifiedUniqueData = {
-          ...uniqueData,
-          pdf: uniqueData?.pdf?.replace("public\\", "/"),
-          excel: uniqueData?.excel?.replace("public\\", "/"),
-        };
-        console.log(modifiedUniqueData);
-        setFilterData(modifiedUniqueData);
+        // const modifiedUniqueData = {
+        //   ...uniqueData,
+        //   pdf: uniqueData?.pdf?.replace("public\\", "/"),
+        //   excel: uniqueData?.excel?.replace("public\\", "/"),
+        // };
+        // console.log(modifiedUniqueData);
+        setFilterData(uniqueData);
       } else {
         console.error("Failed to fetch plans");
       }
