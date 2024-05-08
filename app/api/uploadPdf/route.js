@@ -1,17 +1,19 @@
 import { PrismaClient } from "@prisma/client";
-import mime from "mime";
-import { join } from "path";
-import { stat, mkdir, writeFile } from "fs/promises";
 import { NextResponse } from "next/server";
-// import _, { uniqueId } from "lodash";
+import { createClient } from "@supabase/supabase-js";
 
 const prisma = new PrismaClient();
-
+const supabaseUrl = "https://inyhkgnpatnukqwcqwjr.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlueWhrZ25wYXRudWtxd2Nxd2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMzNTE4NzcsImV4cCI6MjAyODkyNzg3N30.aPE4oEg-I62l1WODiymFiPLUIM9DmRP3RzuyQXz79Ws";
+const supabase = createClient(supabaseUrl, supabaseKey);
 export async function POST(req) {
   const formData = await req.formData();
+
   console.log(formData);
   // const image = formData.get("image");
-  const pdf = formData.get("file");
+  const pdf = formData?.get("pdf");
+  const uniqueId = formData?.get("id");
   console.log(pdf);
   //   const excel = formData.get("excel");
   //   const uniqueId = formData.get("id");
@@ -22,19 +24,38 @@ export async function POST(req) {
     );
   }
 
-  let //  imageUrl,
-    pdfUrl;
+  let pdfUrl;
 
   if (pdf) {
-    const fileBuffer = Buffer.from(await pdf.arrayBuffer());
-    const fileUploadDir = join("public", `/uploads/pdfData/${getDatePath()}`);
-    pdfUrl = await saveFile(fileBuffer, pdf, fileUploadDir);
+    const timestamp = new Date().getTime();
+    const pdfName = `${timestamp}-${pdf.name}`;
+    const contentType = pdf.type;
+    try {
+      const { data, error } = await supabase.storage
+        .from("reports")
+        .upload(`pdfDetail/${pdfName}`, pdf, { contentType: contentType });
+      if (error) {
+        console.log(
+          "First Failed to upload PDF file to Supabase storage.",
+          error
+        );
+        return NextResponse.json(
+          { error: "Failed to upload PDF file to Supabase storage." },
+          { status: 500 }
+        );
+      }
+      console.log(data);
+      pdfUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
+    } catch (error) {
+      console.log("supabase storage cannot proper work in pdf", error);
+    }
   }
   try {
     // Save to database
     if (prisma.pdf && prisma.pdf.create) {
       const result = await prisma.pdf.create({
         data: {
+          id: uniqueId,
           pdf: pdfUrl,
         },
       });
@@ -52,39 +73,6 @@ export async function POST(req) {
       { status: 500 }
     );
   }
-}
-
-async function saveFile(buffer, pdf, uploadDir) {
-  try {
-    await stat(uploadDir);
-  } catch (e) {
-    if (e.code === "ENOENT") {
-      await mkdir(uploadDir, { recursive: true });
-    } else {
-      throw e;
-    }
-  }
-
-  try {
-    const uniqueSuffix = `${Date.now()}-${Math.round(Math.random() * 1e9)}`;
-    const filename = `${pdf.name.replace(/\.[^/.]+$/, "")}.${mime.getExtension(
-      pdf.type
-    )}`;
-    await writeFile(`${uploadDir}/${filename}`, buffer);
-    return `${uploadDir}/${filename}`;
-  } catch (e) {
-    throw e;
-  }
-}
-
-function getDatePath() {
-  return new Date(Date.now())
-    .toLocaleDateString("id-ID", {
-      day: "2-digit",
-      month: "2-digit",
-      year: "numeric",
-    })
-    .replace(/\//g, "-");
 }
 
 export async function PUT(req) {

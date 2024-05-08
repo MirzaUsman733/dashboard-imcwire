@@ -36,6 +36,8 @@ const PublicationDetail = ({
   const [targetWebsite, setTargetWebsite] = useState("");
   const [selectedCompany, setSelectedCompany] = useState("none");
   const [isNewCompanyModalOpen, setIsNewCompanyModalOpen] = useState(false);
+
+  const [uniqueId, setUniqueId] = useState("");
   const [companies, setCompanies] = useState([]);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -133,7 +135,22 @@ const PublicationDetail = ({
   //     setTargetWebsite("")
   //   }
   // };
+  useEffect(() => {
+    const generatedId = generateUniqueId(24);
+    setUniqueId(generatedId);
+  }, []);
 
+  const generateUniqueId = (length) => {
+    const characters =
+      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
+    let id = "";
+
+    for (let i = 0; i < length; i++) {
+      const randomIndex = Math.floor(Math.random() * characters.length);
+      id += characters[randomIndex];
+    }
+    return id;
+  };
   const handleSubmit = async (event) => {
     event.preventDefault();
     setLoading(true);
@@ -191,7 +208,7 @@ const PublicationDetail = ({
         const formDataContract = {
           url: "",
           tags: [],
-          file,
+          file: uniqueId,
           selectedCompany: selectedCompany,
         };
         const combinedData = {
@@ -199,7 +216,27 @@ const PublicationDetail = ({
           formData: formData,
           formDataContract: formDataContract,
         };
-        console.log("Combined Data in the ownPr", combinedData);
+        // console.log("Combined Data in the ownPr", combinedData);
+        const formDataPDf = new FormData();
+        // formData.append("image", uploadedImage);
+        formDataPDf.append("pdf", file);
+        formDataPDf.append("id", uniqueId);
+        try {
+          const response = await fetch("/api/uploadPdf", {
+            method: "POST",
+            body: formDataPDf,
+          });
+          if (!response.ok) {
+            throw new Error("Failed to upload Data");
+          }
+          // router.push("/press-dashboard/pr-balance");
+          // return true;
+        } catch (error) {
+          console.log(error);
+          setSnackbarMessage("Failed to upload files. Please try again.");
+          setSnackbarOpen(true);
+          return null;
+        }
         try {
           const response = await fetch("/api/submit-detail", {
             method: "POST",

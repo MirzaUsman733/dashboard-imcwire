@@ -156,7 +156,7 @@ model Coupon {
   updatedAt          DateTime? @default(now()) @updatedAt
 }
 model pdf {
-  id       Int      @id @default(autoincrement())
+  id       String      @id 
   pdf      String
 }
 
