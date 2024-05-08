@@ -25,8 +25,9 @@ const Page = ({ params }) => {
   const [plans, setPlans] = useState(null);
   const [detail, setDetail] = useState(null);
   const [detailAvailable, setDetailAvailable] = useState(false);
-  const [loading, setLoading] = useState(true); // Add loading state
+  const [loading, setLoading] = useState(true); 
   const { data: session, status: sessionStatus } = useSession();
+  const [agencyName, setAgencyName] = useState("")
 
   const router = useRouter();
   const handleNextButtonClick = () => {
@@ -39,6 +40,9 @@ const Page = ({ params }) => {
       if (response.ok) {
         const plansData = await response.json();
         setPlans(plansData);
+        console.log("plans Data:", plansData)
+        console.log("Agency Name",plansData?.agencyName)
+        setAgencyName(plansData?.agencyName)
         setShowFirstComponent(true);
       } else {
         console.error("Failed to fetch plans");
@@ -52,6 +56,7 @@ const Page = ({ params }) => {
   useEffect(() => {
     fetchPlans();
   }, []);
+  // console.log(plans)
   const fetchDetail = useCallback(async () => {
     try {
       const response = await fetch("/api/submit-detail");
@@ -91,6 +96,7 @@ const Page = ({ params }) => {
       router.replace("/login");
     }
   }, [sessionStatus, router]);
+
   const numberOfPRInComponents = plans?.matchedPlanData?.numberOfPR;
   const lengthOfDetail = detail?.length;
   if (loading) {
@@ -106,7 +112,6 @@ const Page = ({ params }) => {
   return (
     <>
       <TawkTo/>
-
       <div className="container-lg lg:max-w-7xl mx-auto mt-32">
         <h1
           className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10"
@@ -146,6 +151,8 @@ const Page = ({ params }) => {
                     setPublicationData={setPublicationData}
                     formData={formData}
                     storeData={matchedData}
+                    setFormData={setFormData}
+                    agencyName={agencyName}
                   />
                 </div>
               )}

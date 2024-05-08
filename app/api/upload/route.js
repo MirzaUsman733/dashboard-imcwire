@@ -201,10 +201,11 @@ export async function POST(req) {
     if (pdf) {
       const timestamp = new Date().getTime();
       const pdfName = `${timestamp}-${pdf.name}`;
+      const contentType = pdf.type;
       try {
         const { data, error } = await supabase.storage
           .from("reports")
-          .upload(`pdf/${pdfName}`);
+          .upload(`pdf/${pdfName}`, pdf, {contentType: contentType});
         if (error) {
           console.log(
             "First Failed to upload PDF file to Supabase storage.",
@@ -223,12 +224,15 @@ export async function POST(req) {
     }
 
     if (excel) {
+      console.log("excel", excel)
       try {
         const timestamp = new Date().getTime();
         const excelName = `${timestamp}-${excel.name}`;
+        const contentType = excel.type; 
+        console.log(contentType)
         const { data, error } = await supabase.storage
           .from("reports")
-          .upload(`excel/${excelName}`);
+          .upload(`excel/${excelName}`, excel, {contentType: contentType});
         if (error) {
           console.log(
             "Failed to upload Excel file to Supabase storage.",
@@ -239,7 +243,6 @@ export async function POST(req) {
             { status: 500 }
           );
         }
-
         excelUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
       } catch (error) {
         console.log("Supabase error in excel", error);
@@ -274,14 +277,6 @@ export async function GET(req) {
       const publications = await prisma?.file?.findUnique({
         where: { id: id },
       });
-      // const { data } = await supabase.storage
-      //   .from("reports")
-      //   .getPublicUrl("pdf/Resume-Mirza-Usman.pdf", {
-      //     download: true,
-      //     format: "pdf",
-      //   });
-      //   console.log("Data",data)
-      //   console.log(error)
       return NextResponse.json(publications);
     } else {
       const publications = await prisma?.file?.findMany();

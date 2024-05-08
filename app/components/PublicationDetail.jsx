@@ -5,15 +5,36 @@ import { FaUpload } from "react-icons/fa";
 import { useUser } from "../contexts/userData";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
-import { CircularProgress } from "@mui/material";
-
-const PublicationDetail = ({ storeData, formData, setFormData }) => {
+import { Button, CircularProgress } from "@mui/material";
+import CloudUploadIcon from "@mui/icons-material/CloudUpload";
+import { Add } from "@mui/icons-material";
+const fileUploadLabelStyles = {
+  cursor: "pointer",
+};
+const fileUploadButtonStyles = {
+  display: "flex",
+  alignItems: "center",
+  justifyContent: "center",
+  backgroundColor: "#7E22CE",
+  color: "#fff",
+  padding: "10px 20px",
+  borderRadius: "5px",
+  cursor: "pointer",
+  transition: "background-color 0.3s ease",
+  marginTop: "10px",
+};
+const PublicationDetail = ({
+  storeData,
+  formData,
+  setFormData,
+  agencyName,
+}) => {
   const [file, setFile] = useState(null);
   const [focusedField, setFocusedField] = useState("");
   const [loading, setLoading] = useState(false);
   const [keywords, setKeywords] = useState([]);
   const [targetWebsite, setTargetWebsite] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState("");
+  const [selectedCompany, setSelectedCompany] = useState("none");
   const [isNewCompanyModalOpen, setIsNewCompanyModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
   const { data: session, status: sessionStatus } = useSession();
@@ -28,7 +49,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
         const data = await response.json();
         console.log(data);
         if (session) {
-          const filteredCompanies = data.filter(
+          const filteredCompanies = data?.filter(
             (company) => company?.user?.user?.id === session?.user?.id
           );
           setCompanies(filteredCompanies);
@@ -77,11 +98,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
 
   const handleTargetWebsiteChange = (event) => {
     setTargetWebsite(event.target.value);
-  };
-
-  const handleFileChange = (event) => {
-    const uploadedFile = event.target.files[0];
-    setFile(uploadedFile);
   };
 
   // const handleSubmit = async (event) => {
@@ -133,6 +149,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
         formData: formData,
         formDataContract: formDataContract,
       };
+      console.log("Combined Data in the imcwire", combinedData);
       try {
         const response = await fetch("/api/submit-detail", {
           method: "POST",
@@ -163,23 +180,55 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
         router.push("/press-dashboard/pr-balance");
       }
     } else {
-      // If the option is for file upload, upload the file to the database
-      const formDataFileUpload = new FormData();
-      formDataFileUpload.append("file", file);
+      if (file) {
+        console.log("File in function", file);
+        // const formDataContract = new FormData();
+        // formDataContract.append("url", targetWebsite); // Assuming 'targetWebsite' is the URL string
+        // formDataContract.append("tags", JSON.stringify(keywords)); // Convert 'keywords' array to string before appending
+        // formDataContract.append("file", file); // Assuming 'file' is your file object
+        // formDataContract.append("selectedCompany", selectedCompany);
+        // console.log(formDataContract)
+        const formDataContract = {
+          url: "",
+          tags: [],
+          file,
+          selectedCompany: selectedCompany,
+        };
+        const combinedData = {
+          storeData: storeData,
+          formData: formData,
+          formDataContract: formDataContract,
+        };
+        console.log("Combined Data in the ownPr", combinedData);
+        try {
+          const response = await fetch("/api/submit-detail", {
+            method: "POST",
+            body: JSON.stringify(combinedData),
+          });
 
-      try {
-        const response = await fetch("/api/upload-file", {
-          method: "POST",
-          body: formDataFileUpload,
-        });
-
-        if (!response.ok) {
-          throw new Error("Failed to upload file");
+          if (!response.ok) {
+            throw new Error("Failed to submit publication");
+          }
+          setLoading(false);
+        } catch (error) {
+          console.error("Error submitting publication:", error);
+        } finally {
+          setFile(null);
+          setKeywords([]);
+          setSelectedCompany("");
+          setTargetWebsite("");
+          setFormData({
+            companyName: "",
+            name: "",
+            email: "",
+            websiteUrl: "",
+            phone: "",
+            address: "",
+          });
+          router.push("/press-dashboard/pr-balance");
         }
-      } catch (error) {
-        console.error("Error uploading file:", error);
-      } finally {
-        setFile(null);
+      } else {
+        console.log("file not available");
       }
     }
   };
@@ -191,44 +240,85 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
   const handleBlur = () => {
     setFocusedField("");
   };
-  const handleFileSubmit = async (event) => {
-    event.preventDefault();
-    const formDataFileUpload = new FormData();
-    formDataFileUpload.append("file", file);
-
-    try {
-      const response = await fetch("/api/upload-file", {
-        method: "POST",
-        body: formDataFileUpload,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload file");
-      }
-    } catch (error) {
-      console.error("Error uploading file:", error);
-    } finally {
-      setFile(null);
-    }
+  const removeFile = () => {
+    setFile(null);
   };
-
+  console.log(storeData.selectedOption);
   const renderForm = () => {
     if (storeData.selectedOption === "ownPr") {
       return (
         <div>
-          <h2 className="text-2xl font-bold my-4">Distribute Only</h2>
-          <p>
-            Ready to distribute your PR globally? Upload Your High-Quality
-            Journalist's writing PR in Document.
-          </p>
-          <label
-            htmlFor="file-upload"
-            className="custom-file-upload flex items-center justify-center bg-green-700 text-white rounded-md py-3 px-4 mt-4 cursor-pointer"
-          >
-            <FaUpload size={30} className="mr-2" />
-            <span>Upload Your PR in doc file</span>
-          </label>
-          <input type="file" id="file-upload" className="hidden" />
+          <div>
+            <h2 className="text-2xl font-bold my-4">Distribute Only</h2>
+            <p>
+              Ready to distribute your PR globally? Upload Your High-Quality
+              Journalist's writing PR in Document.
+            </p>
+            {/* <input
+              accept=".pdf,.doc,.docx"
+              id="file-upload"
+              type="file"
+              className="hidden"
+              onChange={handleFileChange}
+            />
+            <label htmlFor="file-upload">
+              <button
+                className="flex bg-green-700 text-white rounded-md py-3 px-4 mt-4"
+              >
+                <FaUpload size={30} className="mr-2" />
+                Upload Your PR in PDF or DOC
+              </button>
+            </label>
+            {file && <p className="mt-2">Selected file: {file.name}</p>} */}
+            <input
+              type="file"
+              onChange={(e) => {
+                console.log(e);
+                setFile(e.target.files[0]);
+              }}
+              className="hidden"
+              id="pdf-upload"
+              accept=".pdf"
+            />
+            <label htmlFor="pdf-upload" style={fileUploadLabelStyles}>
+              <Button
+                variant="contained"
+                style={fileUploadButtonStyles}
+                component="span"
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload PDF
+              </Button>
+              {file && (
+                <span className="flex items-center">
+                  {file.name}{" "}
+                  <button
+                    className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
+                    onClick={() => removeFile()}
+                  >
+                    &times;
+                  </button>
+                </span>
+              )}
+            </label>
+            <div className="flex justify-center mb-8 mt-10">
+              {loading ? (
+                <button
+                  className="px-10 uppercase py-3 mt-4"
+                  disabled={loading}
+                >
+                  {loading ? <CircularProgress size={24} /> : ""}
+                </button>
+              ) : (
+                <button
+                  className="btn-grad px-7 uppercase py-3 mt-4"
+                  onClick={handleSubmit}
+                >
+                  <Add /> Submit Written File
+                </button>
+              )}
+            </div>
+          </div>
         </div>
       );
     } else {
@@ -285,33 +375,37 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
               />
             </div>
             <div className="col-span-2">
-              <div className="flex w-100">
-                <select
-                  style={{ width: "61%" }}
-                  value={selectedCompany}
-                  onChange={handleCompanyChange}
-                  className="px-2 border border-1 rounded w-100 py-4 mr-2"
-                >
-                  <option value="" disabled>
-                    Select Company
-                  </option>
-                  <option value="None">None</option>
-                  {companies?.map((company, index) => (
-                    <option key={index} value={company?.companyName}>
-                      {company.companyName}
-                    </option>
-                  ))}
-                </select>
-                <div className="flex justify-center">
-                  <button
-                    onClick={handleOpenModal}
-                    className="bg-purple-700 text-white px-3 md:py-2 lg:py-4 rounded"
+              {agencyName != "" ? (
+                <div className="flex w-100">
+                  <select
+                    style={{ width: "61%" }}
+                    value={selectedCompany}
+                    onChange={handleCompanyChange}
+                    className="px-2 border border-1 rounded w-100 py-4 mr-2"
                   >
-                    Add Company
-                  </button>
+                    <option value="" disabled>
+                      Select Company
+                    </option>
+                    <option value="None">None</option>
+                    {companies?.map((company, index) => (
+                      <option key={index} value={company?.companyName}>
+                        {company.companyName}
+                      </option>
+                    ))}
+                  </select>
+                  <div className="flex justify-center">
+                    <button
+                      onClick={handleOpenModal}
+                      className="bg-purple-700 text-white px-3 md:py-2 lg:py-4 rounded"
+                    >
+                      Add Company
+                    </button>
+                  </div>
                 </div>
-              </div>
-              <div className="flex justify-center mx-auto text-center w-1/2 px-3 md:py-2 lg:py-4 rounded mt-5">
+              ) : (
+                ""
+              )}
+              <div className="flex justify-center mx-auto text-center w-1/2 px-3 md:py-2 lg:py-4 rounded ">
                 {loading ? (
                   <button
                     className="px-10 uppercase py-3 mt-4"

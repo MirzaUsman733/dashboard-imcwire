@@ -1,7 +1,12 @@
+
+import { createClient } from "@supabase/supabase-js";
 import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
 import nodemailer from "nodemailer";
-
+const supabaseUrl = "https://inyhkgnpatnukqwcqwjr.supabase.co";
+const supabaseKey =
+  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlueWhrZ25wYXRudWtxd2Nxd2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMzNTE4NzcsImV4cCI6MjAyODkyNzg3N30.aPE4oEg-I62l1WODiymFiPLUIM9DmRP3RzuyQXz79Ws";
+const supabase = createClient(supabaseUrl, supabaseKey);
 const prisma = new PrismaClient();
 const transporter = nodemailer?.createTransport({
   host: "smtp.hostinger.com",
@@ -14,24 +19,124 @@ const transporter = nodemailer?.createTransport({
 });
 export async function POST(req) {
   try {
-    const data = await req?.json();
-    const file = data?.file;
     const isAdmin = true;
     if (isAdmin) {
-      if (!file) {
+    const data = await req.json();
+    console.log(data)
+    console.log(data?.storeData?.selectedOption)
+    if(data?.storeData?.selectedOption === "ownPr"){
+      console.log(data?.formDataContract)
+    const fileInOwnPR = data?.formDataContract?.file;
+    console.log("File in ownPr",fileInOwnPR)
+      if (fileInOwnPR == {}) {
         NextResponse.json({ error: "No file provided." }, { status: 400 });
       }
       let pdfUrl;
-      if (pdfUrl) {
-        const fileBuffer = Buffer.from(await file?.arrayBuffer());
-        const fileUploadDir = join(
-          "public",
-          `/uploads/pdf/submit-detail/${getDatePath()}`
-        );
-        pdfUrl = await saveFile(fileBuffer, file, fileUploadDir);
-      }
+      if (file) {
+        const timestamp = new Date().getTime();
+        const pdfName = `${timestamp}-${file.name}`;
+        const contentType = file.type;
+        try {
+          const { data, error } = await supabase.storage
+            .from("reports")
+            .upload(`pdfDetail/${pdfName}`, file, {contentType: contentType});
+          if (error) {
+            console.log(
+              "First Failed to upload PDF file to Supabase storage.",
+              error
+            );
+            return NextResponse.json(
+              { error: "Failed to upload PDF file to Supabase storage." },
+              { status: 500 }
+            );
+          }
+          console.log(data);
+          pdfUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
+          data.formDataContract.file = pdfUrl;
 
-      const planDoc = await prisma?.publication?.create({ data, pdfUrl });
+
+          const planDoc = await prisma?.publication?.create({ data, pdfUrl });
+          const userEmail = planDoc?.storeData?.formDataSignUp?.email;
+          const userName = planDoc?.storeData?.formDataSignUp?.name;
+          const userMailOptions = {
+            from: "IMCWire <Orders@imcwire.com>",
+            to: userEmail,
+            subject: "Press Release Submission Confirmation",
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>Press Release Submission Confirmation</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+              <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <h2>Press Release Submission Confirmation</h2>
+                <p>Dear ${userName},</p>
+                <p>Thank you for choosing IMCWire for your press release needs. We're eager to help broadcast your message through our vast network of media outlets.</p>
+                
+                <h3>Order Status:</h3>
+                <ul>
+                  <li><strong>Order ID:</strong> ${planDoc?.storeData?.clientId}</li>
+                  <li><strong>Plan:</strong> ${planDoc?.storeData?.matchedPlanData?.planName}</li>
+                  <li><strong>Submitted on:</strong> ${planDoc?.storeData?.matchedPlanData?.createdAt} </li>
+                </ul>
+                
+                <h3>Next Steps:</h3>
+                <p><strong>Review Process:</strong> Our team is currently reviewing your submission to ensure it meets our quality and content standards.</p>
+                <p><strong>Approval Notification:</strong> We will email you as soon as your order is approved and processing begins.</p>
+                <p><strong>Distribution:</strong> Once approved, your press release will be scheduled for distribution as per your plan's timeline.</p>
+                
+                <p>We appreciate your patience during the review and strive to expedite this process. Should you have any queries or need further assistance, please contact us at <strong><a mailto="support@imcwire.com">support@imcwire.com</a></strong>.</p>
+                
+                <p>We're committed to achieving maximum visibility and impact for your press release and look forward to a successful distribution.</p>
+                
+                <p>Warm regards,<br>The IMCWire Team</p>
+              </div>
+            </body>
+            </html>
+            `,
+          };
+          await transporter.sendMail(userMailOptions);
+    
+          // Send alert email to admin(s)
+          const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+          const adminMailOptions = {
+            from: "IMCWire <Orders@imcwire.com>",
+            to: adminEmails.join(","), // Join the admin emails with commas
+            subject: "New Press Release Submission",
+            html: `
+            <!DOCTYPE html>
+            <html lang="en">
+            <head>
+              <meta charset="UTF-8">
+              <meta name="viewport" content="width=device-width, initial-scale=1.0">
+              <title>New Press Release Submission</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+              <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+                <h2>New Press Release Submission</h2>
+                <p>A new press release has been submitted and is awaiting approval:</p>
+                <ul>
+                  <li><strong>User Name:</strong> ${userName}</li>
+                  <li><strong>User Email:</strong> ${userEmail}</li>
+                </ul>
+              </div>
+            </body>
+            </html>
+            `,
+          };
+          await transporter.sendMail(adminMailOptions);
+    
+          return NextResponse.json(planDoc);
+
+        } catch (error) {
+          console.log("supabase storage cannot proper work in pdf", error);
+        }
+      }
+    } else{
+      const planDoc = await prisma?.publication?.create({ data });
       const userEmail = planDoc?.storeData?.formDataSignUp?.email;
       const userName = planDoc?.storeData?.formDataSignUp?.name;
       const userMailOptions = {
@@ -106,9 +211,11 @@ export async function POST(req) {
       await transporter.sendMail(adminMailOptions);
 
       return NextResponse.json(planDoc);
-    } else {
-      return NextResponse.json({});
     }
+  } else {
+    return NextResponse.json({})
+    }
+     
   } catch (error) {
     return NextResponse.json({
       status: 500,

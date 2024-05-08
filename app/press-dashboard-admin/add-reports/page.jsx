@@ -29,7 +29,7 @@ const fileUploadButtonStyles = {
 const fileUploadLabelStyles = {
   cursor: "pointer",
 };
-
+// usmna
 export default function Page() {
   const [plans, setPlans] = useState([]);
   // const [compaignEmails, setCompaignEmail] = useState([])
@@ -478,7 +478,9 @@ export default function Page() {
 
           <input
             type="file"
-            onChange={(e) => setUploadedPDF(e.target.files[0])}
+            onChange={(e) => {
+              console.log(e)
+              setUploadedPDF(e.target.files[0])}}
             className="hidden"
             id="pdf-upload"
             accept=".pdf"
@@ -506,7 +508,9 @@ export default function Page() {
           </label>
           <input
             type="file"
-            onChange={(e) => setUploadedExcel(e.target.files[0])}
+            onChange={(e) => {
+              console.log(e)
+              setUploadedExcel(e.target.files[0])}}
             className="hidden"
             id="excel-upload"
             accept=".xlsx, .xls, .pptx"

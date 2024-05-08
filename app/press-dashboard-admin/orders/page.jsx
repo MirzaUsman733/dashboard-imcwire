@@ -145,7 +145,8 @@ export default function Page() {
       if (response.ok) {
         const plansData = await response?.json();
         const paidPlans = plansData?.filter((plan) => plan?.status === "paid");
-        setPlans(paidPlans);
+        const sortedData = paidPlans?.sort((a, b) => b.id - a.id);
+        setPlans(sortedData);
         setLoading(false);
       } else {
         console.error("Failed to fetch plans");
@@ -206,8 +207,7 @@ export default function Page() {
               {(rowsPerPage > 0
                 ? plans
                 .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                .sort((a, b) => b.id - a.id)
-            : plans.sort((a, b) => b.id - a.id)
+            : plans
               ) // Sort all plans by descending order of row.id
                 .map((row) => (
                   <StyledTableRow key={row.id}>
