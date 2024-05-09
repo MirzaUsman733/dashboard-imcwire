@@ -19,9 +19,9 @@ const authOptions = {
       },
       async authorize(credentials) {
         try {
-            if (!(await verifyRecaptcha(credentials.token))) {
-                throw new Error("CAPTCHA verification failed");
-              }
+          if (!(await verifyRecaptcha(credentials.token))) {
+            throw new Error("CAPTCHA verification failed");
+          }
           const user = await prisma.user.findUnique({
             where: { email: credentials?.email },
           });
@@ -90,9 +90,11 @@ const authOptions = {
     },
     async session({ session, token }) {
       if (session?.user) {
+        session.expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
         (session.user.role = token.role),
           (session.user.id = token.userId),
           (session.user.status = token.status);
+        session.user.now = Date.now();
       }
       return session;
     },
@@ -116,15 +118,22 @@ const authOptions = {
       return true;
     },
   },
+  session: {
+    jwt: true,
+    maxAge: 1440, // 5 minutes in seconds
+  },
 };
 async function verifyRecaptcha(token) {
-    const secretKey = process.env.RECAPTCHA_SECRET_KEY;
-    const response = await fetch(`https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`, {
+  const secretKey = process.env.RECAPTCHA_SECRET_KEY;
+  const response = await fetch(
+    `https://www.google.com/recaptcha/api/siteverify?secret=${secretKey}&response=${token}`,
+    {
       method: "POST",
       body: JSON.stringify({ token }),
-    });
-    const data = await response.json();
-    return data.success;
-  }
+    }
+  );
+  const data = await response.json();
+  return data.success;
+}
 const handler = NextAuth(authOptions);
 export { handler as GET, handler as POST };

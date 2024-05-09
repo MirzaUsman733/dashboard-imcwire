@@ -3,10 +3,11 @@ import "./globals.css";
 import { DistributionProvider } from "./contexts/DistributionContext";
 import SessionProvider from "./utils/SessionProvider";
 import { DataProvider } from "./contexts/DataContext";
-import {UpdateDataProvider} from './contexts/updateDataContext'
-import 'react-toastify/dist/ReactToastify.css';
-import ToastProvider from '../app/contexts/Toastcontext'
+import { UpdateDataProvider } from "./contexts/updateDataContext";
+import "react-toastify/dist/ReactToastify.css";
+import ToastProvider from "../app/contexts/Toastcontext";
 import { UserProvider } from "./contexts/userData";
+import SessionTimeout from "./components/SessionTimeout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -19,23 +20,25 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body className={inter.className}>
-      <script
-        crossOrigin="anonymous"
-        src="https://www.google.com/recaptcha/api.js"
-      ></script>
+        <script
+          crossOrigin="anonymous"
+          src="https://www.google.com/recaptcha/api.js"
+        ></script>
         <SessionProvider>
           <UserProvider>
             <DataProvider>
-            <UpdateDataProvider>
-              <DistributionProvider>
-              <ToastProvider >
-                {children}
-              </ToastProvider>
-              {/* <ToastContainer /> */}
-              </DistributionProvider>
-            </UpdateDataProvider>
+              <UpdateDataProvider>
+                <DistributionProvider>
+                  <ToastProvider>
+                    <SessionTimeout timeout={24 * 60 * 60 * 1000}>
+                      {children}
+                    </SessionTimeout>
+                  </ToastProvider>
+                  {/* <ToastContainer /> */}
+                </DistributionProvider>
+              </UpdateDataProvider>
             </DataProvider>
-            </UserProvider>
+          </UserProvider>
         </SessionProvider>
       </body>
     </html>

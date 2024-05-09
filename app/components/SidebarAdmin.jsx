@@ -25,6 +25,7 @@ import { Add } from "@mui/icons-material";
 import PaymentIcon from "@mui/icons-material/Payment";
 import AssessmentIcon from "@mui/icons-material/Assessment";
 import { signOut, useSession } from "next-auth/react";
+import { useRouter } from "next/navigation";
 const drawerWidth = 240;
 
 const Main = styled("main", { shouldForwardProp: (prop) => prop !== "open" })(
@@ -73,6 +74,7 @@ const DrawerHeader = styled("div")(({ theme }) => ({
 }));
 
 const SidebarDashboard = ({ children }) => {
+  const router = useRouter()
   const session = useSession();
   const [open, setOpen] = useState(true);
   const [windowWidth, setWindowWidth] = useState(0);
