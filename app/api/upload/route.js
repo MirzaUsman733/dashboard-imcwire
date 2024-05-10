@@ -188,7 +188,7 @@ export async function POST(req) {
     const pdf = formData?.get("pdf");
     const excel = formData?.get("excel");
     const uniqueId = formData?.get("id");
-    console.log(uniqueId);
+    // console.log(uniqueId);
     if (!pdf && !excel) {
       return NextResponse.json(
         { error: "No PDF or Excel file provided." },
@@ -216,7 +216,7 @@ export async function POST(req) {
             { status: 500 }
           );
         }
-        console.log(data);
+        // console.log(data);
         pdfUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
       } catch (error) {
         console.log("supabase storage cannot proper work in pdf", error);
@@ -224,7 +224,7 @@ export async function POST(req) {
     }
 
     if (excel) {
-      console.log("excel", excel)
+      // console.log("excel", excel)
       try {
         const timestamp = new Date().getTime();
         const excelName = `${timestamp}-${excel.name}`;
@@ -248,9 +248,9 @@ export async function POST(req) {
         console.log("Supabase error in excel", error);
       }
     }
-    console.log("Check Unique ID", uniqueId);
-    console.log("Check PDF URL", pdfUrl);
-    console.log("Check Excel URL", excelUrl);
+    // console.log("Check Unique ID", uniqueId);
+    // console.log("Check PDF URL", pdfUrl);
+    // console.log("Check Excel URL", excelUrl);
     const result = await prisma?.file?.create({
       data: {
         id: uniqueId,

@@ -1,14 +1,11 @@
 'use client'
-// SessionTimeout.js
 import { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 
 const SessionTimeout = ({ children, timeout }) => {
     const { data: session, status: sessionStatus } = useSession();
-    console.log(session)
   const router = useRouter();
-  console.log(session)
 
   useEffect(() => {
     const sessionStartTime = session?.user?.now;

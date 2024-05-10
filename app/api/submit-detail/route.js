@@ -131,7 +131,7 @@ export async function PUT(req) {
       where: { id: publicationId },
       data: updatedData,
     });
-    console.log(user);
+    // console.log(user);
     const userEmail = user?.storeData?.formDataSignUp?.email;
     const userName = user?.storeData?.formDataSignUp?.name;
     let emailSubject, emailText;
