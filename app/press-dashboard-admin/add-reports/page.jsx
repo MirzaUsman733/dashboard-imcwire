@@ -483,7 +483,7 @@ export default function Page() {
               setUploadedPDF(e.target.files[0])}}
             className="hidden"
             id="pdf-upload"
-            accept=".pdf"
+            accept=".pdf,.doc,.docs"
           />
           <label htmlFor="pdf-upload" style={fileUploadLabelStyles}>
             <Button
