@@ -129,7 +129,13 @@ export default function Page() {
   }, [sessionStatus]);
 
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "short", day: "numeric" };
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
@@ -152,8 +158,11 @@ export default function Page() {
       if (response.ok) {
         const plansData = await response?.json();
         // setPlans(plansData);
-        setPlans(plansData.sort((a, b) => b.id - a.id));
-        setLoading(false)
+        setPlans(plansData.sort((a, b) => b.reportId - a.reportId));
+        // setPlans(plansData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
+        // const sortedPlans = plansData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
+        // setPlans(sortedPlans)
+        setLoading(false);
       } else {
         console.error("Failed to fetch plans");
       }
@@ -167,6 +176,7 @@ export default function Page() {
       fetchPlans();
     }
   }, [session]);
+  console.log("Reports : ", plans);
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -179,7 +189,12 @@ export default function Page() {
       </div>
     );
   }
-  if (session && sessionStatus === "authenticated" && plans && loading === false) {
+  if (
+    session &&
+    sessionStatus === "authenticated" &&
+    plans &&
+    loading === false
+  ) {
     return (
       <Container>
         <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
@@ -192,7 +207,7 @@ export default function Page() {
           <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
             <TableHead>
               <TableRow>
-                <StyledTableCell className="font-bold">PR No.</StyledTableCell>
+                <StyledTableCell className="font-bold">Report No.</StyledTableCell>
                 <StyledTableCell className="font-bold">
                   Press Release Title
                 </StyledTableCell>
@@ -202,7 +217,7 @@ export default function Page() {
                 <StyledTableCell className="font-bold">
                   Package Name
                 </StyledTableCell>
-                {/* <StyledTableCell className="font-bold">Date</StyledTableCell> */}
+                <StyledTableCell className="font-bold">Date</StyledTableCell>
                 <StyledTableCell className="font-bold">
                   View Reports
                 </StyledTableCell>
@@ -217,7 +232,7 @@ export default function Page() {
                 : plans
               ).map((row, i) => (
                 <StyledTableRow key={row.id}>
-                  <TableCell style={{ width: 100 }}>{row.id}</TableCell>
+                  <TableCell style={{ width: 100 }}>{row.reportId}</TableCell>
                   <TableCell style={{ width: 260 }}>
                     {row.pressReleaseTitle}
                   </TableCell>
@@ -228,12 +243,15 @@ export default function Page() {
                     {row.packageName}
                   </TableCell>
                   {/*  */}
-                  {/* <TableCell style={{ width: 160 }}>
-                    {formatDate(row.currentTime)}
-                  </TableCell> */}
                   <TableCell style={{ width: 160 }}>
-                    <Link  className="border border-1 border-purple-700 py-1 bg-purple-100 hover:bg-purple-700 hover:text-white hover:border-0 rounded-lg px-2" href={`/press-dashboard-admin/reports/${row.id}`}>
-                        Reports
+                    {formatDate(row.createdAt)}
+                  </TableCell>
+                  <TableCell style={{ width: 160 }}>
+                    <Link
+                      className="border border-1 border-purple-700 py-1 bg-purple-100 hover:bg-purple-700 hover:text-white hover:border-0 rounded-lg px-2"
+                      href={`/press-dashboard-admin/reports/${row.id}`}
+                    >
+                      Reports
                     </Link>
                   </TableCell>
                 </StyledTableRow>

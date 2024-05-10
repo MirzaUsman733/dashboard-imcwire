@@ -113,19 +113,9 @@ const Page = ({ params }) => {
     <>
       <TawkTo/>
       <div className="container-lg lg:max-w-7xl mx-auto mt-32">
-        <h1
-          className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10"
-          style={{
-            backgroundImage: `url('https://images.unsplash.com/photo-1517504734587-2890819debab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHVycGxlJTIwYWVzdGhldGljfGVufDB8fDB8fHww')`,
-            backgroundSize: "cover",
-            backgroundClip: "text",
-            color: "transparent",
-            textShadow:
-              "2px 7px 5px rgba(0,0,0,0.3), 0px -4px 10px rgba(255,255,255,0.3)",
-          }}
-        >
-          Press Release Order
-        </h1>
+      <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
+        Press Release Order
+      </h1>
         <div className="grid grid-cols-12 gap-4">
           <div className="col-span-3 sm:col-span-4 md:col-span-3">
             <TimelineCreate
@@ -141,6 +131,7 @@ const Page = ({ params }) => {
                     onNextButtonClick={handleNextButtonClick}
                     formData={formData}
                     setFormData={setFormData}
+                    agencyName={agencyName}
                   />
                 </div>
               )}

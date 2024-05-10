@@ -8,6 +8,7 @@ import "react-toastify/dist/ReactToastify.css";
 import ToastProvider from "../app/contexts/Toastcontext";
 import { UserProvider } from "./contexts/userData";
 import SessionTimeout from "./components/SessionTimeout";
+import { useSession } from "next-auth/react";
 
 const inter = Inter({ subsets: ["latin"] });
 

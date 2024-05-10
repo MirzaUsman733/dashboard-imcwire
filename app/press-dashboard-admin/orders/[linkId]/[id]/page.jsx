@@ -44,7 +44,7 @@ const Page = ({ params }) => {
   }, [fetchDetail]);
   console.log(detail);
   const fetchFiles = async () => {
-    if (detail?.formDataContract.file != null) {
+    if (detail?.formDataContract?.file != null) {
       try {
         const uniId = detail?.formDataContract?.file;
         const response = await fetch("/api/uploadPdf?_id=" + uniId);
@@ -61,10 +61,10 @@ const Page = ({ params }) => {
     }
   };
   useEffect(() => {
-    if (detail) {
+    if (detail?.formDataContract?.file != null) {
       fetchFiles();
     }
-  }, [detail]);
+  }, [detail?.formDataContract?.file != null]);
   const handleStatusChange = async () => {
     setLoadingButton(true)
     try {
@@ -393,6 +393,7 @@ const Page = ({ params }) => {
                   </div>
                 ) : (
                   <div>
+                    {filterData?.pdf && (
                     <Link
                       href={filterData?.pdf}
                       // download
@@ -401,6 +402,7 @@ const Page = ({ params }) => {
                     >
                        <FaRegFilePdf /> <span> Download Docs file </span>
                     </Link>
+                    )}
                   </div>
                 )}
               </div>

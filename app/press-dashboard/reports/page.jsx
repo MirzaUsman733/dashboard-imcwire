@@ -150,7 +150,8 @@ export default function Page() {
           (plan) => plan?.storeData.formDataSignUp.email === sessionEmail
         );
         setRowsPerPage(filterData.length)
-        setPlans(filterData);
+        // setPlans(filterData);
+        setPlans(filterData.sort((a, b) => b.reportId - a.reportId));
         // setPlans(filterData.sort((a, b) => b.id - a.id));
         setLoading(false);
       } else {
@@ -192,7 +193,7 @@ export default function Page() {
           <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
             <TableHead>
               <TableRow>
-                <StyledTableCell className="font-bold">PR No.</StyledTableCell>
+                <StyledTableCell className="font-bold">Report No.</StyledTableCell>
                 <StyledTableCell className="font-bold">
                   Press Release Title
                 </StyledTableCell>
@@ -224,7 +225,7 @@ export default function Page() {
               ) // Sort all data by descending order of row.id
                 .map((row, index) => (
                 <StyledTableRow key={row?.id}>
-                  <TableCell style={{ width: 100 }}>{row.id}</TableCell>
+                  <TableCell style={{ width: 100 }}>{row.reportId}</TableCell>
                   <TableCell style={{ width: 260 }}>
                     {row?.pressReleaseTitle}
                   </TableCell>

@@ -175,7 +175,8 @@ export default function Page() {
       const response = await fetch("/api/register");
       if (response.ok) {
         const usersData = await response.json();
-        setUsers(usersData);
+        const sortedData = usersData?.sort((a, b) => b.id - a.id);
+        setUsers(sortedData);
         setLoading(false);
       } else {
         console.error("Failed to fetch plans");
@@ -326,8 +327,7 @@ export default function Page() {
               {(rowsPerPage > 0
                 ? users
                     .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
-                    .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
-                : users.sort((a, b) => b.id - a.id)
+                : users
               ) // Sort all data by descending order of row.id
                 .map((row, index) => (
                   <StyledTableRow key={row.id}>

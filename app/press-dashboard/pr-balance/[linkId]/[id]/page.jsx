@@ -342,6 +342,7 @@ const Page = ({ params }) => {
                   </div>
                 ) : (
                   <div>
+                    {filterData?.pdf && (
                     <Link
                       href={filterData?.pdf}
                       // download
@@ -350,6 +351,7 @@ const Page = ({ params }) => {
                     >
                        <FaRegFilePdf /> <span> Download Docs file </span>
                     </Link>
+                    )}
                   </div>
                 )}
               </div>

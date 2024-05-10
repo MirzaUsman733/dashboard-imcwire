@@ -1,35 +1,35 @@
-
-// import React, { useEffect } from "react";
+'use client'
+import { useSession } from "next-auth/react";
 import SidebarDashboard from "../components/SidebarDashboard";
-// import { signOut } from "next-auth/react";
-// import { useRouter } from "next/navigation";
-import SessionTimeout from '../components/SessionTimeout'
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
+import { InfinitySpin } from "react-loader-spinner";
+
 const Layout = ({ children }) => {
-  // const router = useRouter()
-  // const SESSION_TIMEOUT = 1 * 60 * 1000; 
+  const [loading, setLoading] = useState(true);
+  const { data: session, status: sessionStatus } = useSession();
+  const router = useRouter();
 
-  // useEffect(() => {
-  //   const sessionStartTime = new Date().getTime();
-  //   localStorage.setItem("sessionStartTime", sessionStartTime);
+  useEffect(() => {
+    if (sessionStatus === "unauthenticated") {
+      router.replace("/login");
+    } else {
+      setLoading(false);
+    }
+  }, [sessionStatus, router]);
 
-  //   const timer = setTimeout(() => {
-  //     logoutUser();
-  //   }, SESSION_TIMEOUT);
-
-  //   return () => {
-  //     clearTimeout(timer);
-  //   };
-  // }, []);
-
-  // const logoutUser = async () => {
-  //   try {
-  //     await signOut({ redirect: false });
-  //     router.push("dashboard.imcwire.com/login");
-  //     console.log("User has been logged out due to inactivity");
-  //   } catch (error) {
-  //     console.error("Error logging out user:", error);
-  //   }
-  // };
+  if (loading) {
+    return (
+      <div className="h-[80vh] flex justify-center items-center w-full">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#7E22CE"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
 
   return (
     <>

@@ -101,6 +101,7 @@ model PlanItem {
 // }
 model Report {
   id                Int      @id
+  reportId          Int @default(autoincrement())
   storeData         Json
   formData          Json
   formDataContract  Json

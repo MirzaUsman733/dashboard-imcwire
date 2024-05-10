@@ -171,7 +171,16 @@ const Page = ({ params }) => {
       setLoading(false);
     }
   }, [plans]);
-
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
   React.useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);

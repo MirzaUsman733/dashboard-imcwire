@@ -155,6 +155,16 @@ export default function Page() {
       console.error("Error fetching plans:", error);
     }
   };
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
   React.useEffect(() => {
     if (session) {
       fetchPlans();

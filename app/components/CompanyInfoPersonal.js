@@ -9,7 +9,7 @@ import {
   AiOutlineHome,
 } from "react-icons/ai";
 
-const CompanyInfoPersonal = ({ onNextButtonClick, formData, setFormData }) => {
+const CompanyInfoPersonal = ({ onNextButtonClick, formData, setFormData, agencyName }) => {
   const [focusedField, setFocusedField] = useState("");
   const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [snackbarMessage, setSnackbarMessage] = useState("");
@@ -58,12 +58,13 @@ const CompanyInfoPersonal = ({ onNextButtonClick, formData, setFormData }) => {
           {snackbarMessage}
         </MuiAlert>
       </Snackbar>
+      
       <h2 className="text-2xl font-bold mb-4 text-center">
-        Your Company Information
+       {agencyName ? "Your Agency Information": "Your Company Information"} 
       </h2>
       <form onSubmit={handleSubmit} className="space-y-4">
         <TextField
-          label="Company Name"
+          label={agencyName ? `Company Name` : `Agency Name`}
           variant="outlined"
           type="variant"
           name="companyName"
@@ -75,7 +76,7 @@ const CompanyInfoPersonal = ({ onNextButtonClick, formData, setFormData }) => {
           onBlur={handleBlur}
           InputProps={{
             startAdornment: <AiOutlineGlobal className="text-gray-400 me-2" />,
-            placeholder: focusedField !== "companyName" ? "Company Name" : "",
+            placeholder: focusedField !== "companyName" ? "Company & Agency Name" : "",
           }}
           className={focusedField === "companyName" ? "focused" : ""}
         />
@@ -98,7 +99,7 @@ const CompanyInfoPersonal = ({ onNextButtonClick, formData, setFormData }) => {
           className={focusedField === "name" ? "focused" : ""}
         />
         <TextField
-          label="Company Email"
+          label={agencyName ? `Company Email` : `Agency Email`}
           variant="outlined"
           type="email"
           name="email"
@@ -111,7 +112,7 @@ const CompanyInfoPersonal = ({ onNextButtonClick, formData, setFormData }) => {
           onBlur={handleBlur}
           InputProps={{
             startAdornment: <AiOutlineMail className="text-gray-400 me-2" />,
-            placeholder: focusedField !== "email" ? "Company Email" : "",
+            placeholder: focusedField !== "email" ? "Company & Agency Email" : "",
           }}
           className={focusedField === "email" ? "focused" : ""}
         />

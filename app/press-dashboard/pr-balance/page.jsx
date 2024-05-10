@@ -160,6 +160,18 @@ export default function Page() {
     } finally {
     }
   };
+
+  const formatDate = (dateString) => {
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
+    return new Date(dateString).toLocaleDateString(undefined, options);
+  };
+
   React.useEffect(() => {
     if (session) {
       fetchPlans();
