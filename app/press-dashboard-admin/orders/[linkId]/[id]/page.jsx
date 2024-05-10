@@ -66,7 +66,7 @@ const Page = ({ params }) => {
     }
   }, [detail?.formDataContract?.file != null]);
   const handleStatusChange = async () => {
-    setLoadingButton(true)
+    setLoadingButton(true);
     try {
       const updatedDetail = {
         ...detail,
@@ -81,7 +81,7 @@ const Page = ({ params }) => {
       });
       if (response.ok) {
         setDetail(updatedDetail);
-        setLoadingButton(false)
+        setLoadingButton(false);
       } else {
         console.error("Failed to update status");
       }
@@ -127,39 +127,49 @@ const Page = ({ params }) => {
                     <h2 className="text-2xl font-bold mb-4 text-center font-serif">
                       Company Data
                     </h2>
-                    <div className="text-gray-600 gap-1 flex flex-col">
+                    <div className="text-gray-600">
                       <p>
                         <span className="font-bold text-lg"> Name: </span>
-                        {detail?.formData?.name}
+                        {detail?.formData?.companyName}
                       </p>
-                      <hr />
                       <p>
                         <span className="font-bold text-lg">Email: </span>
                         {detail?.formData?.email}
                       </p>
-                      <hr />
                       <p>
                         <span className="font-bold text-lg">Phone: </span>
                         {detail?.formData?.phone}
                       </p>
-                      <hr />
                       <p>
                         <span className="font-bold text-lg">
                           Company Name:{" "}
                         </span>
                         {detail?.formData?.companyName}
                       </p>
-                      <hr />
+                      <p>
+                        <span className="font-bold text-lg">State: </span>
+                        {detail?.formData?.state}
+                      </p>
+                      <p>
+                        <span className="font-bold text-lg">City: </span>
+                        {detail?.formData?.city}
+                      </p>
                       <p>
                         <span className="font-bold text-lg">Address: </span>
-                        {detail?.formData?.address}
+                        {detail?.formData?.address1}
                       </p>
-                      <hr />
+                      <p>
+                        <span className="font-bold text-lg">Address: </span>
+                        {detail?.formData?.address2}
+                      </p>
                       <p>
                         <span className="font-bold text-lg"> Website: </span>
-                        <a href={detail?.formData?.websiteUrl} target="_blank">
+                        <Link
+                          href={detail?.formData?.websiteUrl}
+                          target="_blank"
+                        >
                           {detail?.formData?.websiteUrl}
-                        </a>
+                        </Link>
                       </p>
                     </div>
                   </div>
@@ -269,8 +279,6 @@ const Page = ({ params }) => {
                   </div>
                 </div>
 
-            
-
                 {/* Selected Categories Section */}
                 <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                   <div className="p-6">
@@ -284,8 +292,8 @@ const Page = ({ params }) => {
                             <li key={index}>
                               <span className="font-bold text-lg">
                                 {category.name}:
-                              </span> &nbsp;
-                              ${category.price}
+                              </span>{" "}
+                              &nbsp; ${category.price}
                             </li>
                             <hr />
                           </>
@@ -308,8 +316,8 @@ const Page = ({ params }) => {
                             <li key={index}>
                               <span className="font-bold text-lg">
                                 {country?.name}:
-                              </span> &nbsp;
-                              ${country?.price}
+                              </span>{" "}
+                              &nbsp; ${country?.price}
                             </li>
                             <hr />
                           </>
@@ -350,26 +358,28 @@ const Page = ({ params }) => {
                       <p>
                         <span className="font-bold text-lg">
                           Selected Option:
-                        </span> &nbsp;
+                        </span>{" "}
+                        &nbsp;
                         {detail?.storeData?.selectedOption}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">
                           Selected Price:
-                        </span> &nbsp;
-                        ${detail?.storeData?.selectedPrice}
+                        </span>{" "}
+                        &nbsp; ${detail?.storeData?.selectedPrice}
                       </p>
                       <hr />
                       <p>
-                        <span className="font-bold text-lg">Status: </span> &nbsp;
+                        <span className="font-bold text-lg">Status: </span>{" "}
+                        &nbsp;
                         {detail?.storeData?.status}
                       </p>
                     </div>
                   </div>
                 </div>
-                   {/* Form Data Contract Section */}
-                   {detail?.formDataContract?.file != null && !filterData?.pdf ? (
+                {/* Form Data Contract Section */}
+                {detail?.formDataContract?.file != null && !filterData?.pdf ? (
                   <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                     <div className="p-6">
                       <h2 className="text-2xl font-bold mb-4 text-center font-serif">
@@ -394,14 +404,14 @@ const Page = ({ params }) => {
                 ) : (
                   <div>
                     {filterData?.pdf && (
-                    <Link
-                      href={filterData?.pdf}
-                      // download
-                      download="excel-file.pptx"
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
-                    >
-                       <FaRegFilePdf /> <span> Download Docs file </span>
-                    </Link>
+                      <Link
+                        href={filterData?.pdf}
+                        // download
+                        download="excel-file.pptx"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                      >
+                        <FaRegFilePdf /> <span> Download Docs file </span>
+                      </Link>
                     )}
                   </div>
                 )}
@@ -410,7 +420,9 @@ const Page = ({ params }) => {
             <hr className="py-2" />
             <div className="bg-white shadow-xl rounded px-8 pt-6 pb-8 mb-4 flex items-center">
               <p className="text-gray-600 flex-grow">
-                <span className="font-bold text-2xl font-serif">Status Update : </span>
+                <span className="font-bold text-2xl font-serif">
+                  Status Update :{" "}
+                </span>
               </p>
               <select
                 value={selectedStatus}
@@ -429,7 +441,7 @@ const Page = ({ params }) => {
                 onClick={handleStatusChange}
                 className="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none shadow-2xl focus:shadow-outline"
               >
-              {loadingButton? "Loading..." : "Update Status" }  
+                {loadingButton ? "Loading..." : "Update Status"}
               </button>
             </div>
           </div>

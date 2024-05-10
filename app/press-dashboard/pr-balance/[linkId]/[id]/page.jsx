@@ -105,7 +105,7 @@ const Page = ({ params }) => {
                     <div className="text-gray-600">
                       <p>
                         <span className="font-bold text-lg"> Name: </span>
-                        {detail?.formData?.name}
+                        {detail?.formData?.companyName}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Email: </span>
@@ -122,8 +122,24 @@ const Page = ({ params }) => {
                         {detail?.formData?.companyName}
                       </p>
                       <p>
+                        <span className="font-bold text-lg">
+                          State:{" "}
+                        </span>
+                        {detail?.formData?.state}
+                      </p>
+                      <p>
+                        <span className="font-bold text-lg">
+                          City:{" "}
+                        </span>
+                        {detail?.formData?.city}
+                      </p>
+                      <p>
                         <span className="font-bold text-lg">Address: </span>
-                        {detail?.formData?.address}
+                        {detail?.formData?.address1}
+                      </p>
+                      <p>
+                        <span className="font-bold text-lg">Address: </span>
+                        {detail?.formData?.address2}
                       </p>
                       <p>
                         <span className="font-bold text-lg"> Website: </span>
@@ -147,14 +163,10 @@ const Page = ({ params }) => {
                         {detail?.storeData?.action}
                       </p>
                       <p>
-                        <span className="font-bold text-lg">Agency Name: </span>
-                        {detail?.storeData?.agencyName}
-                      </p>
-                      <p>
                         <span className="font-bold text-lg">
                           Category Subtotal:
                         </span>
-                        {detail?.storeData?.categorySubtotal}
+                        ${detail?.storeData?.categorySubtotal}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Cost: </span> $
@@ -164,13 +176,13 @@ const Page = ({ params }) => {
                         <span className="font-bold text-lg">
                           Country Subtotal:
                         </span>
-                        {detail?.storeData?.countrySubTotal}
+                        ${detail?.storeData?.countrySubTotal}
                       </p>
                       <p>
                         <span className="font-bold text-lg">
                           Country Translations Price:
                         </span>
-                        {detail?.storeData?.countryTranslationsPrice}
+                        ${detail?.storeData?.countryTranslationsPrice}
                       </p>
                     </div>
                   </div>
@@ -358,12 +370,12 @@ const Page = ({ params }) => {
             </div>
             {detail?.storeData?.action === "pending" ? (
               <div className="flex justify-center">
-                <Link
+                {/* <Link
                   className="btn-grad px-5 py-3"
                   href={`/press-dashboard/pr-balance/${linkId}/${id}/${detail?.id}`}
                 >
                   Edit Detail
-                </Link>
+                </Link> */}
               </div>
             ) : (
               ""

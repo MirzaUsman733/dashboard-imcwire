@@ -2,8 +2,8 @@
 import React, { useCallback, useEffect, useState } from "react";
 import PublicationDetail from "../../components/PublicationDetail";
 import { useData } from "../../contexts/DataContext";
-import CompanyInfoPersonal from "../../components/CompanyInfoPersonal";
-import TimelineCreate from "../../components/TimelineDetail";
+// import CompanyInfoPersonal from "../../components/CompanyInfoPersonal";
+// import TimelineCreate from "../../components/TimelineDetail";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 import { InfinitySpin } from "react-loader-spinner";
@@ -19,21 +19,21 @@ const Page = ({ params }) => {
     publicationData,
     setPublicationData,
   } = useData();
-  const [showFirstComponent, setShowFirstComponent] = useState(false);
-  const [showSecondComponent, setShowSecondComponent] = useState(false);
-  const [showComponent, setShowComponent] = useState(false);
+  // const [showFirstComponent, setShowFirstComponent] = useState(false);
+  // const [showSecondComponent, setShowSecondComponent] = useState(false);
+  // const [showComponent, setShowComponent] = useState(false);
   const [plans, setPlans] = useState(null);
   const [detail, setDetail] = useState(null);
   const [detailAvailable, setDetailAvailable] = useState(false);
   const [loading, setLoading] = useState(true); 
   const { data: session, status: sessionStatus } = useSession();
-  const [agencyName, setAgencyName] = useState("")
+  // const [agencyName, setAgencyName] = useState("")
 
   const router = useRouter();
-  const handleNextButtonClick = () => {
-    setShowFirstComponent(false);
-    setShowSecondComponent(true);
-  };
+  // const handleNextButtonClick = () => {
+  //   setShowFirstComponent(false);
+  //   setShowSecondComponent(true);
+  // };
   const fetchPlans = useCallback(async () => {
     try {
       const response = await fetch("/api/compaignData?_id=" + id);
@@ -42,8 +42,8 @@ const Page = ({ params }) => {
         setPlans(plansData);
         console.log("plans Data:", plansData)
         console.log("Agency Name",plansData?.agencyName)
-        setAgencyName(plansData?.agencyName)
-        setShowFirstComponent(true);
+        // setAgencyName(plansData?.agencyName)
+        // setShowFirstComponent(true);
       } else {
         console.error("Failed to fetch plans");
       }
@@ -85,13 +85,6 @@ const Page = ({ params }) => {
     }
   }, [plans, storeMatchedData]);
   useEffect(() => {
-    const timer = setTimeout(() => {
-      setShowComponent(true);
-    }, 1000);
-
-    return () => clearTimeout(timer);
-  }, []);
-  useEffect(() => {
     if (sessionStatus === "unauthenticated") {
       router.replace("/login");
     }
@@ -117,15 +110,15 @@ const Page = ({ params }) => {
         Press Release Order
       </h1>
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-3 sm:col-span-4 md:col-span-3">
+          {/* <div className="col-span-3 sm:col-span-4 md:col-span-3">
             <TimelineCreate
               firstComponentShow={showFirstComponent}
               secondComponentShow={showSecondComponent}
             />
-          </div>
-          <div className="col-span-9 sm:col-span-8 md:col-span-9">
+          </div> */}
+          <div className="col-span-12">
             <div className="mt-18">
-              {showFirstComponent && (
+              {/* {showFirstComponent && (
                 <div>
                   <CompanyInfoPersonal
                     onNextButtonClick={handleNextButtonClick}
@@ -134,8 +127,7 @@ const Page = ({ params }) => {
                     agencyName={agencyName}
                   />
                 </div>
-              )}
-              {showSecondComponent && (
+              )} */}
                 <div>
                   <PublicationDetail
                     publicationData={publicationData}
@@ -143,10 +135,8 @@ const Page = ({ params }) => {
                     formData={formData}
                     storeData={matchedData}
                     setFormData={setFormData}
-                    agencyName={agencyName}
                   />
                 </div>
-              )}
             </div>
           </div>
         </div>

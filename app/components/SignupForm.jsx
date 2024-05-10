@@ -162,6 +162,7 @@ function SignupForm() {
           password: password,
           role: "user",
           token: token,
+          isAgency: isAgency,
         }),
       });
 
@@ -337,7 +338,6 @@ function SignupForm() {
                 onBlur={handleBlur}
                 className={focusedField === "name" ? "focused" : ""}
               />
-
               <TextField
                 label="Email"
                 type="email"
@@ -393,6 +393,14 @@ function SignupForm() {
                 }}
                 className={focusedField === "password" ? "focused" : ""}
               />
+              <input
+                type="checkbox"
+                id="agencyCheckbox"
+                onChange={handleAgencyCheckboxChange}
+                checked={isAgency}
+              />
+              &nbsp;
+              <label htmlFor="agencyCheckbox">Are you an agency?</label>
               <div className="w-full my-2">
                 <ReCAPTCHA
                   ref={recaptchaRef}
@@ -444,15 +452,7 @@ function SignupForm() {
           <label htmlFor="termsCheckbox">
             I have read and accept the Terms and Conditions
           </label>
-          <input
-            type="checkbox"
-            id="agencyCheckbox"
-            onChange={handleAgencyCheckboxChange}
-            checked={isAgency}
-          />
-          &nbsp;
-          <label htmlFor="agencyCheckbox">Are you an agency?</label>
-          {isAgency && (
+          {/* {isAgency && (
             <TextField
               label="Agency Name"
               type="text"
@@ -464,7 +464,7 @@ function SignupForm() {
               onBlur={handleBlur}
               className={focusedField === "agencyName" ? "focused" : ""}
             />
-          )}
+          )} */}
           {/* <button
             type="button"
             disabled={!acceptedTerms || !isChecked}

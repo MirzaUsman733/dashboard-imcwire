@@ -86,21 +86,21 @@ const Page = ({ params }) => {
       </h1>
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-4">
-          <div className="col-span-3 sm:col-span-4 md:col-span-3">
+          {/* <div className="col-span-3 sm:col-span-4 md:col-span-3">
             <TimelineCreate
               firstComponentShow={showFirstComponent}
               secondComponentShow={showSecondComponent}
             />
-          </div>
+          </div> */}
           <div className="col-span-9 sm:col-span-8 md:col-span-9">
             <div className="mt-18">
-              {showFirstComponent && (
+              {/* {showFirstComponent && (
                 <CompanyInfoPersonalUpdate
                   onNextButtonClick={handleNextButtonClick}
                   formData={formData}
                   setFormData={setFormData}
                 />
-              )}
+              )} */}
               {showSecondComponent && (
                 <PublicationdetailUpdate
                   publicationData={publicationData}

@@ -22,6 +22,7 @@ model User {
   role            String     @default("user")
   approved        Boolean    @default(false)
   status          String?
+  isAgency        Boolean?
   resetToken      String?
   tokenExpiration DateTime?
   createdAt       DateTime   @default(now())
@@ -56,8 +57,8 @@ model compaignData {
   selectedOption              String?
   status                      String   @default("unpaid")
   action                      String   @default("pending")
-  isAgency                    Boolean?
-  agencyName                  String?
+  // isAgency                    Boolean?
+  // agencyName                  String?
   transactionId               String?
   currentTime                 DateTime @default(now())
   updatedAt                   DateTime @default(now()) @updatedAt

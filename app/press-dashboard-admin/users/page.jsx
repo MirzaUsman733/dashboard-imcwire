@@ -191,7 +191,7 @@ export default function Page() {
   }, []);
 
   const handleDeleteClick = (id, index) => {
-    setLoadingDeletion(true)
+    setLoadingDeletion(true);
     fetch("/api/register?_id=" + id, {
       method: "DELETE",
     })
@@ -203,7 +203,7 @@ export default function Page() {
           setSnackbarSeverity("success");
           setSnackbarMessage("User deleted successfully.");
           setSnackbarOpen(true);
-          setLoadingDeletion(false)
+          setLoadingDeletion(false);
         } else {
           setSnackbarSeverity("error");
           setSnackbarMessage("Failed to delete user.");
@@ -320,13 +320,16 @@ export default function Page() {
                 <StyledTableCell>Name</StyledTableCell>
                 <StyledTableCell>Email</StyledTableCell>
                 <StyledTableCell>Status</StyledTableCell>
+                <StyledTableCell>Type</StyledTableCell>
                 <StyledTableCell>Action</StyledTableCell>
               </TableRow>
             </TableHead>
             <TableBody>
               {(rowsPerPage > 0
-                ? users
-                    .slice(page * rowsPerPage, page * rowsPerPage + rowsPerPage)
+                ? users.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
                 : users
               ) // Sort all data by descending order of row.id
                 .map((row, index) => (
@@ -335,6 +338,9 @@ export default function Page() {
                     <TableCell style={{ width: 260 }}>{row.name}</TableCell>
                     <TableCell style={{ width: 160 }}>{row.email}</TableCell>
                     <TableCell style={{ width: 160 }}>{row.status}</TableCell>
+                    <TableCell style={{ width: 160 }}>
+                      {row.isAgency ? "Agency" : "Client"}
+                    </TableCell>
                     <TableCell style={{ width: 160 }}>
                       <IconButton
                         aria-label="more"

@@ -239,7 +239,7 @@ const Page = ({ params }) => {
               <StyledTableRow key={row?.id}>
                 <TableCell style={{ width: 100 }}>{row?.id}</TableCell>
                 <TableCell style={{ width: 160 }}>
-                  {row?.formData?.name}
+                  {row?.formData?.companyName}
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
                   {row?.formData?.email}
@@ -248,7 +248,7 @@ const Page = ({ params }) => {
                   {formatDate(row?.updatedAt)}
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
-                  {row?.formData?.address}
+                  {row?.formData?.address1}
                 </TableCell>
                 {row?.storeData?.action === "pending" ? (
                   <TableCell style={{ width: 160 }}>

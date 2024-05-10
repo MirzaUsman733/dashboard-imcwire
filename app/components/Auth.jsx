@@ -22,6 +22,7 @@ export default function Auth() {
   const [passwordSignIn, setPasswordSignIn] = useState("");
   const [error, setError] = useState("");
   const [focusedField, setFocusedField] = useState("");
+  const [isAgency, setIsAgency] = useState(false);
   const [viewPasswordSignIn, setViewPasswordSignIn] = useState(true);
   const [viewPasswordLogin, setViewPasswordLogin] = useState(true);
   const [loadingSignUp, setLoadingSignUp] = useState(false);
@@ -43,6 +44,7 @@ export default function Auth() {
     setPassword("");
     setEmailSignIn("");
     setPasswordSignIn("");
+    setIsAgency(false)
     container.classList.remove("right-panel-active");
   };
 
@@ -54,6 +56,10 @@ export default function Auth() {
     setEmailSignIn("");
     setPasswordSignIn("");
     container.classList.add("right-panel-active");
+  };
+
+  const handleAgencyCheckboxChange = () => {
+    setIsAgency(!isAgency);
   };
 
   const handleChange = (e) => {
@@ -108,6 +114,7 @@ export default function Auth() {
       return;
     }
     setLoadingSignUp(true);
+    console.log(isAgency)
     try {
       const res = await fetch("/api/register", {
         method: "POST",
@@ -120,6 +127,7 @@ export default function Auth() {
           password,
           role: "user",
           token: signUpToken,
+          isAgency: isAgency,
         }),
       });
 
@@ -138,7 +146,7 @@ export default function Auth() {
         setEmailSignIn("");
         setPasswordSignIn("");
         handleRemoveBtnSignIn();
-
+        setIsAgency(false)
         return;
       }
       setError("Error, try again");
@@ -150,7 +158,7 @@ export default function Auth() {
   const handleSignInSubmit = async (e) => {
     e.preventDefault();
     const signInToken = await recaptchaSignInRef.current.getValue();
-    
+
     // const isVerified = await verifyCaptcha(token);
     // if (!isVerified) {
     //   setError("Please complete the reCAPTCHA verification");
@@ -273,11 +281,21 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
-                <div className="w-full my-2">
-                <ReCAPTCHA
-                  ref={recaptchaSignUpRef}
-                  sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                <div className="flex justify-start">
+                <input
+                  type="checkbox"
+                  id="agencyCheckbox"
+                  onChange={handleAgencyCheckboxChange}
+                  checked={isAgency}
                 />
+                &nbsp;
+                <label htmlFor="agencyCheckbox">Are you an agency?</label>
+                </div>
+                <div className="w-full my-1">
+                  <ReCAPTCHA
+                    ref={recaptchaSignUpRef}
+                    sitekey={process.env.NEXT_PUBLIC_RECAPTCHA_SITE_KEY}
+                  />
                 </div>
                 {loadingSignUp ? (
                   <button
