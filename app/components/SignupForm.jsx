@@ -273,8 +273,8 @@ function SignupForm() {
       formDataSignUp: formDataSignUp,
       selectedOption: selectedOption,
       clientId: clientId,
-      isAgency: isAgency,
-      agencyName: agencyName,
+      // isAgency: isAgency,
+      // agencyName: agencyName,
       transactionId: null,
     };
 
