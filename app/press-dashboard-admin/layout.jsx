@@ -18,7 +18,7 @@ const Layout = ({ children }) => {
   }, [sessionStatus, router]);
   if (loading) {
     return (
-      <div className="h-[80vh] flex justify-center items-center w-full">
+      <div className="h-[100vh] flex justify-center items-center w-full">
         <InfinitySpin
           visible={true}
           width="200"

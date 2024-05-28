@@ -1,4 +1,6 @@
 "use client";
+import { Snackbar } from "@mui/material";
+import MuiAlert from '@mui/material/Alert';
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -9,6 +11,7 @@ import { InfinitySpin } from "react-loader-spinner";
 const Page = ({ params }) => {
   const id = params.id;
   const [detail, setDetail] = useState(null);
+  const [snackbarOpen, setSnackbarOpen] = useState(false);
   const [selectedStatus, setSelectedStatus] = useState(
     detail?.storeData?.action
   );
@@ -82,12 +85,16 @@ const Page = ({ params }) => {
       if (response.ok) {
         setDetail(updatedDetail);
         setLoadingButton(false);
+        setSnackbarOpen(true)
       } else {
         console.error("Failed to update status");
       }
     } catch (error) {
       console.error("Error updating status:", error);
     }
+  };
+  const handleCloseSnackbar = () => {
+    setSnackbarOpen(false);
   };
   if (loading) {
     return (
@@ -104,6 +111,24 @@ const Page = ({ params }) => {
   if (session && sessionStatus === "authenticated" && detail) {
     return (
       <>
+       <Snackbar
+        open={snackbarOpen}
+        autoHideDuration={3000} // Adjust as needed
+        onClose={handleCloseSnackbar}
+        anchorOrigin={{
+          vertical: "top",
+          horizontal: "right",
+        }}
+      >
+        <MuiAlert
+          elevation={6}
+          variant="filled"
+          onClose={handleCloseSnackbar}
+          severity="success"
+        >
+          Update the order detail successfully
+        </MuiAlert>
+      </Snackbar>
         <div className="container-lg lg:max-w-7xl mx-auto mt-32">
           <h1
             className="text-6xl font-serif text-purple-700 font-bold text-center mb-20"
@@ -435,7 +460,7 @@ const Page = ({ params }) => {
                 <option value="pending">Pending</option>
                 <option value="approved">Approval</option>
                 <option value="inprogress">In Progress</option>
-                <option value="completed">Completed</option>
+                {/* <option value="completed">Completed</option> */}
               </select>
               <button
                 onClick={handleStatusChange}

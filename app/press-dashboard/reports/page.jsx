@@ -125,7 +125,13 @@ export default function Page() {
     }
   }, [sessionStatus, router]);
   const formatDate = (dateString) => {
-    const options = { year: "numeric", month: "short", day: "numeric" };
+    const options = {
+      year: "numeric",
+      month: "short",
+      day: "numeric",
+      hour: "numeric",
+      minute: "numeric",
+    };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
   // Avoid a layout jump when reaching the last page with empty rows.
@@ -203,7 +209,7 @@ export default function Page() {
                 <StyledTableCell className="font-bold">
                   Press Email
                 </StyledTableCell>
-                {/* <StyledTableCell className="font-bold">Date</StyledTableCell> */}
+                <StyledTableCell className="font-bold">Date</StyledTableCell>
                 <StyledTableCell className="font-bold">
                   View Reports
                 </StyledTableCell>
@@ -235,9 +241,9 @@ export default function Page() {
                   <TableCell style={{ width: 160 }}>
                     {row?.clientEmail}
                   </TableCell>
-                  {/* <TableCell style={{ width: 160 }}>
-                    {formatDate(row?.currentTime)}
-                  </TableCell> */}
+                  <TableCell style={{ width: 160 }}>
+                    {formatDate(row?.createdAt)}
+                  </TableCell>
                   <TableCell style={{ width: 160 }}>
                     <Link
                       href={`/press-dashboard/reports/${row?.id}`}

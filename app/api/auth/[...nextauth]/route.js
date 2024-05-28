@@ -120,7 +120,7 @@ const authOptions = {
   },
   session: {
     jwt: true,
-    maxAge: 1440, // 5 minutes in seconds
+    maxAge: 86400, 
   },
 };
 async function verifyRecaptcha(token) {

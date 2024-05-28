@@ -68,7 +68,6 @@ export default function Page() {
   const handleAddPlan = async () => {
     try {
       setLoading(true);
-      // Calculate total price based on single price and number of PR
       const totalPrice = newPlan.priceSingle * newPlan.numberOfPR;
 
       const response = await fetch("/api/plans", {

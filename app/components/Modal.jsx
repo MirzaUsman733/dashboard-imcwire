@@ -81,12 +81,12 @@ const Modal = ({ isOpen, onClose, onAddCompany }) => {
           <div className="modal-content">
             <div className="flex justify-between text-2xl font-semibold my-5">
               <h2 className="text-4xl font-serif text-center">
-                Add New Company
+                Add Company
               </h2>
               <hr />
-              <span className="close" onClick={onClose}>
+              {/* <span className="close" onClick={onClose}>
                 <MdOutlineArrowUpward size={30} className="cursor-pointer" />
-              </span>
+              </span> */}
             </div>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>

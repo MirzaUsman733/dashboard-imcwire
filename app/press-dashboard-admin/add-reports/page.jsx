@@ -136,35 +136,9 @@ export default function Page() {
     }
     return id;
   };
-  const handleSubmitFiles = async () => {
+
+  const handleSubmit = async () => {
     // e.preventDefault();
-
-    const formData = new FormData();
-    // formData.append("image", uploadedImage);
-    formData.append("pdf", uploadedPDF);
-    formData.append("excel", uploadedExcel);
-    formData.append("id", uniqueId);
-
-    try {
-      const response = await fetch("/api/upload", {
-        method: "POST",
-        body: formData,
-      });
-
-      if (!response.ok) {
-        throw new Error("Failed to upload Data");
-      }
-      router.push("/press-dashboard-admin/reports");
-      // return true;
-    } catch (error) {
-      console.log(error);
-      setSnackbarMessage("Failed to upload files. Please try again.");
-      setSnackbarOpen(true);
-      return null;
-    }
-  };
-  const handleSubmit = async (e) => {
-    e.preventDefault();
     setLoading(true);
     const selectedDetail = detail?.find(
       (data) =>
@@ -210,7 +184,34 @@ export default function Page() {
     // }
     
   };
+  const handleSubmitFiles = async () => {
+    // e.preventDefault();
 
+    const formData = new FormData();
+    // formData.append("image", uploadedImage);
+    formData.append("pdf", uploadedPDF);
+    formData.append("excel", uploadedExcel);
+    formData.append("id", uniqueId);
+
+    try {
+      const response = await fetch("http://localhost:3001/upload", {
+        method: "POST",
+        body: formData,
+      });
+
+      if (!response.ok) {
+        throw new Error("Failed to upload Data");
+      }
+      handleSubmit()
+      router.push("/press-dashboard-admin/reports");
+      // return true;
+    } catch (error) {
+      console.log(error);
+      setSnackbarMessage("Failed to upload files. Please try again.");
+      setSnackbarOpen(true);
+      return null;
+    }
+  };
   // All Sub data
   const fetchDetail = useCallback(async () => {
     try {

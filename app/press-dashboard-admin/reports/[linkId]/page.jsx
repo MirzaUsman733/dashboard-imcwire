@@ -9,8 +9,6 @@ import { Container } from "@mui/material";
 import { useSession } from "next-auth/react";
 import { InfinitySpin } from "react-loader-spinner";
 
-
-
 export default function Page({ params }) {
   const linkId = params.linkId;
   console.log(linkId);
@@ -48,7 +46,7 @@ export default function Page({ params }) {
       const response = await fetch("/api/upload?_id=" + uniId);
       if (response.ok) {
         const uniqueData = await response.json();
-        console.log("Unique Data",uniqueData)
+        console.log("Unique Data", uniqueData);
         // const modifiedUniqueData = {
         //   ...uniqueData,
         //   pdf: uniqueData?.pdf?.replace("app\\", "/"),
@@ -68,68 +66,78 @@ export default function Page({ params }) {
       fetchFiles();
     }
   }, [plans]);
+  console.log(filterData);
+  const pdfName = filterData?.pdf;
+  // console.log("Pdf Name", pdfName);
+  // const modifiedPdfName = pdfName?.substring(pdfName.indexOf("pdf/") + 4 + 14);
+  // console.log("Modified Pdf Name", modifiedPdfName);
+  const excelName = filterData?.excel;
+  // console.log("Excel Name : ", excelName);
+  // const modifiedExcelName = excelName?.substring(
+  //   excelName.indexOf("excel/") + 5 + 15
+  // );
+  // console.log("Modified Excel Name", modifiedExcelName);
   if (session && sessionStatus === "authenticated" && filterData) {
-  return (
-    <Container>
-      {plans && filterData && (
-        <div className="px-4 py-8">
-          <div className="flex justify-center items-center flex-col gap-5">
-            <Image
-              src="https://imcwire.com/estoozot/2023/09/cropped-IMC.png"
-              width={100}
-              height={100}
-              alt="IMCWire"
-            />
-            {/* <h2 className="text-2xl text-gray-700 font-bold">IMCWire</h2> */}
-          </div>
-          <hr className="my-6" />
-          <div className="my-4">
-            <h2 className="text-lg font-semibold">
-              {/* TITLE: FOWMOULD Revolutionizes Manufacturing Landscape with
-              Cutting-Edge Solutions. */}
-              {}
-              <span className="text-xl font-serif font-bold text-purple-800">
-                TITLE:
-              </span>
-              {plans?.pressReleaseTitle}
-            </h2>
-          </div>
-          <hr className="my-6" />
-          <div>
-            <h2 className="text-xl font-serif font-bold text-purple-800 mb-4">
-              Download Reports:
-            </h2>
-            <div className="flex gap-4">
-              {filterData?.excel ? (
-                <Link
-                  href={filterData?.excel}
-                  download
-                  // download="excel-file.pptx"
-                  className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
-                >
-                  <SiMicrosoftexcel /> Download Excel Report
-                </Link>
-              ) : (
-                ""
-              )}
-              {filterData?.pdf ? (
-                <Link
-                  href={filterData?.pdf}
-                  download
-                  className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
-                >
-                  <FaRegFilePdf /> <span> Download PDF Report </span>
-                </Link>
-              ) : (
-                ""
-              )}
+    return (
+      <Container>
+        {plans && filterData && (
+          <div className="px-4 py-8">
+            <div className="flex justify-center items-center flex-col gap-5">
+              <Image
+                src="https://imcwire.com/estoozot/2023/09/cropped-IMC.png"
+                width={100}
+                height={100}
+                alt="IMCWire"
+              />
+              {/* <h2 className="text-2xl text-gray-700 font-bold">IMCWire</h2> */}
             </div>
-            <div className="mt-5">
-              <h1 className="text-xl font-serif font-bold text-purple-800">
-                Follow Us :
-              </h1>
-              <div className="mt-5 flex flex-wrap justify-center gap-5">
-                   <Link
+            <hr className="my-6" />
+            <div className="my-4">
+              <h2 className="text-lg font-semibold">
+                {/* TITLE: FOWMOULD Revolutionizes Manufacturing Landscape with
+              Cutting-Edge Solutions. */}
+                {}
+                <span className="text-xl font-serif font-bold text-purple-800">
+                  TITLE:
+                </span>
+                {plans?.pressReleaseTitle}
+              </h2>
+            </div>
+            <hr className="my-6" />
+            <div>
+              <h2 className="text-xl font-serif font-bold text-purple-800 mb-4">
+                Download Reports:
+              </h2>
+              <div className="flex gap-4">
+                {excelName ? (
+                  <Link
+                    // download={modifiedExcelName}
+                    href={excelName}
+                    className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                  >
+                    <SiMicrosoftexcel /> Download Excel Report
+                  </Link>
+                ) : (
+                  ""
+                )}
+                {pdfName ? (
+                  <Link
+                    href={pdfName}
+                    // download={modifiedPdfName}
+                    className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                  >
+                    <FaRegFilePdf /> <span> Download PDF Report </span>
+                  </Link>
+                ) : (
+                  ""
+                )}
+              </div>
+              <div className="mt-5">
+                <h1 className="text-xl font-serif font-bold text-purple-800">
+                  Follow Us :
+                </h1>
+                <div className="mt-5 flex flex-wrap justify-center gap-5">
+                  <Link
                     className="text-gray-800 border border-1 bg-white hover:bg-[#3b5998]/90 hover:text-white focus:ring-4 focus:outline-none focus:ring-[#3b5998]/50 rounded-lg px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#3b5998]/55"
                     href="https://web.facebook.com/people/IMCWire/61551541610947/"
                     target="_blank"
@@ -203,11 +211,7 @@ export default function Page({ params }) {
                           >
                             <stop stopColor="#3771c8" />
                             <stop offset=".128" stopColor="#3771c8" />
-                            <stop
-                              offset="1"
-                              stopColor="#60f"
-                              stopOpacity="0"
-                            />
+                            <stop offset="1" stopColor="#60f" stopOpacity="0" />
                           </radialGradient>
                         </defs>
                       </g>
@@ -303,22 +307,22 @@ export default function Page({ params }) {
                     WhatsApp
                   </Link>
                 </div>
+              </div>
             </div>
           </div>
-        </div>
-      )}
-    </Container>
-  );
-} else {
-  return (
-    <div className="h-[100vh] flex justify-center items-center w-full">
-       <InfinitySpin
-      visible={true}
-      width="200"
-      color="#7E22CE"
-      ariaLabel="infinity-spin-loading"
-    />
-    </div>
-  );
-}
+        )}
+      </Container>
+    );
+  } else {
+    return (
+      <div className="h-[100vh] flex justify-center items-center w-full">
+        <InfinitySpin
+          visible={true}
+          width="200"
+          color="#7E22CE"
+          ariaLabel="infinity-spin-loading"
+        />
+      </div>
+    );
+  }
 }

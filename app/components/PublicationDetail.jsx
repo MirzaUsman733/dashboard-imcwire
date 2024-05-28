@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 import { Button, CircularProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 import { Add } from "@mui/icons-material";
+
 const fileUploadLabelStyles = {
   cursor: "pointer",
 };
@@ -29,14 +30,15 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
   const [loading, setLoading] = useState(false);
   const [keywords, setKeywords] = useState([]);
   const [targetWebsite, setTargetWebsite] = useState("");
-  const [selectedCompany, setSelectedCompany] = useState("none");
-  const [isNewCompanyModalOpen, setIsNewCompanyModalOpen] = useState(false);
+  const [selectedCompany, setSelectedCompany] = useState("");
+  const [isNewCompanyModalOpen, setIsNewCompanyModalOpen] = useState(true);
 
   const [uniqueId, setUniqueId] = useState("");
   const [companies, setCompanies] = useState([]);
   const [selectedCompanyDetails, setSelectedCompanyDetails] = useState(null);
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
+
   useEffect(() => {
     const fetchCompanies = async () => {
       try {
@@ -45,7 +47,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
           throw new Error("Failed to fetch companies");
         }
         const data = await response.json();
-        console.log(data);
         if (session) {
           const filteredCompanies = data?.filter(
             (company) => company?.user?.user?.id === session?.user?.id
@@ -68,7 +69,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
     const companyName = event.target.value;
     setSelectedCompany(companyName);
 
-    // Find the selected company's details from the list of companies
     const company = companies.find(
       (company) => company.companyName === companyName
     );
@@ -121,8 +121,14 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
     }
     return id;
   };
+
   const handleSubmit = async (event) => {
     event.preventDefault();
+    if (!selectedCompany) {
+      alert("Please select a company.");
+      return;
+    }
+
     setLoading(true);
     if (storeData.selectedOption === "imcwirePr") {
       const formDataContract = {
@@ -136,7 +142,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
         formData: selectedCompanyDetails,
         formDataContract: formDataContract,
       };
-      console.log("Combined Data in the imcwire", combinedData);
       try {
         const response = await fetch("/api/submit-detail", {
           method: "POST",
@@ -160,7 +165,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
       }
     } else {
       if (file) {
-        console.log("File in function", file);
         const formDataContract = {
           url: "",
           tags: [],
@@ -172,9 +176,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
           formData: formData,
           formDataContract: formDataContract,
         };
-        // console.log("Combined Data in the ownPr", combinedData);
         const formDataPDf = new FormData();
-        // formData.append("image", uploadedImage);
         formDataPDf.append("pdf", file);
         formDataPDf.append("id", uniqueId);
         try {
@@ -185,12 +187,8 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
           if (!response.ok) {
             throw new Error("Failed to upload Data");
           }
-          // router.push("/press-dashboard/pr-balance");
-          // return true;
         } catch (error) {
           console.log(error);
-          setSnackbarMessage("Failed to upload files. Please try again.");
-          setSnackbarOpen(true);
           return null;
         }
         try {
@@ -233,11 +231,11 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
   const handleBlur = () => {
     setFocusedField("");
   };
+
   const removeFile = () => {
     setFile(null);
   };
-  console.log(selectedCompanyDetails);
-  console.log(storeData.selectedOption);
+
   const renderForm = () => {
     if (storeData.selectedOption === "ownPr") {
       return (
@@ -250,10 +248,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
             </p>
             <input
               type="file"
-              onChange={(e) => {
-                console.log(e);
-                setFile(e.target.files[0]);
-              }}
+              onChange={(e) => setFile(e.target.files[0])}
               className="hidden"
               id="pdf-upload"
               accept=".pdf,.doc,.docs"
@@ -272,7 +267,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
                   {file.name}{" "}
                   <button
                     className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
-                    onClick={() => removeFile()}
+                    onClick={removeFile}
                   >
                     &times;
                   </button>
@@ -343,34 +338,32 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
           </h2>
           <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5">
             <div>
-              <div>
-                <TextField
-                  label="Target Keywords"
-                  type="text"
-                  id="keywords"
-                  placeholder="Enter the Target Keywords"
-                  fullWidth
-                  onFocus={() => handleFocus("keywords")}
-                  onBlur={handleBlur}
-                  onKeyDown={handleKeyDown}
-                  className={focusedField === "keywords" ? "focused" : ""}
-                />
-                <div className="flex items-center mt-2 flex-wrap gap-3">
-                  {keywords.map((keyword, index) => (
-                    <div
-                      key={index}
-                      className="border border-gray-400 p-1 px-2 bg-gray-300 rounded-2xl"
+              <TextField
+                label="Target Keywords"
+                type="text"
+                id="keywords"
+                placeholder="Enter the Target Keywords"
+                fullWidth
+                onFocus={() => handleFocus("keywords")}
+                onBlur={handleBlur}
+                onKeyDown={handleKeyDown}
+                className={focusedField === "keywords" ? "focused" : ""}
+              />
+              <div className="flex items-center mt-2 flex-wrap gap-3">
+                {keywords.map((keyword, index) => (
+                  <div
+                    key={index}
+                    className="border border-gray-400 p-1 px-2 bg-gray-300 rounded-2xl"
+                  >
+                    {keyword}
+                    <button
+                      onClick={() => handleRemoveKeyword(index)}
+                      className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
                     >
-                      {keyword}
-                      <button
-                        onClick={() => handleRemoveKeyword(index)}
-                        className="ml-2 text-xl text-red-600 hover:text-red-800 focus:outline-none"
-                      >
-                        &times;
-                      </button>
-                    </div>
-                  ))}
-                </div>
+                      &times;
+                    </button>
+                  </div>
+                ))}
               </div>
             </div>
             <div>
@@ -399,7 +392,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
                   <option value="" disabled>
                     Select Company
                   </option>
-                  <option value="None">None</option>
+                  {/* <option value="" disabled>Select the </option> */}
                   {companies?.map((company, index) => (
                     <option key={index} value={company?.companyName}>
                       {company.companyName}
