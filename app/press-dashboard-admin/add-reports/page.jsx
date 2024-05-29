@@ -142,9 +142,9 @@ export default function Page() {
     setLoading(true);
     const selectedDetail = detail?.find(
       (data) =>
-      data.formData.email ===
-      // selectedEmail
-      newPlan.clientEmail
+        data.formData.email ===
+        // selectedEmail
+        newPlan.clientEmail
     );
     if (!selectedDetail) {
       console.error("No detail found for the selected email");
@@ -152,37 +152,36 @@ export default function Page() {
     }
     // const fileUploadation = handleSubmitFiles();
     // if(fileUploadation){
-      try {
-        const response = await fetch("/api/reports", {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-          },
-          body: JSON.stringify({
-            ...selectedDetail,
-            ...newPlan,
-            uniqueId: uniqueId,
-          }),
-        });
-  
-        if (response.ok) {
-          handleAddPlan();
-          handleSubmitFiles()
-          setUploadedImage(null);
-          setUploadedExcel(null);
-          setUploadedPDF(null);
-          setLoading(false);
-        } else {
-          console.error("Failed to add data to the database");
-        }
-      } catch (error) {
-        console.error("Error adding data to the database:", error);
+    try {
+      const response = await fetch("/api/reports", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          ...selectedDetail,
+          ...newPlan,
+          uniqueId: uniqueId,
+        }),
+      });
+
+      if (response.ok) {
+        handleAddPlan();
+        handleSubmitFiles();
+        setUploadedImage(null);
+        setUploadedExcel(null);
+        setUploadedPDF(null);
+        setLoading(false);
+      } else {
+        console.error("Failed to add data to the database");
       }
+    } catch (error) {
+      console.error("Error adding data to the database:", error);
+    }
     // }else{
     //   setSnackbarMessage("Failed to upload files. Please try again.");
     //   setSnackbarOpen(true);
     // }
-    
   };
   const handleSubmitFiles = async () => {
     // e.preventDefault();
@@ -194,7 +193,7 @@ export default function Page() {
     formData.append("id", uniqueId);
 
     try {
-      const response = await fetch("http://localhost:3001/upload", {
+      const response = await fetch("/api/upload", {
         method: "POST",
         body: formData,
       });
@@ -202,7 +201,7 @@ export default function Page() {
       if (!response.ok) {
         throw new Error("Failed to upload Data");
       }
-      handleSubmit()
+      handleSubmit();
       router.push("/press-dashboard-admin/reports");
       // return true;
     } catch (error) {
@@ -252,7 +251,9 @@ export default function Page() {
   ) {
     return (
       <div className="container mx-auto">
-        <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">Add Reports For Customers</h1>
+        <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
+          Add Reports For Customers
+        </h1>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 mb-4">
           <FormControl fullWidth>
@@ -263,11 +264,7 @@ export default function Page() {
               onFocus={() => handleFocus("client-email")}
               onBlur={handleBlur}
               className={focusedField === "client-email" ? "focused" : ""}
-              // value={newPlan.clientEmail || ""}
               value={selectedEmail}
-              // onChange={(e) =>
-              //   setNewPlan({ ...newPlan, clientEmail: e.target.value })
-              // }
               onChange={handleEmailChange}
               label="Client Email"
             >
@@ -480,8 +477,9 @@ export default function Page() {
           <input
             type="file"
             onChange={(e) => {
-              console.log(e)
-              setUploadedPDF(e.target.files[0])}}
+              console.log(e);
+              setUploadedPDF(e.target.files[0]);
+            }}
             className="hidden"
             id="pdf-upload"
             accept=".pdf,.doc,.docs"
@@ -510,8 +508,9 @@ export default function Page() {
           <input
             type="file"
             onChange={(e) => {
-              console.log(e)
-              setUploadedExcel(e.target.files[0])}}
+              console.log(e);
+              setUploadedExcel(e.target.files[0]);
+            }}
             className="hidden"
             id="excel-upload"
             accept=".xlsx, .xls, .pptx"

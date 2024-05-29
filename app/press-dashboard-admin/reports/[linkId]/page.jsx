@@ -67,16 +67,19 @@ export default function Page({ params }) {
     }
   }, [plans]);
   console.log(filterData);
-  const pdfName = filterData?.pdf;
+  const pdfName = `https://files.imcwire.com${filterData?.pdf}`;
   // console.log("Pdf Name", pdfName);
   // const modifiedPdfName = pdfName?.substring(pdfName.indexOf("pdf/") + 4 + 14);
   // console.log("Modified Pdf Name", modifiedPdfName);
-  const excelName = filterData?.excel;
+  const excelName = `https://files.imcwire.com${filterData?.excel}`;
+
   // console.log("Excel Name : ", excelName);
   // const modifiedExcelName = excelName?.substring(
   //   excelName.indexOf("excel/") + 5 + 15
   // );
   // console.log("Modified Excel Name", modifiedExcelName);
+  console.log(pdfName)
+  console.log(excelName)
   if (session && sessionStatus === "authenticated" && filterData) {
     return (
       <Container>

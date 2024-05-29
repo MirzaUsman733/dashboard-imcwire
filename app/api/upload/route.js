@@ -12,19 +12,24 @@ export async function POST(req) {
     const pdfFile = formData.get("pdf");
     const excelFile = formData.get("excel");
     const uniqueId = formData.get("id");
-
-    // Temporary directory for storing files
     const tempDir = path.join(__dirname, 'temp');
     if (!fs.existsSync(tempDir)) {
         fs.mkdirSync(tempDir, { recursive: true });
     }
 
-    const pdfPath = path.join(tempDir, pdfFile.name);
-    const excelPath = path.join(tempDir, excelFile.name);
+    // Sanitize file names by replacing spaces with dashes
+    const sanitizedPdfName = pdfFile.name.replace(/ /g, '-');
+    const sanitizedExcelName = excelFile.name.replace(/ /g, '-');
+
+    const pdfPath = path.join(tempDir, sanitizedPdfName);
+    const excelPath = path.join(tempDir, sanitizedExcelName);
 
     // Save files to disk
     await pipeline(pdfFile.stream(), fs.createWriteStream(pdfPath));
     await pipeline(excelFile.stream(), fs.createWriteStream(excelPath));
+
+    const pdfFirstChar = sanitizedPdfName[0].toLowerCase();
+    const excelFirstChar = sanitizedExcelName[0].toLowerCase();
 
     // FTP client setup
     const client = new Client();
@@ -39,21 +44,16 @@ export async function POST(req) {
             secureOptions: { rejectUnauthorized: false }
         });
 
-        // Ensure you're in the uploads directory
-        await client.cd('/uploads');
+        await client.cd(`/uploads/pdf/${pdfFirstChar}`);
+        await client.uploadFrom(pdfPath, `/uploads/pdf/${pdfFirstChar}/${uniqueId}-${sanitizedPdfName}`);
+        await client.cd(`../../excel/${excelFirstChar}`);
+        await client.uploadFrom(excelPath, `/uploads/excel/${excelFirstChar}/${uniqueId}-${sanitizedExcelName}`);
 
-        // Upload PDF file
-        await client.uploadFrom(pdfPath, pdfFile.name);
-
-        // Upload Excel file
-        await client.uploadFrom(excelPath, excelFile.name);
-
-        // Create a database record with the paths to the uploaded files
         const result = await prisma.file.create({
             data: {
               id: uniqueId,
-                pdf: `/uploads/${pdfFile.name}`,
-                excel: `/uploads/${excelFile.name}`,
+                pdf: `/uploads/pdf/${pdfFirstChar}/${uniqueId}-${sanitizedPdfName}`,
+                excel: `/uploads/excel/${excelFirstChar}/${uniqueId}-${sanitizedExcelName}`,
             },
         });
 
@@ -67,11 +67,12 @@ export async function POST(req) {
         );
     } finally {
         client.close();
-        // Clean up the files from the filesystem
         fs.unlinkSync(pdfPath);
         fs.unlinkSync(excelPath);
     }
 }
+
+
 
 
 
