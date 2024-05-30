@@ -232,12 +232,12 @@ const Page = ({ params }) => {
                     {plans?.matchedPlanData?.numberOfPR - detail?.length}
                   </h1>
                   {plans?.matchedPlanData?.numberOfPR - detail?.length > 0 && (
-                    <button
-                      onClick={() => handleAdd()}
-                      className="border border-1 border-purple-300 rounded-lg px-2 py-1 hover:bg-purple-700 hover:text-white"
+                    <Link
+                    href={`/press-dashboard/${id}`}
+                    className="border border-1 border-purple-300 rounded-lg px-2 py-1 hover:bg-purple-700 hover:text-white"
                     >
                       Add PR
-                    </button>
+                    </Link>
                   )}
                 </div>
               </div>

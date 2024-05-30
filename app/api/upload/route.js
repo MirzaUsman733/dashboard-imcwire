@@ -45,15 +45,15 @@ export async function POST(req) {
         });
 
         await client.cd(`/uploads/pdf/${pdfFirstChar}`);
-        await client.uploadFrom(pdfPath, `/uploads/pdf/${pdfFirstChar}/${uniqueId}-${sanitizedPdfName}`);
+        await client.uploadFrom(pdfPath, `/uploads/pdf/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`);
         await client.cd(`../../excel/${excelFirstChar}`);
-        await client.uploadFrom(excelPath, `/uploads/excel/${excelFirstChar}/${uniqueId}-${sanitizedExcelName}`);
+        await client.uploadFrom(excelPath, `/uploads/excel/${excelFirstChar}/${uniqueId}_${sanitizedExcelName}`);
 
         const result = await prisma.file.create({
             data: {
               id: uniqueId,
-                pdf: `/uploads/pdf/${pdfFirstChar}/${uniqueId}-${sanitizedPdfName}`,
-                excel: `/uploads/excel/${excelFirstChar}/${uniqueId}-${sanitizedExcelName}`,
+                pdf: `/uploads/pdf/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`,
+                excel: `/uploads/excel/${excelFirstChar}/${uniqueId}_${sanitizedExcelName}`,
             },
         });
 
