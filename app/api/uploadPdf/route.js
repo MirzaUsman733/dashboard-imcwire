@@ -1,77 +1,70 @@
-import { PrismaClient } from "@prisma/client";
 import { NextResponse } from "next/server";
-import { createClient } from "@supabase/supabase-js";
+import { Client } from "basic-ftp";
+import { PrismaClient } from "@prisma/client";
+import fs from "fs";
+import { pipeline } from "stream/promises";
+import path from "path";
 
 const prisma = new PrismaClient();
-const supabaseUrl = "https://inyhkgnpatnukqwcqwjr.supabase.co";
-const supabaseKey =
-  "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImlueWhrZ25wYXRudWtxd2Nxd2pyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3MTMzNTE4NzcsImV4cCI6MjAyODkyNzg3N30.aPE4oEg-I62l1WODiymFiPLUIM9DmRP3RzuyQXz79Ws";
-const supabase = createClient(supabaseUrl, supabaseKey);
 export async function POST(req) {
   const formData = await req.formData();
 
   // console.log(formData);
   // const image = formData.get("image");
-  const pdf = formData?.get("pdf");
   const uniqueId = formData?.get("id");
-  // console.log(pdf);
-  //   const excel = formData.get("excel");
-  //   const uniqueId = formData.get("id");
-  if (!pdf) {
+  const pdfFile = formData?.get("pdf");
+  console.log(uniqueId)
+  console.log(pdfFile)
+  const tempDir = path.join(__dirname, "temp");
+  if (!fs.existsSync(tempDir)) {
+    fs.mkdirSync(tempDir, { recursive: true });
+  }
+  if (!pdfFile) {
     return NextResponse.json(
       { error: "No PDF file provided." },
       { status: 400 }
     );
   }
+  const sanitizedPdfName = pdfFile.name.replace(/ /g, "-");
+  const pdfPath = path.join(tempDir, sanitizedPdfName);
+  await pipeline(pdfFile.stream(), fs.createWriteStream(pdfPath));
+  const pdfFirstChar = sanitizedPdfName[0].toLowerCase();
 
-  let pdfUrl;
-
-  if (pdf) {
-    const timestamp = new Date().getTime();
-    const pdfName = `${timestamp}-${pdf.name}`;
-    const contentType = pdf.type;
-    try {
-      const { data, error } = await supabase.storage
-        .from("reports")
-        .upload(`pdfDetail/${pdfName}`, pdf, { contentType: contentType });
-      if (error) {
-        console.log(
-          "First Failed to upload PDF file to Supabase storage.",
-          error
-        );
-        return NextResponse.json(
-          { error: "Failed to upload PDF file to Supabase storage." },
-          { status: 500 }
-        );
-      }
-      console.log(data);
-      pdfUrl = `${supabaseUrl}/storage/v1/object/public/${data.fullPath}`;
-    } catch (error) {
-      console.log("supabase storage cannot proper work in pdf", error);
-    }
-  }
+  const client = new Client();
+  client.ftp.verbose = true;
   try {
-    // Save to database
-    if (prisma.pdf && prisma.pdf.create) {
-      const result = await prisma.pdf.create({
-        data: {
-          id: uniqueId,
-          pdf: pdfUrl,
-        },
-      });
+    await client.access({
+      host: "185.224.133.237",
+      user: "imcwire_ftp_user",
+      password: "pzEl202cJdj7",
+      secure: true,
+      secureOptions: { rejectUnauthorized: false },
+    });
 
-      return NextResponse.json({ file: result });
-    } else {
-      return NextResponse.json(
-        { error: "Something went wrong." },
-        { status: 500 }
-      );
-    }
+    await client.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+    await client.uploadFrom(
+      pdfPath,
+      `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
+    );
+
+    const result = await prisma.pdf.create({
+      data: {
+        id: uniqueId,
+        pdf: `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`,
+      },
+    });
+
+    console.log("Database Record Result:", result);
+    return NextResponse.json(result);
   } catch (e) {
+    console.error("Error during file upload or database operation:", e);
     return NextResponse.json(
       { error: "Something went wrong." },
       { status: 500 }
     );
+  } finally {
+    client.close();
+    fs.unlinkSync(pdfPath);
   }
 }
 

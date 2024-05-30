@@ -78,12 +78,24 @@ export default function Page({ params }) {
   //   excelName.indexOf("excel/") + 5 + 15
   // );
   // console.log("Modified Excel Name", modifiedExcelName);
-  console.log(pdfName)
-  console.log(excelName)
+  const DownloadedPdfName = pdfName.split('/').pop().split('_').pop();
+  const DownloadedExcelName = excelName.split('/').pop().split('_').pop();
+  console.log("Downloaded Pdf Name: ",DownloadedPdfName)
+  const handleDownload = (url, filename) => {
+    const link = document.createElement("a");
+    link.href = url;
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+  };
+
+  console.log(pdfName);
+  console.log(excelName);
   if (session && sessionStatus === "authenticated" && filterData) {
     return (
       <Container>
-        {plans && filterData && (
+        {plans && filterData && DownloadedPdfName && (
           <div className="px-4 py-8">
             <div className="flex justify-center items-center flex-col gap-5">
               <Image
@@ -112,27 +124,29 @@ export default function Page({ params }) {
                 Download Reports:
               </h2>
               <div className="flex gap-4">
-                {excelName ? (
-                  <Link
-                    // download={modifiedExcelName}
-                    href={excelName}
+                {excelName && (
+                  <button
                     className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                    startIcon={<SiMicrosoftexcel />}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleDownload(excelName, DownloadedExcelName);
+                    }}
                   >
-                    <SiMicrosoftexcel /> Download Excel Report
-                  </Link>
-                ) : (
-                  ""
+                    Download Excel Report
+                  </button>
                 )}
-                {pdfName ? (
-                  <Link
-                    href={pdfName}
-                    // download={modifiedPdfName}
+                {pdfName && (
+                  <button
                     className="bg-green-500 hover:bg-green-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                    startIcon={<FaRegFilePdf />}
+                    onClick={(event) => {
+                      event.preventDefault();
+                      handleDownload(pdfName, DownloadedPdfName);
+                    }}
                   >
-                    <FaRegFilePdf /> <span> Download PDF Report </span>
-                  </Link>
-                ) : (
-                  ""
+                    Download PDF Report
+                  </button>
                 )}
               </div>
               <div className="mt-5">

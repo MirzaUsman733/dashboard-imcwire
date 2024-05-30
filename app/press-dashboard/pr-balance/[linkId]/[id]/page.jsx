@@ -356,7 +356,7 @@ const Page = ({ params }) => {
                   <div>
                     {filterData?.pdf && (
                     <Link
-                      href={filterData?.pdf}
+                      href={`files.imcwire.com${filterData?.pdf}`}
                       // download
                       download="excel-file.pptx"
                       className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
