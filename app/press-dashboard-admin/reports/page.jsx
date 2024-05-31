@@ -139,7 +139,6 @@ export default function Page() {
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  // Avoid a layout jump when reaching the last page with empty rows.
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - plans.length) : 0;
 
@@ -157,11 +156,7 @@ export default function Page() {
       const response = await fetch("/api/reports");
       if (response.ok) {
         const plansData = await response?.json();
-        // setPlans(plansData);
         setPlans(plansData.sort((a, b) => b.reportId - a.reportId));
-        // setPlans(plansData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt)));
-        // const sortedPlans = plansData.sort((a, b) => new Date(b.createdAt) - new Date(a.createdAt));
-        // setPlans(sortedPlans)
         setLoading(false);
       } else {
         console.error("Failed to fetch plans");

@@ -47,12 +47,6 @@ export default function Page({ params }) {
       if (response.ok) {
         const uniqueData = await response.json();
         console.log("Unique Data", uniqueData);
-        // const modifiedUniqueData = {
-        //   ...uniqueData,
-        //   pdf: uniqueData?.pdf?.replace("app\\", "/"),
-        //   excel: uniqueData?.excel?.replace("app\\", "/"),
-        // };
-        // console.log(modifiedUniqueData)
         setFilterData(uniqueData);
       } else {
         console.error("Failed to fetch plans");
@@ -68,19 +62,10 @@ export default function Page({ params }) {
   }, [plans]);
   console.log(filterData);
   const pdfName = `https://files.imcwire.com${filterData?.pdf}`;
-  // console.log("Pdf Name", pdfName);
-  // const modifiedPdfName = pdfName?.substring(pdfName.indexOf("pdf/") + 4 + 14);
-  // console.log("Modified Pdf Name", modifiedPdfName);
   const excelName = `https://files.imcwire.com${filterData?.excel}`;
-
-  // console.log("Excel Name : ", excelName);
-  // const modifiedExcelName = excelName?.substring(
-  //   excelName.indexOf("excel/") + 5 + 15
-  // );
-  // console.log("Modified Excel Name", modifiedExcelName);
-  const DownloadedPdfName = pdfName.split('/').pop().split('_').pop();
-  const DownloadedExcelName = excelName.split('/').pop().split('_').pop();
-  console.log("Downloaded Pdf Name: ",DownloadedPdfName)
+  const DownloadedPdfName = pdfName.split("/").pop().split("_").pop();
+  const DownloadedExcelName = excelName.split("/").pop().split("_").pop();
+  console.log("Downloaded Pdf Name: ", DownloadedPdfName);
   const handleDownload = (url, filename) => {
     const link = document.createElement("a");
     link.href = url;
@@ -104,14 +89,10 @@ export default function Page({ params }) {
                 height={100}
                 alt="IMCWire"
               />
-              {/* <h2 className="text-2xl text-gray-700 font-bold">IMCWire</h2> */}
             </div>
             <hr className="my-6" />
             <div className="my-4">
               <h2 className="text-lg font-semibold">
-                {/* TITLE: FOWMOULD Revolutionizes Manufacturing Landscape with
-              Cutting-Edge Solutions. */}
-                {}
                 <span className="text-xl font-serif font-bold text-purple-800">
                   TITLE:
                 </span>

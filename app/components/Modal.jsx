@@ -1,12 +1,11 @@
 "use client";
 import React, { useState } from "react";
 import TextField from "@mui/material/TextField";
-import { MdOutlineArrowUpward } from "react-icons/md";
 import Grid from "@mui/material/Grid";
 import { useSession } from "next-auth/react";
 
 const Modal = ({ isOpen, onClose, onAddCompany }) => {
-  const { data: session, status: sessionStatus } = useSession();
+  const { data: session } = useSession();
 
   const [focusedField, setFocusedField] = useState(null);
   const [companyDetails, setCompanyDetails] = useState({
@@ -84,9 +83,6 @@ const Modal = ({ isOpen, onClose, onAddCompany }) => {
                 Add Company
               </h2>
               <hr />
-              {/* <span className="close" onClick={onClose}>
-                <MdOutlineArrowUpward size={30} className="cursor-pointer" />
-              </span> */}
             </div>
             <form onSubmit={handleSubmit}>
               <Grid container spacing={2}>

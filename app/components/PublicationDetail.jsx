@@ -51,7 +51,10 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
           const filteredCompanies = data?.filter(
             (company) => company?.user?.user?.id === session?.user?.id
           );
-          setCompanies(filteredCompanies);
+          console.log("Filter Companies",filteredCompanies)
+          const sortedData = filteredCompanies?.sort((a, b) => b.id - a.id);
+          console.log("Sorted Data",sortedData)
+          setCompanies(sortedData);
         }
       } catch (error) {
         console.error("Error fetching companies:", error);
@@ -63,7 +66,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
   }, [session]);
 
   const handleAddCompany = (newCompany) => {
-    setCompanies([...companies, newCompany]);
+    setCompanies([newCompany ,...companies ]);
   };
   const handleCompanyChange = async (event) => {
     const companyName = event.target.value;

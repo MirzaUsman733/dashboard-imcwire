@@ -281,6 +281,11 @@ export default function Auth() {
                     className={focusedField === "password" ? "focused" : ""}
                   />
                 </div>
+                  {error && (
+                    <div className="bg-red-500 text-white w-fit text-sm py-1 px-3 rounded-md my-1">
+                      {error}
+                    </div>
+                  )}
                 <div className="flex justify-start">
                 <input
                   type="checkbox"
