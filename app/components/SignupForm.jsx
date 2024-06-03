@@ -19,6 +19,7 @@ import VisibilityIcon from "@mui/icons-material/Visibility";
 import { useRouter } from "next/navigation";
 import ReCAPTCHA from "react-google-recaptcha";
 import { FaLock } from "react-icons/fa";
+import Link from "next/link";
 
 function SignupForm() {
   const router = useRouter();
@@ -50,6 +51,7 @@ function SignupForm() {
   const [agencyName, setAgencyName] = useState("");
   const [viewPassword, setViewPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
+  const [error, setError] = useState(false)
   const recaptchaRef = useRef(null);
 
   const handleClickShowPassword = () => {
@@ -70,7 +72,6 @@ function SignupForm() {
 
   const handleCheckboxChange = () => {
     setIsChecked(!isChecked);
-    setShowTermsPopup(!isChecked);
   };
 
   const handleFocus = (field) => {
@@ -184,27 +185,49 @@ function SignupForm() {
 
   const [sessionId, setSessionId] = useState("");
 
+  // const handleCheckout = async () => {
+  //   try {
+  //     const response = await fetch("/api/checkout_sessions", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         email: email,
+  //         totalPrice: totalPrice,
+  //         clientId: clientId,
+  //       }),
+  //     });
+  //     const data = await response.json();
+  //     setSessionId(data.sessionId);
+  //   } catch (error) {
+  //     console.error("Error creating checkout session:", error);
+  //   }
+  // };
   const handleCheckout = async () => {
     try {
-      const response = await fetch("/api/checkout_sessions", {
+      const response = await fetch("/api/createOrder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          name: name,
           email: email,
           totalPrice: totalPrice,
           clientId: clientId,
         }),
       });
       const data = await response.json();
-      setSessionId(data.sessionId);
+      console.log(data)
+      setSessionId(data.finalUrl);
     } catch (error) {
       console.error("Error creating checkout session:", error);
     }
   };
 
   const redirectToCheckout = () => {
+    console.log("Session Id",sessionId)
     window.location.href = `${sessionId}`;
   };
 
@@ -230,7 +253,7 @@ function SignupForm() {
       console.log("Password is invalid");
       return;
     }
-    const token = await recaptchaSignUpRef.current.getValue();
+    const token = await recaptchaRef.current.getValue();
     if (!token) {
       setError("Captcha register failed");
       return;
@@ -303,8 +326,8 @@ function SignupForm() {
           redirectToCheckout();
         }
         setIsLoading(false);
-        await handleCheckout();
-        redirectToCheckout();
+        // await handleCheckout();
+        // redirectToCheckout();
       } else {
         console.error("Failed to add plan");
       }
@@ -409,7 +432,7 @@ function SignupForm() {
               </div>
             </>
           )}
-          <Dialog
+          {/* <Dialog
             open={showTermsPopup}
             onClose={handleCloseTermsPopup}
             BackdropComponent={Backdrop}
@@ -441,7 +464,7 @@ function SignupForm() {
             <DialogActions>
               <Button onClick={handleAcceptTerms}>Accept</Button>
             </DialogActions>
-          </Dialog>
+          </Dialog> */}
           <input
             type="checkbox"
             id="termsCheckbox"
@@ -450,7 +473,7 @@ function SignupForm() {
           />
           &nbsp;
           <label htmlFor="termsCheckbox">
-            I have read and accept the Terms and Conditions
+            I have read and accept the <Link href="/terms-and-condition" className="underline text-blue-500">Terms and Conditions </Link>
           </label>
           {/* {isAgency && (
             <TextField
@@ -475,11 +498,11 @@ function SignupForm() {
           </button> */}
           <button
             type="button"
-            disabled={!acceptedTerms || !isChecked || isLoading} // Disable button when loading
+            disabled={ !isChecked || isLoading} // Disable button when loading
             onClick={handleSubmit}
             className="btn-grad inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
           >
-            {isLoading ? "Loading..." : "Submit"}{" "}
+            {isLoading ? "Loading..." : "Checkout"}{" "}
           </button>
         </div>
       </form>

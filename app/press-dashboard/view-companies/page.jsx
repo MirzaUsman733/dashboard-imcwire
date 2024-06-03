@@ -147,7 +147,7 @@ export default function CompaniesTable() {
   useEffect(() => {
     if (session) {
       fetchDataFromAPI().then((data) => {
-        const filteredData = data.filter(
+        const filteredData = data?.filter(
           (company) => company?.user?.user?.email === session?.user?.email
         );
         setRows(filteredData);
