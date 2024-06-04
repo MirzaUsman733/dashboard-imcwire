@@ -15,13 +15,14 @@ const transporter = nodemailer?.createTransport({
   },
 });
 export async function GET(req) {
+  let orderStatusResult;
+  let ordId; // Define ordId here to ensure it's in scope
+  let url;
   try {
     console.log(req);
-    const url = new URL(req?.url);
-    console.log(url)
-    const ordId = url?.searchParams?.get("ordId");
-    // const url = new URL(req.url, `http://${req.headers.host}`);
-    // const ordId = url.searchParams.get("ordId");
+    url = new URL(req?.url);
+    console.log(url);
+    ordId = url?.searchParams?.get("ordId");
     console.log(ordId);
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: "POST",
@@ -48,21 +49,14 @@ export async function GET(req) {
       return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
 
-    const merchant_user_id = "Tier_Solutions";
-    const encodedMerchantUserId = encodeURIComponent(merchant_user_id);
+
     // Get order status using the token
     const orderStatusResponse = await fetch(
-      `${process.env.Paypro_URL}/v2/ppro/ggos?userName=${encodedMerchantUserId}&cpayId=${ordId}`,
-      {
-        method: "GET",
-        headers: {
-          "Content-Type": "application/json",
-          Token: `${token}`,
-        },
-      }
+      `${process.env.Paypro_URL}/v2/ppro/ggos?userName=${encodeURIComponent("Tier_Solutions")}&cpayId=${ordId}`,
+      { method: "GET", headers: {"Content-Type": "application/json", Token: `${token}`}}
     );
 
-    const orderStatusResult = await orderStatusResponse.json();
+    orderStatusResult = await orderStatusResponse.json();
     if (orderStatusResponse?.ok) {
       const orderStatus = orderStatusResult[1]?.OrderStatus;
       if (orderStatus === "PAID") {
