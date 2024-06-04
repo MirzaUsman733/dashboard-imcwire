@@ -187,13 +187,13 @@ export async function GET(req) {
         return NextResponse.json({
           status: 200,
           message: "Order marked as paid",
-          orderStatus,
+          orderStatusResult,
         });
       } else {
         return NextResponse.json({
           status: 200,
           message: "Order not yet paid",
-          orderStatus,
+          orderStatusResult,
         });
       }
     } else {

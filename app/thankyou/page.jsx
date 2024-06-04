@@ -20,18 +20,17 @@ const Page = () => {
       };
       setQueryParams(params);
     }
-  }, []);
-
+  }, []); 
   useEffect(() => {
     if (queryParams.ordId) {
       // Fetch order status
       fetch(`/api/checkOrderStatus?ordId=${queryParams.ordId}`)
-        .then((res) => {
-          console.log(res)
-          res.json()})
+        .then((res) => res.json())
+          // console.log(res)
+          
         .then((data) => {
           console.log("Data",data)
-          if (data.orderStatus === "PAID") {
+          if (data.orderStatusResult[1].OrderStatus === "PAID") {
             setPaymentStatus("Paid");
           } else {
             setPaymentStatus("Unpaid");
@@ -69,18 +68,18 @@ const Page = () => {
     // </div>
     <div>
       <section>
-        <div class="flex flex-wrap divide-x divide-gray-200">
-          <div class="w-full lg:flex-1 p-8">
-            <div class="flex flex-col justify-center px-4 text-center h-full">
-              <div class="max-w-xl mx-auto">
-                <div class="mb-12 text-7xl">🎉</div>
-                <span class="mb-5 inline-block text-gray-400">
+        <div className="flex flex-wrap divide-x divide-gray-200">
+          <div className="w-full lg:flex-1 p-8">
+            <div className="flex flex-col justify-center px-4 text-center h-full">
+              <div className="max-w-xl mx-auto">
+                <div className="mb-12 text-7xl">🎉</div>
+                <span className="mb-5 inline-block text-gray-400">
                   You have successfully ordered all items
                 </span>
-                <h2 class="mb-5 font-heading text-5xl text-">
+                <h2 className="mb-5 font-heading text-5xl text-">
                   Thank you for the order
                 </h2>
-                <p class="mb-20 text-gray-400">
+                <p className="mb-20 text-gray-400">
                   Really nicely designed theme and quite fast loading. The
                   quickness of page loads you can really appreciate once for you
                   turn off page of the transition preloader in theme options.
@@ -106,17 +105,17 @@ const Page = () => {
                     </p>
                   )}
                 </div>
-                <div class="flex flex-wrap justify-center -m-2.5 mb-14">
-                  <div class="w-auto p-2.5">
+                <div className="flex flex-wrap justify-center -m-2.5 mb-14">
+                  <div className="w-auto p-2.5">
                     <a
                       href="#"
-                      class="text-gray-900 hover:text-gray-800 transition duration-200"
+                      className="text-gray-900 hover:text-gray-800 transition duration-200"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="36"
                         height="36"
-                        viewbox="0 0 36 36"
+                        viewBox="0 0 36 36"
                         fill="none"
                       >
                         <path
@@ -126,16 +125,16 @@ const Page = () => {
                       </svg>
                     </a>
                   </div>
-                  <div class="w-auto p-2.5">
+                  <div className="w-auto p-2.5">
                     <a
                       href="#"
-                      class="text-gray-900 hover:text-gray-800 transition duration-200"
+                      className="text-gray-900 hover:text-gray-800 transition duration-200"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="36"
                         height="36"
-                        viewbox="0 0 36 36"
+                        viewBox="0 0 36 36"
                         fill="none"
                       >
                         <path
@@ -145,16 +144,16 @@ const Page = () => {
                       </svg>
                     </a>
                   </div>
-                  <div class="w-auto p-2.5">
+                  <div className="w-auto p-2.5">
                     <a
                       href="#"
-                      class="text-gray-900 hover:text-gray-800 transition duration-200"
+                      className="text-gray-900 hover:text-gray-800 transition duration-200"
                     >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         width="36"
                         height="36"
-                        viewbox="0 0 36 36"
+                        viewBox="0 0 36 36"
                         fill="none"
                       >
                         <path
@@ -167,7 +166,7 @@ const Page = () => {
                 </div>
                 <Link
                   href="/press-dashboard/pr-balance"
-                  class="bg-gray-900 rounded-full hover:bg-gray-800 focus:ring-4 focus:ring-gray-200 text-white text-xs font-semibold px-4 h-9 inline-flex items-center transition duration-200"
+                  className="bg-gray-900 rounded-full hover:bg-gray-800 focus:ring-4 focus:ring-gray-200 text-white text-xs font-semibold px-4 h-9 inline-flex items-center transition duration-200"
                 >
                   Visit Our PR Dashboard
                 </Link>
