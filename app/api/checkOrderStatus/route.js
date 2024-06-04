@@ -17,7 +17,9 @@ const transporter = nodemailer?.createTransport({
 export async function GET(req) {
   try {
     const url = new URL(req?.url);
+    console.log(url)
     const ordId = url?.searchParams?.get("ordId");
+    console.log(ordId)
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: "POST",
       headers: {
@@ -58,7 +60,7 @@ export async function GET(req) {
     );
 
     const orderStatusResult = await orderStatusResponse.json();
-    if (orderStatusResponse.ok) {
+    if (orderStatusResponse?.ok) {
       const orderStatus = orderStatusResult[1]?.OrderStatus;
       if (orderStatus === "PAID") {
         const compaignData = await prisma?.compaignData?.findUnique({
@@ -188,12 +190,16 @@ export async function GET(req) {
           status: 200,
           message: "Order marked as paid",
           orderStatusResult,
+          ordId,
+          url
         });
       } else {
         return NextResponse.json({
           status: 200,
           message: "Order not yet paid",
           orderStatusResult,
+          ordId,
+          url
         });
       }
     } else {
