@@ -142,9 +142,10 @@ export default function Page() {
       const response = await fetch("/api/stripe-webhooks");
       if (response.ok) {
         const plansData = await response.json();
+        console.log(plansData)
         const filteredData = plansData?.filter(
           (transaction) =>
-            transaction?.eventData?.object?.customer_email ===
+            transaction?.eventType ===
             session?.user?.email
         );
         setRowsPerPage(filteredData.length)
@@ -157,7 +158,7 @@ export default function Page() {
       console.error("Error fetching plans:", error);
     }
   };
-
+  console.log("Plans",plans)
   // const fetchCompaignData = async () => {
   //   try {
   //     const response = await fetch("/api/compaignData");
@@ -265,24 +266,24 @@ export default function Page() {
                   ) // Sort all data by descending order of row.id
                     .map((row) => (
                       <StyledTableRow key={row.id}>
-                        <TableCell style={{ width: 160 }}>{row.id}</TableCell>
-                        <TableCell style={{ width: 160 }}>
-                          {row?.eventData?.object?.customer_details?.name}
+                        <TableCell>{row.id}</TableCell>
+                        <TableCell>
+                          {row?.eventData?.CustomerName}
                         </TableCell>
-                        <TableCell style={{ width: 160 }}>
-                          {row?.eventData?.object?.customer_details?.email}
+                        <TableCell>
+                          {row?.eventType}
                         </TableCell>
-                        <TableCell style={{ width: 160 }}>
-                          {row.eventData.object.client_reference_id}
+                        <TableCell>
+                          {row?.eventData?.OrderNumber}
                         </TableCell>
-                        <TableCell style={{ width: 160 }}>
+                        <TableCell>
                           $
                           {(
-                            (row?.eventData?.object?.amount_total || 0) / 100
-                          ).toFixed(2)}
+                            (row?.eventData?.AmountPayable || 0)
+                          )}
                         </TableCell>
-                        <TableCell style={{ width: 160 }}>
-                          {row?.eventData?.object?.payment_status}
+                        <TableCell>
+                          {row?.eventData?.OrderStatus}
                         </TableCell>
                       </StyledTableRow>
                     ))}

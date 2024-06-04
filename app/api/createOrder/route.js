@@ -4,8 +4,8 @@ import { NextResponse } from 'next/server';
 
 export async function POST(req) {
   try {
-    const { name, email, totalPrice, clientId } = await req.json();
-
+    const { name, email, totalPrice, clientId, address } = await req.json();
+    console.log(address)
     // Authenticate and get the token
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: 'POST',
@@ -13,8 +13,8 @@ export async function POST(req) {
         'Content-Type': 'application/json',
       },
       body: JSON.stringify({
-        clientid: process.env.clientid || 'gdR1ajHQejqlw7R',
-        clientsecret: process.env.clientsecret || 'uGEzCKspIzF3rBZ',
+        clientid: process.env.clientid,
+        clientsecret: process.env.clientsecret,
       }),
     });
 
@@ -42,7 +42,7 @@ export async function POST(req) {
       },
       {
         "OrderNumber":   clientId,
-        "CurrencyAmount": "59.99",
+        "CurrencyAmount": totalPrice+ ".00" ,
         "Currency": "PKR",
         "OrderDueDate": formattedOrderDueDate,
         "OrderType": "Service",
@@ -51,8 +51,8 @@ export async function POST(req) {
         "OrderExpireAfterSeconds": "0",
         "CustomerName": name || "Arbaz Abid",
         "CustomerMobile": "",
-        "CustomerEmail": email || "",
-        "CustomerAddress": "House P-1233, Street 223, New Colony Faisalabad 38000 Punjab PK"
+        "CustomerEmail": "",
+        "CustomerAddress": address
       }
     ];
 

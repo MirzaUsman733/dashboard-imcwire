@@ -138,12 +138,10 @@ export default function Page() {
   };
 
   const handleSubmit = async () => {
-    // e.preventDefault();
     setLoading(true);
     const selectedDetail = detail?.find(
       (data) =>
         data.formData.email ===
-        // selectedEmail
         newPlan.clientEmail
     );
     if (!selectedDetail) {

@@ -10,6 +10,10 @@ import {
   Backdrop,
   IconButton,
   InputAdornment,
+  FormControl,
+  InputLabel,
+  Select,
+  MenuItem,
 } from "@mui/material";
 import { useDistributionContext } from "../contexts/DistributionContext";
 import { useUser } from "../contexts/userData";
@@ -52,6 +56,13 @@ function SignupForm() {
   const [viewPassword, setViewPassword] = useState(true);
   const [isLoading, setIsLoading] = useState(false);
   const [error, setError] = useState(false)
+  const [plans, setPlans] = useState([]);
+  const [streetAddress, setStreetAddress] = useState("");
+const [city, setCity] = useState("");
+const [state, setState] = useState("");
+const [zip, setZip] = useState("");
+const [country, setCountry] = useState("");
+
   const recaptchaRef = useRef(null);
 
   const handleClickShowPassword = () => {
@@ -108,6 +119,27 @@ function SignupForm() {
   const handlePasswordChange = (event) => {
     setPassword(event.target.value);
   };
+
+
+  const handleStreetChange = (event) => {
+    setStreetAddress(event.target.value);
+  };
+  
+  const handleCityChange = (event) => {
+    setCity(event.target.value);
+  };
+  
+  const handleStateChange = (event) => {
+    setState(event.target.value);
+  };
+  
+  const handleZipChange = (event) => {
+    setZip(event.target.value);
+  };
+  const handleCountryChange = (event) => {
+    setCountry(event.target.value);
+  };
+  
 
   useEffect(() => {
     const generatedId = generateUniqueId(24);
@@ -206,12 +238,15 @@ function SignupForm() {
   // };
   const handleCheckout = async () => {
     try {
+      // House P-1233, Street 223, New Colony Faisalabad 38000 Punjab PK
+      const fullAddress = `${streetAddress}, ${city} ${zip} ${state} ${country}`;
       const response = await fetch("/api/createOrder", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
+          address: fullAddress,
           name: name,
           email: email,
           totalPrice: totalPrice,
@@ -282,7 +317,6 @@ function SignupForm() {
     };
 
     const combinedData = {
-      // formData: formData,
       selectedCategories: selectedCategories,
       selectedCountries: selectedCountries,
       selectedCountryTranslations: selectedCountryTranslations,
@@ -296,8 +330,6 @@ function SignupForm() {
       formDataSignUp: formDataSignUp,
       selectedOption: selectedOption,
       clientId: clientId,
-      // isAgency: isAgency,
-      // agencyName: agencyName,
       transactionId: null,
     };
 
@@ -326,8 +358,6 @@ function SignupForm() {
           redirectToCheckout();
         }
         setIsLoading(false);
-        // await handleCheckout();
-        // redirectToCheckout();
       } else {
         console.error("Failed to add plan");
       }
@@ -337,7 +367,28 @@ function SignupForm() {
       redirectToCheckout();
     }
   };
-
+  const fetchPlans = async () => {
+    try {
+      const response = await fetch("https://certsgang.com/v1/countries", {
+        headers: {
+          "x-api-key": "b46279cb-13bb-4445-a6f9-6f252b61ae79",
+        }
+      })
+      if (response.ok) {
+        const plansData = await response.json();
+        console.log(plansData)
+        setPlans(plansData);
+      } else {
+        console.error("Failed to fetch plans");
+      }
+    } catch (error) {
+      console.error("Error fetching plans:", error);
+    }
+  };
+  console.log("Plans",plans)
+  useEffect(() => {
+    fetchPlans();
+  }, [session]);
   return (
     <div className="rounded-lg border bg-card text-card-foreground shadow-sm w-full max-w-md mx-auto mb-0">
       <form className="flex flex-col p-6 space-y-5">
@@ -372,19 +423,8 @@ function SignupForm() {
                 onBlur={handleBlur}
                 className={focusedField === "email" ? "focused" : ""}
               />
-              {/* <TextField
-                label="Password"
-                type="password"
-                placeholder="Enter the Password"
-                fullWidth
-                value={password}
-                onChange={handlePasswordChange}
-                onFocus={() => handleFocus("password")}
-                onBlur={handleBlur}
-                className={focusedField === "password" ? "focused" : ""}
-              /> */}
               <TextField
-                label="Password"
+                label="Set Password"
                 variant="outlined"
                 type={viewPassword ? "password" : "text"}
                 name="password"
@@ -432,39 +472,74 @@ function SignupForm() {
               </div>
             </>
           )}
-          {/* <Dialog
-            open={showTermsPopup}
-            onClose={handleCloseTermsPopup}
-            BackdropComponent={Backdrop}
-          >
-            <DialogTitle fontSize={30} className="text-center font-bold">
-              Terms and Conditions
-            </DialogTitle>
-            <DialogContent>
-              <div>
-                <p>
-                  <span className="font-bold">
-                    Non-Refundable Payment Policy:
-                  </span>{" "}
-                  &nbsp; Please note that once a payment is made for our press
-                  release distribution services, it is not refundable. This
-                  policy is in place due to the immediate action we take to
-                  distribute your content across our extensive network,
-                  including premier sites like Yahoo Finance, Bloomberg,
-                  MarketWatch, and many others. We encourage you to review your
-                  selections carefully and reach out to our support team for any
-                  clarifications before making a payment.
-                </p>
-                <p>
-                  For more information about our services and policies, please
-                  visit our FAQ section or contact our support team.
-                </p>
+           <TextField
+                label="Street Address"
+                type="text"
+                placeholder="Enter the Street Address"
+                fullWidth
+                value={streetAddress}
+                onChange={handleStreetChange}
+                onFocus={() => handleFocus("streetAddress")}
+                onBlur={handleBlur}
+                className={focusedField === "streetAddress" ? "focused" : ""}
+              />
+              <div className="grid grid-cols-2 gap-3">
+              <TextField
+                label="City"
+                type="text"
+                placeholder="Enter the City"
+                fullWidth
+                value={city}
+                onChange={handleCityChange}
+                onFocus={() => handleFocus("city")}
+                onBlur={handleBlur}
+                className={focusedField === "city" ? "focused" : ""}
+              />
+              <TextField
+                label="State"
+                type="text"
+                placeholder="Enter the State"
+                fullWidth
+                value={state}
+                onChange={handleStateChange}
+                onFocus={() => handleFocus("state")}
+                onBlur={handleBlur}
+                className={focusedField === "state" ? "focused" : ""}
+              />
+              <TextField
+                label="Zip Code"
+                type="text"
+                placeholder="Enter the Zip Code"
+                fullWidth
+                value={zip}
+                onChange={handleZipChange}
+                onFocus={() => handleFocus("zip")}
+                onBlur={handleBlur}
+                className={focusedField === "zip" ? "focused" : ""}
+              />
+              <FormControl fullWidth>
+            <InputLabel id="client-email-label">Select Country</InputLabel>
+            <Select
+              labelId="client-email-label"
+              id="country"
+              onFocus={() => handleFocus("country")}
+              onBlur={handleBlur}
+              className={focusedField === "country" ? "focused" : ""}
+              value={country}
+              onChange={handleCountryChange}
+              label="Client Email"
+            >
+              <MenuItem value="" disabled>
+                Select Country
+              </MenuItem>
+              {plans.map((country) => (
+                <MenuItem key={country.country_code} value={country.country_code}>
+                  {`${country.country_name}`}
+                </MenuItem>
+              ))}
+            </Select>
+          </FormControl>
               </div>
-            </DialogContent>
-            <DialogActions>
-              <Button onClick={handleAcceptTerms}>Accept</Button>
-            </DialogActions>
-          </Dialog> */}
           <input
             type="checkbox"
             id="termsCheckbox"
@@ -475,30 +550,9 @@ function SignupForm() {
           <label htmlFor="termsCheckbox">
             I have read and accept the <Link href="/terms-and-condition" className="underline text-blue-500">Terms and Conditions </Link>
           </label>
-          {/* {isAgency && (
-            <TextField
-              label="Agency Name"
-              type="text"
-              placeholder="Enter the Agency Name"
-              fullWidth
-              value={agencyName}
-              onChange={handleAgencyNameChange}
-              onFocus={() => handleFocus("agencyName")}
-              onBlur={handleBlur}
-              className={focusedField === "agencyName" ? "focused" : ""}
-            />
-          )} */}
-          {/* <button
-            type="button"
-            disabled={!acceptedTerms || !isChecked}
-            onClick={handleSubmit}
-            className="btn-grad inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
-          >
-            Submit
-          </button> */}
           <button
             type="button"
-            disabled={ !isChecked || isLoading} // Disable button when loading
+            disabled={ !isChecked || isLoading}
             onClick={handleSubmit}
             className="btn-grad inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
           >

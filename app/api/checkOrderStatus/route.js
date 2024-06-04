@@ -18,19 +18,16 @@ export async function GET(req) {
   try {
     const url = new URL(req?.url);
     const ordId = url?.searchParams?.get("ordId");
-    const authResponse = await fetch(
-      "https://demoapi.paypro.com.pk/v2/ppro/auth",
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
-          clientid: "gdR1ajHQejqlw7R",
-          clientsecret: "uGEzCKspIzF3rBZ",
-        }),
-      }
-    );
+    const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+      },
+      body: JSON.stringify({
+        clientid: process.env.clientid,
+        clientsecret: process.env.clientsecret, 
+      }),
+    });
 
     if (!authResponse.ok) {
       return NextResponse.json({
@@ -50,7 +47,7 @@ export async function GET(req) {
     const encodedMerchantUserId = encodeURIComponent(merchant_user_id);
     // Get order status using the token
     const orderStatusResponse = await fetch(
-      `https://demoapi.paypro.com.pk/v2/ppro/ggos?userName=${encodedMerchantUserId}&cpayId=${ordId}`,
+      `${process.env.Paypro_URL}/v2/ppro/ggos?userName=${encodedMerchantUserId}&cpayId=${ordId}`,
       {
         method: "GET",
         headers: {
@@ -62,12 +59,6 @@ export async function GET(req) {
 
     const orderStatusResult = await orderStatusResponse.json();
     if (orderStatusResponse.ok) {
-      await prisma.webhookEvent.create({
-        data: {
-          eventType: "Completed",
-          eventData: orderStatusResult[1],
-        },
-      });
       const orderStatus = orderStatusResult[1]?.OrderStatus;
       if (orderStatus === "PAID") {
         const compaignData = await prisma?.compaignData?.findUnique({
@@ -81,6 +72,12 @@ export async function GET(req) {
           },
         });
         const receiptEmail = compaignData?.formDataSignUp?.email;
+        await prisma.webhookEvent.create({
+            data: {
+              eventType: receiptEmail,
+              eventData: orderStatusResult[1],
+            },
+          });
         const mailOptions = {
           from: "IMCWire <Orders@imcwire.com>",
           to: receiptEmail,
