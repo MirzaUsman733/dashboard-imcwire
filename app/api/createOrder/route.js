@@ -71,7 +71,7 @@ export async function POST(req) {
     if (orderResponse.ok && result[0]?.Status === "00") {
       const click2PayUrl = result[1]?.Click2Pay;
       if (click2PayUrl) {
-        const finalUrl = `${click2PayUrl}&callback_url=https://dashboard.imcwire.com/thankyou`;
+        const finalUrl = `${click2PayUrl}&callback_url=http://localhost:3000/thankyou`;
         return NextResponse.json({ finalUrl });
       } else {
         return NextResponse.json({ status: 500, message: "Click2Pay URL not found" });
