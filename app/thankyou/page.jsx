@@ -26,8 +26,11 @@ const Page = () => {
     if (queryParams.ordId) {
       // Fetch order status
       fetch(`/api/checkOrderStatus?ordId=${queryParams.ordId}`)
-        .then((res) => res.json())
+        .then((res) => {
+          console.log(res)
+          res.json()})
         .then((data) => {
+          console.log("Data",data)
           if (data.orderStatus === "PAID") {
             setPaymentStatus("Paid");
           } else {
