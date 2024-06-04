@@ -16,10 +16,13 @@ const transporter = nodemailer?.createTransport({
 });
 export async function GET(req) {
   try {
-    const url = new URL(req?.url);
-    console.log(url)
-    const ordId = url?.searchParams?.get("ordId");
-    console.log(ordId)
+    console.log(req);
+    // const url = new URL(req?.url);
+    // console.log(url)
+    // const ordId = url?.searchParams?.get("ordId");
+    const url = new URL(req.url, `http://${req.headers.host}`);
+    const ordId = url.searchParams.get("ordId");
+    console.log(ordId);
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: "POST",
       headers: {
@@ -27,7 +30,7 @@ export async function GET(req) {
       },
       body: JSON.stringify({
         clientid: process.env.clientid,
-        clientsecret: process.env.clientsecret, 
+        clientsecret: process.env.clientsecret,
       }),
     });
 
@@ -75,11 +78,11 @@ export async function GET(req) {
         });
         const receiptEmail = compaignData?.formDataSignUp?.email;
         await prisma.webhookEvent.create({
-            data: {
-              eventType: receiptEmail,
-              eventData: orderStatusResult[1],
-            },
-          });
+          data: {
+            eventType: receiptEmail,
+            eventData: orderStatusResult[1],
+          },
+        });
         const mailOptions = {
           from: "IMCWire <Orders@imcwire.com>",
           to: receiptEmail,
@@ -191,7 +194,7 @@ export async function GET(req) {
           message: "Order marked as paid",
           orderStatusResult,
           ordId,
-          url
+          url,
         });
       } else {
         return NextResponse.json({
@@ -199,7 +202,7 @@ export async function GET(req) {
           message: "Order not yet paid",
           orderStatusResult,
           ordId,
-          url
+          url,
         });
       }
     } else {
