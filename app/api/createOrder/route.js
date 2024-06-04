@@ -49,7 +49,7 @@ export async function POST(req) {
         "IsConverted": "true",
         "IssueDate": formattedIssueDate,
         "OrderExpireAfterSeconds": "0",
-        "CustomerName": name || "Arbaz Abid",
+        "CustomerName": name,
         "CustomerMobile": "",
         "CustomerEmail": "",
         "CustomerAddress": address

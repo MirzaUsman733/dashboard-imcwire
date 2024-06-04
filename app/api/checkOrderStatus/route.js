@@ -39,7 +39,7 @@ export async function GET(req) {
     const authResult = await authResponse.text();
     const token = authResponse.headers.get("Token");
 
-    if (authResult === "Authorized" || !token) {
+    if (!token) {
       return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
 
@@ -206,7 +206,7 @@ export async function GET(req) {
     console.error("Error:", error);
     return NextResponse.json({
       status: 500,
-      message: "Internal Server Error",
+      message: error,
     });
   }
 }
