@@ -17,11 +17,11 @@ const transporter = nodemailer?.createTransport({
 export async function GET(req) {
   try {
     console.log(req);
-    // const url = new URL(req?.url);
-    // console.log(url)
-    // const ordId = url?.searchParams?.get("ordId");
-    const url = new URL(req.url, `http://${req.headers.host}`);
-    const ordId = url.searchParams.get("ordId");
+    const url = new URL(req?.url);
+    console.log(url)
+    const ordId = url?.searchParams?.get("ordId");
+    // const url = new URL(req.url, `http://${req.headers.host}`);
+    // const ordId = url.searchParams.get("ordId");
     console.log(ordId);
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: "POST",
@@ -209,6 +209,9 @@ export async function GET(req) {
       return NextResponse.json({
         status: 500,
         message: "Failed to get order status",
+        orderStatusResult,
+          ordId,
+          url,
       });
     }
   } catch (error) {
@@ -216,6 +219,9 @@ export async function GET(req) {
     return NextResponse.json({
       status: 500,
       message: error,
+      orderStatusResult,
+          ordId,
+          url,
     });
   }
 }
