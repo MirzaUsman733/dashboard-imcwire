@@ -8,37 +8,42 @@ const Page = ({ params }) => {
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    if (params.id) {
-      // Start loading
-      setLoading(true);
+    const fetchData = async () => {
+      try {
+        if (params.id) {
+          setLoading(true);
+          
+          // Delay API call by 2 seconds
+          setTimeout(async () => {
+            // Fetch order status
+            const response = await fetch(`/api/checkOrderStatus?ordId=${params.id}`);
+            if (!response.ok) {
+              throw new Error("Failed to fetch");
+            }
 
-      // Fetch order status
-      fetch(`/api/checkOrderStatus?ordId=${params.id}`)
-        .then((res) => {
-          if (res.ok) {
-            return res.json(); // Process JSON data if the response was successful
-          } else {
-            throw new Error("Failed to fetch");
-          }
-        })
-        .then((data) => {
-          console.log("Data:", data);
-          if (data.orderStatusResult[1].OrderStatus === "PAID") {
-            setPaymentStatus("Paid");
-          } else {
-            setPaymentStatus("Unpaid");
-          }
-          setLoading(false); // Stop loading after data processing
-        })
-        .catch((err) => {
-          console.error("Error checking payment status:", err);
-          setPaymentStatus("Error checking status");
-          setLoading(false); // Stop loading if there was an error
-        });
-    } else {
-      setLoading(false); // Stop loading if there is no id
-    }
+            const data = await response.json();
+            console.log("Data:", data);
+            if (data && data?.orderStatusResult[1]?.OrderStatus === "PAID") {
+              setPaymentStatus("Paid");
+            } else {
+              setPaymentStatus("Unpaid");
+            }
+            setLoading(false); // Stop loading after data processing
+          }, 2000); // 2 seconds delay
+
+        } else {
+          setLoading(false); // Stop loading if there is no id
+        }
+      } catch (err) {
+        console.error("Error checking payment status:", err);
+        setPaymentStatus("Error checking status");
+        setLoading(false); // Stop loading if there was an error
+      }
+    };
+
+    fetchData();
   }, [params.id]);
+  
 
 //   if (loading) {
 //     return <div>Loading...</div>; // Display a loading indicator when data is being fetched
