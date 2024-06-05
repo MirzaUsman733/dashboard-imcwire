@@ -220,11 +220,11 @@ const prisma = new PrismaClient();
 //     });
 //   }
 // }
-export const dynamic = 'auto'
+export const dynamic = "auto";
 export async function GET(req) {
   let orderStatusResult;
   try {
-    const url = new URL(req?.url);
+    // const url = new URL(req?.url);
     const ordId = url?.searchParams?.get("ordId");
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: "POST",
@@ -265,12 +265,12 @@ export async function GET(req) {
     if (orderStatusResponse?.ok) {
       const orderStatus = orderStatusResult[1]?.OrderStatus;
       console.log(orderStatus);
-      console.log(orderStatusResult[1]?.OrderNumber)
+      console.log(orderStatusResult[1]?.OrderNumber);
       if (orderStatus === "PAID") {
         const compaignData = await prisma?.compaignData?.findUnique({
           where: { clientId: orderStatusResult[1]?.OrderNumber },
         });
-        console.log(compaignData)
+        console.log(compaignData);
         await prisma?.compaignData?.update({
           where: { clientId: orderStatusResult[1]?.OrderNumber },
           data: {
@@ -278,7 +278,7 @@ export async function GET(req) {
             transactionId: orderStatusResult[1]?.OrderNumber,
           },
         });
-        console.log(compaignData)
+        console.log(compaignData);
         const receiptEmail = compaignData?.formDataSignUp?.email;
         await prisma.webhookEvent.create({
           data: {
@@ -287,11 +287,11 @@ export async function GET(req) {
           },
         });
         const mailOptions = {
-                    from: "IMCWire <Orders@imcwire.com>",
-                    to: receiptEmail,
-                    subject:
-                      "Your Payment Has Been Successfully Processed - Welcome to IMCWire!",
-                    html: `<!DOCTYPE html>
+          from: "IMCWire <Orders@imcwire.com>",
+          to: receiptEmail,
+          subject:
+            "Your Payment Has Been Successfully Processed - Welcome to IMCWire!",
+          html: `<!DOCTYPE html>
                   <html lang="en">
                   <head>
                   <meta charset="UTF-8">
@@ -332,16 +332,16 @@ export async function GET(req) {
           
                   </body>
                   </html>`,
-                  };
-                  const adminEmails = [
-                    "admin@imcwire.com",
-                    "imcwirenotifications@gmail.com",
-                  ];
-                  const adminMailOptions = {
-                    from: "IMCWire <Orders@imcwire.com>",
-                    to: adminEmails.join(","),
-                    subject: `New Payment Received - ${compaignData?.formDataSignUp?.name} Subscription Activation`,
-                    html: `<!DOCTYPE html>
+        };
+        const adminEmails = [
+          "admin@imcwire.com",
+          "imcwirenotifications@gmail.com",
+        ];
+        const adminMailOptions = {
+          from: "IMCWire <Orders@imcwire.com>",
+          to: adminEmails.join(","),
+          subject: `New Payment Received - ${compaignData?.formDataSignUp?.name} Subscription Activation`,
+          html: `<!DOCTYPE html>
                   <html lang="en">
                   <head>
                   <meta charset="UTF-8">
@@ -385,38 +385,35 @@ export async function GET(req) {
           
                   </body>
                   </html>`,
-                  };
-          
-                  // Send email
-                  await transporter?.sendMail(mailOptions);
-                  await transporter?.sendMail(adminMailOptions);
-          
-                  await prisma?.$disconnect();
-                  return NextResponse.json({
-                    status: 200,
-                    message: "Order yet paid",
-                    ordId: ordId,
-                    orderStatusResult
-                  });
-      }else {
-                return NextResponse.json({
-                  status: 200,
-                  message: "Order not yet paid",
-                  orderStatusResult,
-                  ordId: ordId
-                });
-              }
+        };
+
+        // Send email
+        await transporter?.sendMail(mailOptions);
+        await transporter?.sendMail(adminMailOptions);
+
+        await prisma?.$disconnect();
+        return NextResponse.json({
+          status: 200,
+          message: "Order yet paid",
+          ordId: ordId,
+          orderStatusResult,
+        });
+      } else {
+        return NextResponse.json({
+          status: 200,
+          message: "Order not yet paid",
+          orderStatusResult,
+          ordId: ordId,
+        });
+      }
+    } else {
+      return NextResponse.json({
+        status: 500,
+        message: "Failed to get order status",
+        orderStatusResult,
+        ordId: ordId,
+      });
     }
-    else {
-            return NextResponse.json({
-              status: 500,
-              message: "Failed to get order status",
-              orderStatusResult,
-              ordId: ordId,
-            });
-          }
-
-
   } catch (error) {
     return NextResponse.json({
       status: 500,
