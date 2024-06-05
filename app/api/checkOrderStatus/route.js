@@ -420,7 +420,7 @@ export async function GET(req) {
   } catch (error) {
     return NextResponse.json({
       status: 500,
-      message: "Internal Server Error",
+      message: error,
       orderStatusResult,
     });
   }
