@@ -1,7 +1,7 @@
 import Link from "next/link";
 
 const ResponceOfApi = ({ dataResponce }) => {
-
+  console.log("Data Response in front",dataResponce)
   return (
     <div>
       <section>
@@ -26,17 +26,17 @@ const ResponceOfApi = ({ dataResponce }) => {
                   <p className="text-lg text-gray-600 mb-6">
                     Checking Your order status:
                   </p>
-                  {dataResponce[1].OrderStatus === "Checking status..." ? (
+                  {dataResponce.orderResultData[1].OrderStatus === "Checking status..." ? (
                     "loading"
                   ) : (
                     <p
                       className={`text-2xl font-semibold ${
-                        dataResponce[1].OrderStatus === "Paid"
+                        dataResponce?.orderResultData[1]?.OrderStatus === "Paid"
                           ? "text-green-500"
                           : "text-red-500"
                       }`}
                     >
-                      {dataResponce[1].OrderStatus}
+                      {dataResponce?.orderResultData[1].OrderStatus}
                     </p>
                   )}
                 </div>
