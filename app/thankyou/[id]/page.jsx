@@ -1,5 +1,6 @@
 "use client";
-export const dynamic = "force-dynamic";
+// export const dynamic = "force-dynamic";
+export const dynamic = 'auto'
 import Link from "next/link";
 import React, { useEffect, useState } from "react";
 import ClipLoader from "react-spinners/ClipLoader";

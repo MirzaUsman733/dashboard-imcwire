@@ -220,7 +220,7 @@ const prisma = new PrismaClient();
 //     });
 //   }
 // }
-
+export const dynamic = 'auto'
 export async function GET(req) {
   let orderStatusResult;
   try {
