@@ -200,7 +200,6 @@ const prisma = new PrismaClient();
 //           message: "Order not yet paid",
 //           orderStatusResult,
 //           ordId,
-//           url,
 //         });
 //       }
 //     } else {
@@ -209,7 +208,6 @@ const prisma = new PrismaClient();
 //         message: "Failed to get order status",
 //         orderStatusResult,
 //           ordId,
-//           url,
 //       });
 //     }
 //   } catch (error) {
@@ -219,12 +217,12 @@ const prisma = new PrismaClient();
 //       message: error,
 //       orderStatusResult,
 //           ordId,
-//           url,
 //     });
 //   }
 // }
 
 export async function GET(req) {
+  let orderStatusResult;
   try {
     const url = new URL(req?.url);
     const ordId = url?.searchParams?.get("ordId");
@@ -262,7 +260,7 @@ export async function GET(req) {
       }
     );
     console.log("Order status Response : ", orderStatusResponse);
-    const orderStatusResult = await orderStatusResponse.json();
+    orderStatusResult = await orderStatusResponse.json();
     console.log("Order status Result : ", orderStatusResult);
     if (orderStatusResponse?.ok) {
       const orderStatus = orderStatusResult[1]?.OrderStatus;
@@ -405,16 +403,25 @@ export async function GET(req) {
                   status: 200,
                   message: "Order not yet paid",
                   orderStatusResult,
-                  ordId,
-                  url,
+                  ordId: ordId
                 });
               }
     }
+    else {
+            return NextResponse.json({
+              status: 500,
+              message: "Failed to get order status",
+              orderStatusResult,
+              ordId: ordId,
+            });
+          }
+
 
   } catch (error) {
     return NextResponse.json({
       status: 500,
       message: "Internal Server Error",
+      orderStatusResult,
     });
   }
 }
