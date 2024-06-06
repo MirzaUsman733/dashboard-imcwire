@@ -9,16 +9,16 @@ export async function POST(request) {
 
   // Authenticate and get the token
   const authResponse = await axios.post(
-    "https://demoapi.paypro.com.pk/v2/ppro/auth",
+    "https://api.paypro.com.pk/v2/ppro/auth",
     {
-      clientid: "gdR1ajHQejqlw7R",
-      clientsecret: "uGEzCKspIzF3rBZ",
+      clientid: "gklnG33fwu29hcL",
+      clientsecret: "pc365PyUOAqfrWq",
     }
   );
 
   const token = authResponse.headers["token"];
   const orderStatusResponse = await axios.get(
-    `https://demoapi.paypro.com.pk/v2/ppro/ggos?userName=${encodeURIComponent(
+    `https://api.paypro.com.pk/v2/ppro/ggos?userName=${encodeURIComponent(
       "Tier_Solutions"
     )}&cpayId=${id}`,
     {

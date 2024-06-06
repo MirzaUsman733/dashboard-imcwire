@@ -38,12 +38,12 @@ export async function POST(req) {
 
     const orderPayload = [
       {
-        "MerchantId": "Tier_Solutions"
+        "MerchantId": "NUXLAY"
       },
       {
         "OrderNumber":   clientId,
         "CurrencyAmount": totalPrice+ ".00" ,
-        "Currency": "PKR",
+        "Currency": "USD",
         "OrderDueDate": formattedOrderDueDate,
         "OrderType": "Service",
         "IsConverted": "true",
