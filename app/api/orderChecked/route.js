@@ -16,9 +16,7 @@ export async function POST(request) {
     }
   );
 
-  const token = authResponse.headers["token"]; // Make sure the token is correctly provided in the response headers
-  console.log("Token: ",token)
-  // Use the token to make the second API call
+  const token = authResponse.headers["token"];
   const orderStatusResponse = await axios.get(
     `https://demoapi.paypro.com.pk/v2/ppro/ggos?userName=${encodeURIComponent(
       "Tier_Solutions"
@@ -27,17 +25,13 @@ export async function POST(request) {
       headers: { "Content-Type": "application/json", Token: token },
     }
   );
-  console.log("Order Response Data",orderStatusResponse.data)
   const orderResultData = orderStatusResponse.data;
-  console.log("Order Result data",orderResultData[0]?.Status)
-  if (orderResultData[0]?.Status === '00') {
+  if (orderResultData[0]?.Status === "00") {
     const orderStatus = orderResultData[1]?.OrderStatus;
-console.log("Order Status: ",orderStatus)
     if (orderStatus === "PAID") {
       const compaignData = await prisma.compaignData.findUnique({
-        where: { clientId: orderResultData[1]?.OrderNumber }
+        where: { clientId: orderResultData[1]?.OrderNumber },
       });
-      console.log(compaignData)
 
       // Update compaign data status
       await prisma.compaignData.update({
@@ -54,7 +48,6 @@ console.log("Order Status: ",orderStatus)
         },
       });
       const receiptEmail = compaignData?.formDataSignUp?.email;
-      console.log("Reciepent Email",receiptEmail);
       const transporter = nodemailer?.createTransport({
         host: "smtp.hostinger.com",
         port: 465,

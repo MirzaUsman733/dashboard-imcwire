@@ -23,7 +23,6 @@ import { MdDelete } from "react-icons/md";
 import Menu from "@mui/material/Menu";
 import MenuItem from "@mui/material/MenuItem";
 import MoreVertIcon from "@mui/icons-material/MoreVert";
-import DeleteButton from "../../components/DeleteButton";
 import Link from "next/link";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
@@ -119,17 +118,6 @@ TablePaginationActions.propTypes = {
   rowsPerPage: PropTypes.number.isRequired,
 };
 
-const fetchDataFromAPI = async () => {
-  try {
-    const response = await fetch("/api/add-company");
-    const data = await response.json();
-    return data;
-  } catch (error) {
-    console.error("Error fetching data:", error);
-    return [];
-  }
-};
-
 export default function CompaniesTable() {
   const { data: session, status: sessionStatus } = useSession();
   const router = useRouter();
@@ -137,44 +125,62 @@ export default function CompaniesTable() {
   const [page, setPage] = useState(0);
   const [rowsPerPage, setRowsPerPage] = useState(5);
   const [rows, setRows] = useState([]);
-  const [anchorEl, setAnchorEl] = useState(new Array(rows.length).fill(null));
+  const [anchorEl, setAnchorEl] = useState([]);
+  const [deleteLoading, setDeleteLoading] = useState(false);
 
   useEffect(() => {
     if (sessionStatus === "unauthenticated") {
       router.replace("/login");
     }
   }, [sessionStatus, router]);
+
   useEffect(() => {
     if (session) {
-      fetchDataFromAPI().then((data) => {
-        const filteredData = data?.filter(
-          (company) => company?.user?.user?.email === session?.user?.email
-        );
-        setRows(filteredData);
-        setLoading(false);
-      });
+      (async () => {
+        try {
+          const response = await fetch("/api/add-company");
+          const data = await response.json();
+          const filteredData = data.filter(
+            (company) => company?.user?.user?.email === session?.user?.email
+          );
+          setRows(filteredData);
+          setAnchorEl(new Array(filteredData.length).fill(null));
+        } catch (error) {
+          console.error("Error fetching data:", error);
+        } finally {
+          setLoading(false);
+        }
+      })();
     }
   }, [session]);
 
-  const handleDeleteClick = (id, index) => {
-    fetch(`/api/add-company`, {
-      method: "DELETE",
-      headers: {
-        "Content-Type": "application/json",
-      },
-      body: JSON.stringify({ id }),
-    })
-      .then((response) => {
-        if (response.ok) {
-          fetchDataFromAPI().then((data) => setRows(data));
-        } else {
-          console.error("Failed to delete");
-        }
-      })
-      .catch((error) => console.error("Error deleting:", error))
-      .finally(() => {
-        handleMenuClose(index);
+  const handleDeleteClick = async (id, index) => {
+    setDeleteLoading(true);
+    try {
+      const response = await fetch(`/api/add-company`, {
+        method: "DELETE",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({ id }),
       });
+      if (response.ok) {
+        const response = await fetch("/api/add-company");
+        const data = await response.json();
+        const filteredData = data.filter(
+          (company) => company?.user?.user?.email === session?.user?.email
+        );
+        setRows(filteredData);
+        setAnchorEl(new Array(filteredData.length).fill(null));
+      } else {
+        console.error("Failed to delete");
+      }
+    } catch (error) {
+      console.error("Error deleting:", error);
+    } finally {
+      setDeleteLoading(false);
+      handleMenuClose(index);
+    }
   };
 
   const handleMenuOpen = (event, index) => {
@@ -201,6 +207,7 @@ export default function CompaniesTable() {
     setRowsPerPage(parseInt(event.target.value, 10));
     setPage(0);
   };
+
   const formatDate = (dateString) => {
     const options = {
       year: "numeric",
@@ -211,6 +218,7 @@ export default function CompaniesTable() {
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
   };
+
   const emptyRows =
     page > 0 ? Math.max(0, (1 + page) * rowsPerPage - rows.length) : 0;
 
@@ -218,7 +226,6 @@ export default function CompaniesTable() {
     return (
       <div className="h-[100vh] flex justify-center items-center w-full">
         <TawkTo />
-
         <InfinitySpin
           visible={true}
           width="200"
@@ -269,14 +276,6 @@ export default function CompaniesTable() {
                   </TableRow>
                 </TableHead>
                 <TableBody>
-                  {/* {(rowsPerPage > 0
-                ? rows?.slice(
-                    page * rowsPerPage,
-                    page * rowsPerPage + rowsPerPage
-                  )
-                : rows
-                
-              ).map((row, index) => ( */}
                   {(rowsPerPage > 0
                     ? rows
                         .slice(
@@ -309,42 +308,51 @@ export default function CompaniesTable() {
                           >
                             <MoreVertIcon />
                           </IconButton>
-                          <Menu
-                            id={`actions-menu-${index}`}
-                            anchorEl={anchorEl[index]}
-                            open={Boolean(anchorEl[index])}
-                            onClose={() => handleMenuClose(index)}
-                          >
-                            <MenuItem>
-                              <Link
-                                className="flex"
-                                href={`/press-dashboard/view-companies/${row.id}`}
+                            <Menu
+                              id={`actions-menu-${index}`}
+                              anchorEl={anchorEl[index]}
+                              open={Boolean(anchorEl[index])}
+                              onClose={() => handleMenuClose(index)}
                               >
-                                <FaEdit
-                                  title="Edit"
+                              {deleteLoading ? (
+                                <div className="mx-2">
+                                  Deleting...
+                                </div>
+                              ) : (
+                                <>
+                              <MenuItem>
+                                <Link
+                                  className="flex"
+                                  href={`/press-dashboard/view-companies/${row.id}`}
+                                >
+                                  <FaEdit
+                                    title="Edit"
+                                    size={20}
+                                    className="text-blue-500"
+                                    cursor="pointer"
+                                  />
+                                  &nbsp;{" "}
+                                  <span className="text-blue-500">Edit </span>
+                                </Link>
+                              </MenuItem>
+                              <MenuItem>
+                                <MdDelete
+                                  title="Delete"
                                   size={20}
-                                  className="text-blue-500"
-                                  cursor="pointer"
+                                  color="#C82333"
+                                  className="cursor-pointer"
                                 />
-                                &nbsp;{" "}
-                                <span className="text-blue-500">Edit </span>
-                              </Link>
-                            </MenuItem>
-                            <MenuItem>
-                              <MdDelete
-                                title="Delete"
-                                size={20}
-                                color="#C82333"
-                                className="cursor-pointer"
-                              />
-                              <DeleteButton
-                                label="Delete"
-                                onDelete={() =>
-                                  handleDeleteClick(row.id, index)
-                                }
-                              />
-                            </MenuItem>
-                          </Menu>
+                                <button
+                                  onClick={() =>
+                                    handleDeleteClick(row.id, index)
+                                  }
+                                >
+                                  Delete
+                                </button>
+                              </MenuItem>
+                              </>
+                          )}
+                            </Menu>
                         </TableCell>
                       </StyledTableRow>
                     ))}

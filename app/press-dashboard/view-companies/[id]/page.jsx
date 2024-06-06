@@ -127,7 +127,7 @@ export default function Page() {
           <form onSubmit={handleFormSubmit}>
             <Grid container spacing={2}>
               {Object.keys(formData).map((key) => {
-                if (key !== "user" && key !== "currentTime" && key !== "id") {
+                if (key !== "user" && key !== "currentTime" && key !== "id" && key !== "updatedAt") {
                   return (
                     <Grid item xs={12} md={6} key={key}>
                       <TextField
@@ -145,7 +145,8 @@ export default function Page() {
                           readOnly:
                             key === "user" ||
                             key === "currentTime" ||
-                            key === "id",
+                            key === "id" ||
+                            key === "updatedAt"
                         }}
                       />
                     </Grid>
