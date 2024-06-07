@@ -90,7 +90,9 @@ const authOptions = {
     },
     async session({ session, token }) {
       if (session?.user) {
-        session.expires = new Date(Date.now() + 24 * 60 * 60 * 1000).toISOString();
+        session.expires = new Date(
+          Date.now() + 24 * 60 * 60 * 1000
+        ).toISOString();
         (session.user.role = token.role),
           (session.user.id = token.userId),
           (session.user.status = token.status);
@@ -120,7 +122,7 @@ const authOptions = {
   },
   session: {
     jwt: true,
-    maxAge: 86400, 
+    maxAge: 86400,
   },
 };
 async function verifyRecaptcha(token) {

@@ -196,6 +196,7 @@ const [country, setCountry] = useState("");
           role: "user",
           token: token,
           isAgency: isAgency,
+          redirect: false,
         }),
       });
 

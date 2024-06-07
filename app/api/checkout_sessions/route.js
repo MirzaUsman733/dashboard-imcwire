@@ -1,8 +1,7 @@
 import { NextResponse } from "next/server";
 const stripe = require("stripe")(process.env.STRIPE_SECRET_KEY);
 export async function POST(request) {
-  // const { email, totalPrice, clientId } = await request?.json();
-  console.log(await request?.json());
+  const { email, totalPrice, clientId } = await request?.json();
   try {
     const session = await stripe?.checkout?.sessions?.create({
       line_items: [

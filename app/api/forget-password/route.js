@@ -113,12 +113,11 @@ export const POST = async (request) => {
       `,
     };
     await transporter?.sendMail(mailOptions);
-    const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; // Array of admin emails
-    // const adminEmails = ["mirzausman9006@gmail.com", "hafizusman733k@gmail.com"]; // Array of admin emails
+    const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; 
 
     const adminMailOptions = {
       from: "IMCWire <Orders@imcwire.com>",
-      to: adminEmails.join(","), // Join the admin emails with commas
+      to: adminEmails.join(","), 
       subject: "Password Reset Request",
       text: `A password reset request has been made for the user with email: ${email}`,
     };

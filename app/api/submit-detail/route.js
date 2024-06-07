@@ -77,10 +77,10 @@ export async function POST(req) {
       await transporter.sendMail(userMailOptions);
 
       // Send alert email to admin(s)
-      const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; // Array of admin emails
+      const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; 
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
-        to: adminEmails.join(","), // Join the admin emails with commas
+        to: adminEmails.join(","), 
         subject: "New Press Release Submission",
         html: `
         <!DOCTYPE html>
@@ -131,11 +131,9 @@ export async function PUT(req) {
       where: { id: publicationId },
       data: updatedData,
     });
-    // console.log(user);
     const userEmail = user?.storeData?.formDataSignUp?.email;
     const userName = user?.storeData?.formDataSignUp?.name;
     let emailSubject, emailText;
-    // Determine email subject and text based on updatedData.action
     switch (updatedData?.storeData?.action) {
       case "pending":
         emailSubject = "Your IMCWire Press Release Order is Pending Approval";

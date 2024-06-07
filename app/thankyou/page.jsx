@@ -1,7 +1,4 @@
-// pages/thankyou.js
-
 "use client";
-// export const dynamic = "force-dynamic";
 export const dynamic = 'auto'
 import { useRouter } from "next/navigation";
 import { useEffect } from "react";

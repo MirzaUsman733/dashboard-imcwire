@@ -4,10 +4,8 @@ import nodemailer from "nodemailer";
 
 const prisma = new PrismaClient();
 export async function POST(request) {
-  // First, parse the request body to extract necessary parameters
   const { id } = await request.json();
 
-  // Authenticate and get the token
   const authResponse = await axios.post(
     "https://api.paypro.com.pk/v2/ppro/auth",
     {
@@ -180,5 +178,4 @@ export async function POST(request) {
     status: 500,
     message: "Internal Server Error",
   });
-  // Return the data from the second API call as a JSON response
 }

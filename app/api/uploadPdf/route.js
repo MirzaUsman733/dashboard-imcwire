@@ -9,8 +9,6 @@ const prisma = new PrismaClient();
 export async function POST(req) {
   const formData = await req.formData();
 
-  // console.log(formData);
-  // const image = formData.get("image");
   const uniqueId = formData?.get("id");
   const pdfFile = formData?.get("pdf");
   console.log(uniqueId)
