@@ -4,7 +4,7 @@ import { FiTag } from "react-icons/fi";
 import { TbWorldCheck } from "react-icons/tb";
 import Snackbar from "@mui/material/Snackbar";
 import MuiAlert from "@mui/material/Alert";
-const Rightbar = () => {
+const Rightbar = ({matchedPlan}) => {
   const {
     selectedCategories,
     selectedCountries,
@@ -168,16 +168,7 @@ const Rightbar = () => {
           <div className="font-bold text-lg text-purple-700">Total</div>
           <div className="font-bold text-lg text-purple-700">${totalPrice}</div>
         </div>
-        {/* <div className="mt-4 flex justify-center items-center">
-          <input
-            type="email"
-            placeholder="Enter Promo Code"
-            className="p-2 border border-gray-300 focus:border-purple-700 rounded focus:outline-none focus:ring-1 focus:ring-purple-700"
-          />
-          <button className="ml-2 px-4 py-2 btn-grad uppercase text-center">
-            Apply
-          </button>
-        </div> */}
+         {(matchedPlan?.planName === "Basic" || matchedPlan?.planName === "Corporate" || matchedPlan?.planName === "Pro+") && (
         <div className="mt-4 flex justify-center items-center">
           <input
             type="text"
@@ -193,6 +184,7 @@ const Rightbar = () => {
             Apply
           </button>
         </div>
+      )}
       </div>
     </div>
   );

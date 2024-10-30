@@ -68,7 +68,7 @@ const ChooseDistribution = ({
           <option value="">Select a category</option>
           {categories.map((category, index) => (
             <option key={index} value={JSON.stringify(category)}>
-              {category.name} - ${category.price}
+              {category.name}
             </option>
           ))}
         </select>
@@ -80,7 +80,7 @@ const ChooseDistribution = ({
               style={{ fontSize: "12px" }}
             >
               <span>
-                {category.name} - ${category.price}
+                {category.name}
               </span>
               <button
                 className="text-red-600 ml-2"
@@ -112,7 +112,7 @@ const ChooseDistribution = ({
           <option value="">Select a country</option>
           {countries.map((country, index) => (
             <option key={index} value={JSON.stringify(country)}>
-              {country.name} - ${country.price}
+              {country.name}
             </option>
           ))}
         </select>
@@ -124,7 +124,7 @@ const ChooseDistribution = ({
               style={{ fontSize: "12px" }}
             >
               <span>
-                {country.name} - ${country.price}
+                {country.name}
               </span>
               <button
                 className="text-red-600 ml-2"
@@ -133,7 +133,7 @@ const ChooseDistribution = ({
                 &#10005;
               </button>
               <label className="ml-2 flex gap-1">
-                <div>Translation (+$20)</div>
+                <div>Translation</div>
                 <input
                   type="checkbox"
                   checked={selectedCountryTranslations.some(

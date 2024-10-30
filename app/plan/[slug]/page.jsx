@@ -81,7 +81,7 @@ const Page = ({ params }) => {
       storePrice(matchedPlan.totalPlanPrice);
     }
   }, [matchedPlan, storeMatchedPlanData, storePrice]);
-
+  console.log(matchedPlan)
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -142,7 +142,7 @@ const Page = ({ params }) => {
             </div>
           </div>
           <div className="col-span-10 mx-auto sm:col-span-10 sm:mx-auto md:col-span-5 lg:col-span-4">
-            <Rightbar />
+            <Rightbar matchedPlan={matchedPlan} />
           </div>
         </div>
       </div>

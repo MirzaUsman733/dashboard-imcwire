@@ -26,7 +26,7 @@ const Navbar = () => {
               Dashboard
             </Link>
             <Link
-              href="/pricing"
+              href="https://imcwire.com/pricing"
               className="text-black hover:text-gray-600 hover:underline transition-colors duration-300"
             >
               Pricing
