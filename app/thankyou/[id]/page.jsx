@@ -1,24 +1,3 @@
-// import axios from "axios";
-// import ResponceOfApi from "../../components/ApiResponce/ResponceOfApi";
-
-// const Page = async ({ params }) => {
-//   console.log(params.id)
-//   const authResponse = await axios.post(
-//     "https://dashboard.imcwire.com/api/orderChecked",
-//     {
-//       id: params.id,
-//     }
-//   );
-
-//   const dataResponce = authResponse.data;
-//   console.log("Data Response : ",dataResponce)
-
-//   return <ResponceOfApi dataResponce={dataResponce} />;
-// };
-
-// export default Page;
-
-
 import ResponceOfApi from "../../components/ApiResponce/ResponceOfApi";
 
 const Page = async ({ params }) => {
