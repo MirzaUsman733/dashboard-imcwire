@@ -5,7 +5,7 @@ import nodemailer from "nodemailer";
 const prisma = new PrismaClient();
 export async function POST(request) {
   const { id } = await request.json();
-
+  console.log("ID : ", id);
   const authResponse = await axios.post(
     "https://api.paypro.com.pk/v2/ppro/auth",
     {
@@ -17,7 +17,7 @@ export async function POST(request) {
   const token = authResponse.headers["token"];
   const orderStatusResponse = await axios.get(
     `https://api.paypro.com.pk/v2/ppro/ggos?userName=${encodeURIComponent(
-      "Tier_Solutions"
+      "Nuxlay"
     )}&cpayId=${id}`,
     {
       headers: { "Content-Type": "application/json", Token: token },

@@ -6,7 +6,7 @@ const Page = () => {
   const router = useRouter();
   useEffect(() => {
     if (typeof window !== "undefined") {
-      const urlParams = new URLSearchParams(window.location.search);
+      const urlParams = new URLSearchParams(window?.location?.search);
       const ordId = urlParams.get("ordId");
       if (ordId) {
         router.push(`/thankyou/${ordId}`);

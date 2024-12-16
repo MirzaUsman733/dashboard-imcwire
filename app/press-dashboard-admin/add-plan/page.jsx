@@ -1,5 +1,7 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import { Add } from "@mui/icons-material";
+import CloseIcon from "@mui/icons-material/Close";
+import MoreVertIcon from "@mui/icons-material/MoreVert";
 import {
   CircularProgress,
   IconButton,
@@ -8,17 +10,15 @@ import {
   Snackbar,
   TextField,
 } from "@mui/material";
-import { Add } from "@mui/icons-material";
-import Link from "next/link";
 import { useSession } from "next-auth/react";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
-import MoreVertIcon from "@mui/icons-material/MoreVert";
-import FileCopyIcon from "@mui/icons-material/FileCopy";
-import CloseIcon from "@mui/icons-material/Close";
+import React, { useEffect, useState } from "react";
 import { InfinitySpin } from "react-loader-spinner";
 export default function Page() {
   const [loadingPage, setLoadingPage] = useState(true);
   const [loading, setLoading] = useState(false);
+  const [editingPlan, setEditingPlan] = useState(null);
   const [newPlan, setNewPlan] = useState({
     planName: "",
     totalPlanPrice: 0,
@@ -134,6 +134,35 @@ export default function Page() {
   const handleMenuClose = () => {
     setAnchorEl(new Array(plans?.length).fill(null));
   };
+
+  const handleStartEdit = (plan) => {
+    setEditingPlan(plan); // Set the current plan to the editing state
+    setAnchorEl(new Array(plans.length).fill(null)); // Close the menu
+  };
+
+  const handleUpdatePlan = async () => {
+    setLoading(true);
+    const response = await fetch(`/api/plans`, {
+      method: 'PUT', // Ensure your API and server accept PUT requests
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(editingPlan),
+    });
+  
+    if (response.ok) {
+      setSnackbarMessage('Plan updated successfully');
+      setSnackbarOpen(true);
+      fetchPlans(); // Refresh the plans list
+      setEditingPlan(null); // Reset the editing state
+    } else {
+      console.error('Failed to update plan');
+    }
+    setLoading(false);
+  };
+  
+
+
   if (loadingPage) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -307,6 +336,9 @@ export default function Page() {
                           >
                             Delete
                           </MenuItem>
+                          <MenuItem onClick={() => handleStartEdit(plan)}>
+  Edit
+</MenuItem>
                           <MenuItem onClick={() => handleCopyLink(plan?.id)}>
                             Copy Link
                           </MenuItem>

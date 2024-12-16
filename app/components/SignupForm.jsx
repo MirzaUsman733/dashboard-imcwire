@@ -295,6 +295,7 @@ const [country, setCountry] = useState("");
       return;
     }
     const res = await signIn("credentials", {
+       redirect: false,
       email: email,
       password: password,
       token: token,
