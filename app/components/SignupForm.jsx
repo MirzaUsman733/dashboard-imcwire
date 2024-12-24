@@ -218,49 +218,49 @@ const [country, setCountry] = useState("");
 
   const [sessionId, setSessionId] = useState("");
 
-  // const handleCheckout = async () => {
-  //   try {
-  //     const response = await fetch("/api/checkout_sessions", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         email: email,
-  //         totalPrice: totalPrice,
-  //         clientId: clientId,
-  //       }),
-  //     });
-  //     const data = await response.json();
-  //     setSessionId(data.sessionId);
-  //   } catch (error) {
-  //     console.error("Error creating checkout session:", error);
-  //   }
-  // };
   const handleCheckout = async () => {
     try {
-      // House P-1233, Street 223, New Colony Faisalabad 38000 Punjab PK
-      const fullAddress = `${streetAddress}, ${city} ${zip} ${state} ${country}`;
-      const response = await fetch("/api/createOrder", {
+      const response = await fetch("/api/checkout_sessions", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify({
-          address: fullAddress,
-          name: name,
           email: email,
           totalPrice: totalPrice,
           clientId: clientId,
         }),
       });
       const data = await response.json();
-      console.log(data)
-      setSessionId(data.finalUrl);
+      setSessionId(data.sessionId);
     } catch (error) {
       console.error("Error creating checkout session:", error);
     }
   };
+  // const handleCheckout = async () => {
+  //   try {
+  //     // House P-1233, Street 223, New Colony Faisalabad 38000 Punjab PK
+  //     const fullAddress = `${streetAddress}, ${city} ${zip} ${state} ${country}`;
+  //     const response = await fetch("/api/createOrder", {
+  //       method: "POST",
+  //       headers: {
+  //         "Content-Type": "application/json",
+  //       },
+  //       body: JSON.stringify({
+  //         address: fullAddress,
+  //         name: name,
+  //         email: email,
+  //         totalPrice: totalPrice,
+  //         clientId: clientId,
+  //       }),
+  //     });
+  //     const data = await response.json();
+  //     console.log(data)
+  //     setSessionId(data.finalUrl);
+  //   } catch (error) {
+  //     console.error("Error creating checkout session:", error);
+  //   }
+  // };
 
   const redirectToCheckout = () => {
     console.log("Session Id",sessionId)

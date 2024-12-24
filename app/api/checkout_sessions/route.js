@@ -20,12 +20,15 @@ export async function POST(request) {
       currency: "usd",
       client_reference_id: clientId,
       mode: "payment",
-      success_url: `https://dashboard.imcwire.com/login`,
-      cancel_url: `https://dashboard.imcwire.com/login`,
+      success_url: `http://localhost:3000/login`,
+      cancel_url: `http://localhost:3000/login`,
     });
     return NextResponse.json({ sessionId: session.url });
   } catch (err) {
-    return NextResponse.json({ error: `Checkout Error ${err}` }, { status: 500 });
+    return NextResponse.json(
+      { error: `Checkout Error ${err}` },
+      { status: 500 }
+    );
   }
 }
 export async function GET(req, res) {

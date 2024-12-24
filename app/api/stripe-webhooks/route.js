@@ -19,7 +19,8 @@ export async function POST(req) {
   const stripeSignature = req?.headers?.get("stripe-signature");
 
   const stripe = new Stripe(process?.env?.STRIPE_SECRET_KEY, {
-    apiVersion: "2020-08-27",
+    // apiVersion: "2020-08-27",
+    apiVersion: "2023-10-16",
   });
 
   try {
@@ -30,11 +31,13 @@ export async function POST(req) {
       endpointSecret
       // "whsec_fb6c19ecda25a2edc0f36677ef3f3433cededf183b362ab582db98ad4a9883d2"
     );
-
     // Connect to database
     await prisma.$connect();
-    if (event?.type === "checkout.session.completed") {
+    if (event?.type == 'checkout.session.completed') {
+      console.log(event?.type);
+      console.log(event);
       // Save event to database
+      // console.log("Event Data on Success : ", eventData);
       await prisma.webhookEvent.create({
         data: {
           eventType: event?.type,
@@ -44,13 +47,15 @@ export async function POST(req) {
     }
 
     if (
-      event?.type === "checkout.session.completed" &&
-      event?.data?.object?.payment_status === "paid"
+      event?.type == 'checkout.session.completed' &&
+      event?.data?.object?.payment_status == 'paid'
     ) {
       const clientReferenceId = event?.data?.object?.client_reference_id;
+      console.log(clientReferenceId)
       const compaignData = await prisma?.compaignData?.findUnique({
         where: { clientId: clientReferenceId },
       });
+      console.log("Compaign Data : ",compaignData);
       await prisma?.compaignData?.update({
         where: { clientId: clientReferenceId },
         data: { status: "paid", transactionId: clientReferenceId },
@@ -106,7 +111,11 @@ export async function POST(req) {
         </body>
         </html>`,
       };
-      const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; 
+      const adminEmails = [
+        "admin@imcwire.com",
+        "imcwirenotifications@gmail.com",
+        "",
+      ];
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
         to: adminEmails.join(","),
