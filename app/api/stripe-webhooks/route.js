@@ -34,10 +34,7 @@ export async function POST(req) {
     // Connect to database
     await prisma.$connect();
     if (event?.type == 'checkout.session.completed') {
-      console.log(event?.type);
-      console.log(event);
       // Save event to database
-      // console.log("Event Data on Success : ", eventData);
       await prisma.webhookEvent.create({
         data: {
           eventType: event?.type,
@@ -51,11 +48,9 @@ export async function POST(req) {
       event?.data?.object?.payment_status == 'paid'
     ) {
       const clientReferenceId = event?.data?.object?.client_reference_id;
-      console.log(clientReferenceId)
       const compaignData = await prisma?.compaignData?.findUnique({
         where: { clientId: clientReferenceId },
       });
-      console.log("Compaign Data : ",compaignData);
       await prisma?.compaignData?.update({
         where: { clientId: clientReferenceId },
         data: { status: "paid", transactionId: clientReferenceId },

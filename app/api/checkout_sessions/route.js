@@ -20,8 +20,8 @@ export async function POST(request) {
       currency: "usd",
       client_reference_id: clientId,
       mode: "payment",
-      success_url: `http://localhost:3000/login`,
-      cancel_url: `http://localhost:3000/login`,
+      success_url: `https://dashboard.imcwire.com/thankyou-stripe/${clientId}?isvalid=true`,
+      cancel_url: `https://dashboard.imcwire.com/thankyou-stripe/${clientId}?isvalid=false`,
     });
     return NextResponse.json({ sessionId: session.url });
   } catch (err) {

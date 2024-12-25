@@ -1,29 +1,26 @@
 "use client";
-import React, { useEffect, useRef, useState } from "react";
+import VisibilityIcon from "@mui/icons-material/Visibility";
+import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
 import {
-  Button,
-  Dialog,
-  DialogActions,
-  DialogContent,
-  DialogTitle,
-  TextField,
-  Backdrop,
+  FormControl,
+  FormControlLabel,
   IconButton,
   InputAdornment,
-  FormControl,
   InputLabel,
-  Select,
   MenuItem,
+  Radio,
+  RadioGroup,
+  Select,
+  TextField
 } from "@mui/material";
-import { useDistributionContext } from "../contexts/DistributionContext";
-import { useUser } from "../contexts/userData";
 import { signIn, useSession } from "next-auth/react";
-import VisibilityOffIcon from "@mui/icons-material/VisibilityOff";
-import VisibilityIcon from "@mui/icons-material/Visibility";
+import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useEffect, useRef, useState } from "react";
 import ReCAPTCHA from "react-google-recaptcha";
 import { FaLock } from "react-icons/fa";
-import Link from "next/link";
+import { useDistributionContext } from "../contexts/DistributionContext";
+import { useUser } from "../contexts/userData";
 
 function SignupForm() {
   const router = useRouter();
@@ -58,10 +55,11 @@ function SignupForm() {
   const [error, setError] = useState(false)
   const [plans, setPlans] = useState([]);
   const [streetAddress, setStreetAddress] = useState("");
-const [city, setCity] = useState("");
-const [state, setState] = useState("");
-const [zip, setZip] = useState("");
-const [country, setCountry] = useState("");
+  const [city, setCity] = useState("");
+  const [state, setState] = useState("");
+  const [zip, setZip] = useState("");
+  const [country, setCountry] = useState("");
+  const [paymentMethod, setPaymentMethod] = useState("stripe");
 
   const recaptchaRef = useRef(null);
 
@@ -124,22 +122,22 @@ const [country, setCountry] = useState("");
   const handleStreetChange = (event) => {
     setStreetAddress(event.target.value);
   };
-  
+
   const handleCityChange = (event) => {
     setCity(event.target.value);
   };
-  
+
   const handleStateChange = (event) => {
     setState(event.target.value);
   };
-  
+
   const handleZipChange = (event) => {
     setZip(event.target.value);
   };
   const handleCountryChange = (event) => {
     setCountry(event.target.value);
   };
-  
+
 
   useEffect(() => {
     const generatedId = generateUniqueId(24);
@@ -216,9 +214,14 @@ const [country, setCountry] = useState("");
     }
   };
 
+
+  const handlePaymentMethodChange = (event) => {
+    setPaymentMethod(event.target.value);
+  };
+
   const [sessionId, setSessionId] = useState("");
 
-  const handleCheckout = async () => {
+  const handleStripeCheckout = async () => {
     try {
       const response = await fetch("/api/checkout_sessions", {
         method: "POST",
@@ -237,33 +240,31 @@ const [country, setCountry] = useState("");
       console.error("Error creating checkout session:", error);
     }
   };
-  // const handleCheckout = async () => {
-  //   try {
-  //     // House P-1233, Street 223, New Colony Faisalabad 38000 Punjab PK
-  //     const fullAddress = `${streetAddress}, ${city} ${zip} ${state} ${country}`;
-  //     const response = await fetch("/api/createOrder", {
-  //       method: "POST",
-  //       headers: {
-  //         "Content-Type": "application/json",
-  //       },
-  //       body: JSON.stringify({
-  //         address: fullAddress,
-  //         name: name,
-  //         email: email,
-  //         totalPrice: totalPrice,
-  //         clientId: clientId,
-  //       }),
-  //     });
-  //     const data = await response.json();
-  //     console.log(data)
-  //     setSessionId(data.finalUrl);
-  //   } catch (error) {
-  //     console.error("Error creating checkout session:", error);
-  //   }
-  // };
+  const handlePayproCheckout = async () => {
+    try {
+      // House P-1233, Street 223, New Colony Faisalabad 38000 Punjab PK
+      const fullAddress = `${streetAddress}, ${city} ${zip} ${state} ${country}`;
+      const response = await fetch("/api/createOrder", {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify({
+          address: fullAddress,
+          name: name,
+          email: email,
+          totalPrice: totalPrice,
+          clientId: clientId,
+        }),
+      });
+      const data = await response.json();
+      setSessionId(data.finalUrl);
+    } catch (error) {
+      console.error("Error creating checkout session:", error);
+    }
+  };
 
   const redirectToCheckout = () => {
-    console.log("Session Id",sessionId)
     window.location.href = `${sessionId}`;
   };
 
@@ -295,7 +296,7 @@ const [country, setCountry] = useState("");
       return;
     }
     const res = await signIn("credentials", {
-       redirect: false,
+      redirect: false,
       email: email,
       password: password,
       token: token,
@@ -369,6 +370,15 @@ const [country, setCountry] = useState("");
       redirectToCheckout();
     }
   };
+
+  const handleCheckout = async () => {
+    if (paymentMethod === "stripe") {
+      await handleStripeCheckout();
+    } else if (paymentMethod === "paypro") {
+      await handlePayproCheckout();
+    }
+  };
+
   const fetchPlans = async () => {
     try {
       const response = await fetch("https://certsgang.com/v1/countries", {
@@ -378,7 +388,6 @@ const [country, setCountry] = useState("");
       })
       if (response.ok) {
         const plansData = await response.json();
-        console.log(plansData)
         setPlans(plansData);
       } else {
         console.error("Failed to fetch plans");
@@ -387,7 +396,6 @@ const [country, setCountry] = useState("");
       console.error("Error fetching plans:", error);
     }
   };
-  console.log("Plans",plans)
   useEffect(() => {
     fetchPlans();
   }, [session]);
@@ -474,74 +482,84 @@ const [country, setCountry] = useState("");
               </div>
             </>
           )}
-           <TextField
-                label="Street Address"
-                type="text"
-                placeholder="Enter the Street Address"
-                fullWidth
-                value={streetAddress}
-                onChange={handleStreetChange}
-                onFocus={() => handleFocus("streetAddress")}
-                onBlur={handleBlur}
-                className={focusedField === "streetAddress" ? "focused" : ""}
-              />
-              <div className="grid grid-cols-2 gap-3">
-              <TextField
-                label="City"
-                type="text"
-                placeholder="Enter the City"
-                fullWidth
-                value={city}
-                onChange={handleCityChange}
-                onFocus={() => handleFocus("city")}
-                onBlur={handleBlur}
-                className={focusedField === "city" ? "focused" : ""}
-              />
-              <TextField
-                label="State"
-                type="text"
-                placeholder="Enter the State"
-                fullWidth
-                value={state}
-                onChange={handleStateChange}
-                onFocus={() => handleFocus("state")}
-                onBlur={handleBlur}
-                className={focusedField === "state" ? "focused" : ""}
-              />
-              <TextField
-                label="Zip Code"
-                type="text"
-                placeholder="Enter the Zip Code"
-                fullWidth
-                value={zip}
-                onChange={handleZipChange}
-                onFocus={() => handleFocus("zip")}
-                onBlur={handleBlur}
-                className={focusedField === "zip" ? "focused" : ""}
-              />
-              <FormControl fullWidth>
-            <InputLabel id="client-email-label">Select Country</InputLabel>
-            <Select
-              labelId="client-email-label"
-              id="country"
-              onFocus={() => handleFocus("country")}
+          <TextField
+            label="Street Address"
+            type="text"
+            placeholder="Enter the Street Address"
+            fullWidth
+            value={streetAddress}
+            onChange={handleStreetChange}
+            onFocus={() => handleFocus("streetAddress")}
+            onBlur={handleBlur}
+            className={focusedField === "streetAddress" ? "focused" : ""}
+          />
+          <div className="grid grid-cols-2 gap-3">
+            <TextField
+              label="City"
+              type="text"
+              placeholder="Enter the City"
+              fullWidth
+              value={city}
+              onChange={handleCityChange}
+              onFocus={() => handleFocus("city")}
               onBlur={handleBlur}
-              className={focusedField === "country" ? "focused" : ""}
-              value={country}
-              onChange={handleCountryChange}
-              label="Client Email"
-            >
-              <MenuItem value="" disabled>
-                Select Country
-              </MenuItem>
-              {plans.map((country) => (
-                <MenuItem key={country.country_code} value={country.country_code}>
-                  {`${country.country_name}`}
+              className={focusedField === "city" ? "focused" : ""}
+            />
+            <TextField
+              label="State"
+              type="text"
+              placeholder="Enter the State"
+              fullWidth
+              value={state}
+              onChange={handleStateChange}
+              onFocus={() => handleFocus("state")}
+              onBlur={handleBlur}
+              className={focusedField === "state" ? "focused" : ""}
+            />
+            <TextField
+              label="Zip Code"
+              type="text"
+              placeholder="Enter the Zip Code"
+              fullWidth
+              value={zip}
+              onChange={handleZipChange}
+              onFocus={() => handleFocus("zip")}
+              onBlur={handleBlur}
+              className={focusedField === "zip" ? "focused" : ""}
+            />
+            <FormControl fullWidth>
+              <InputLabel id="client-email-label">Select Country</InputLabel>
+              <Select
+                labelId="client-email-label"
+                id="country"
+                onFocus={() => handleFocus("country")}
+                onBlur={handleBlur}
+                className={focusedField === "country" ? "focused" : ""}
+                value={country}
+                onChange={handleCountryChange}
+                label="Client Email"
+              >
+                <MenuItem value="" disabled>
+                  Select Country
                 </MenuItem>
-              ))}
-            </Select>
-          </FormControl>
-              </div>
+                {plans.map((country) => (
+                  <MenuItem key={country.country_code} value={country.country_code}>
+                    {`${country.country_name}`}
+                  </MenuItem>
+                ))}
+              </Select>
+            </FormControl>
+          </div>
+          <RadioGroup
+            aria-label="payment-method"
+            name="payment-method"
+            value={paymentMethod}
+            onChange={handlePaymentMethodChange}
+          >
+          <h1 className="font-bold pb-0">Payment Options</h1>
+            <FormControlLabel value="stripe" control={<Radio />} label="Stripe" />
+            <FormControlLabel value="paypro" control={<Radio />} label="PayPro" />
+          </RadioGroup>
           <input
             type="checkbox"
             id="termsCheckbox"
@@ -554,7 +572,7 @@ const [country, setCountry] = useState("");
           </label>
           <button
             type="button"
-            disabled={ !isChecked || isLoading}
+            disabled={!isChecked || isLoading}
             onClick={handleSubmit}
             className="btn-grad inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-4 py-2 w-full"
           >

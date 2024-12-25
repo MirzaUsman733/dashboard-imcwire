@@ -246,7 +246,6 @@ export async function GET(req) {
 
     const authResult = await authResponse.text();
     const token = authResponse.headers.get("Token");
-    console.log(token);
     if (!token) {
       return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
@@ -259,18 +258,13 @@ export async function GET(req) {
         headers: { "Content-Type": "application/json", Token: `${token}` },
       }
     );
-    console.log("Order status Response : ", orderStatusResponse);
     orderStatusResult = await orderStatusResponse.json();
-    console.log("Order status Result : ", orderStatusResult);
     if (orderStatusResponse?.ok) {
       const orderStatus = orderStatusResult[1]?.OrderStatus;
-      console.log(orderStatus);
-      console.log(orderStatusResult[1]?.OrderNumber);
       if (orderStatus === "PAID") {
         const compaignData = await prisma?.compaignData?.findUnique({
           where: { clientId: orderStatusResult[1]?.OrderNumber },
         });
-        console.log(compaignData);
         await prisma?.compaignData?.update({
           where: { clientId: orderStatusResult[1]?.OrderNumber },
           data: {
@@ -278,7 +272,6 @@ export async function GET(req) {
             transactionId: orderStatusResult[1]?.OrderNumber,
           },
         });
-        console.log(compaignData);
         const receiptEmail = compaignData?.formDataSignUp?.email;
         await prisma.webhookEvent.create({
           data: {
