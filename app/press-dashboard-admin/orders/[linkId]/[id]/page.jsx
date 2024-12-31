@@ -1,6 +1,6 @@
 "use client";
 import { Snackbar } from "@mui/material";
-import MuiAlert from '@mui/material/Alert';
+import MuiAlert from "@mui/material/Alert";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
@@ -45,7 +45,7 @@ const Page = ({ params }) => {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
-  console.log(detail);
+
   const fetchFiles = async () => {
     if (detail?.formDataContract?.file != null) {
       try {
@@ -85,7 +85,7 @@ const Page = ({ params }) => {
       if (response.ok) {
         setDetail(updatedDetail);
         setLoadingButton(false);
-        setSnackbarOpen(true)
+        setSnackbarOpen(true);
       } else {
         console.error("Failed to update status");
       }
@@ -96,6 +96,7 @@ const Page = ({ params }) => {
   const handleCloseSnackbar = () => {
     setSnackbarOpen(false);
   };
+
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -111,24 +112,24 @@ const Page = ({ params }) => {
   if (session && sessionStatus === "authenticated" && detail) {
     return (
       <>
-       <Snackbar
-        open={snackbarOpen}
-        autoHideDuration={3000} // Adjust as needed
-        onClose={handleCloseSnackbar}
-        anchorOrigin={{
-          vertical: "top",
-          horizontal: "right",
-        }}
-      >
-        <MuiAlert
-          elevation={6}
-          variant="filled"
+        <Snackbar
+          open={snackbarOpen}
+          autoHideDuration={3000} // Adjust as needed
           onClose={handleCloseSnackbar}
-          severity="success"
+          anchorOrigin={{
+            vertical: "top",
+            horizontal: "right",
+          }}
         >
-          Update the order detail successfully
-        </MuiAlert>
-      </Snackbar>
+          <MuiAlert
+            elevation={6}
+            variant="filled"
+            onClose={handleCloseSnackbar}
+            severity="success"
+          >
+            Update the order detail successfully
+          </MuiAlert>
+        </Snackbar>
         <div className="container-lg lg:max-w-7xl mx-auto mt-32">
           <h1
             className="text-6xl font-serif text-purple-700 font-bold text-center mb-20"
@@ -155,46 +156,66 @@ const Page = ({ params }) => {
                     <div className="text-gray-600">
                       <p>
                         <span className="font-bold text-lg"> Name: </span>
-                        {detail?.formData?.companyName}
+                        {detail?.formData?.companyName
+                          ? detail?.formData?.companyName
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Email: </span>
-                        {detail?.formData?.email}
+                        {detail?.formData?.email
+                          ? detail?.formData?.email
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Phone: </span>
-                        {detail?.formData?.phone}
+                        {detail?.formData?.phone
+                          ? detail?.formData?.phone
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">
                           Company Name:{" "}
                         </span>
-                        {detail?.formData?.companyName}
+                        {detail?.formData?.companyName
+                          ? detail?.formData?.companyName
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">State: </span>
-                        {detail?.formData?.state}
+                        {detail?.formData?.state
+                          ? detail?.formData?.state
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">City: </span>
-                        {detail?.formData?.city}
+                        {detail?.formData?.city
+                          ? detail?.formData?.city
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Address: </span>
-                        {detail?.formData?.address1}
+                        {detail?.formData?.address1
+                          ? detail?.formData?.address1
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Address: </span>
-                        {detail?.formData?.address2}
+                        {detail?.formData?.address2
+                          ? detail?.formData?.address2
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg"> Website: </span>
-                        <Link
-                          href={detail?.formData?.websiteUrl}
-                          target="_blank"
-                        >
-                          {detail?.formData?.websiteUrl}
-                        </Link>
+                        {detail?.formData?.websiteUrl ? (
+                          <Link
+                            href={detail?.formData?.websiteUrl}
+                            target="_blank"
+                          >
+                            {detail?.formData?.websiteUrl}
+                          </Link>
+                        ) : (
+                          "Not Added Website Link"
+                        )}
                       </p>
                     </div>
                   </div>
@@ -209,7 +230,7 @@ const Page = ({ params }) => {
                     <div className="text-gray-600 gap-1 flex flex-col">
                       <p>
                         <span className="font-bold text-lg me-1">Action: </span>
-                        {detail?.storeData?.action}
+                        {detail?.storeData?.action || "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
@@ -257,28 +278,32 @@ const Page = ({ params }) => {
                     <div className="text-gray-600 gap-1 flex flex-col">
                       <p>
                         <span className="font-bold text-lg">Plan Name: </span>
-                        {detail?.storeData?.matchedPlanData?.planName}
+                        {detail?.storeData?.matchedPlanData?.planName ||
+                          "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">
                           Plan Description:
                         </span>
-                        {detail?.storeData?.matchedPlanData?.planDescription}
+                        {detail?.storeData?.matchedPlanData?.planDescription ||
+                          "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">
                           Price Single: $
                         </span>
-                        {detail?.storeData?.matchedPlanData?.priceSingle}
+                        {detail?.storeData?.matchedPlanData?.priceSingle ||
+                          "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">
                           Total Plan Price: $
                         </span>
-                        {detail?.storeData?.matchedPlanData?.totalPlanPrice}
+                        {detail?.storeData?.matchedPlanData?.totalPlanPrice ||
+                          "Not Added Yet"}
                       </p>
                     </div>
                   </div>
@@ -293,12 +318,14 @@ const Page = ({ params }) => {
                     <div className="text-gray-600 gap-1 flex flex-col">
                       <p>
                         <span className="font-bold text-lg">Name: </span>
-                        {detail?.storeData?.formDataSignUp?.name}
+                        {detail?.storeData?.formDataSignUp?.name ||
+                          "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">Email: </span>
-                        {detail?.storeData?.formDataSignUp?.email}
+                        {detail?.storeData?.formDataSignUp?.email ||
+                          "Not Added Yet"}
                       </p>
                     </div>
                   </div>
@@ -359,15 +386,22 @@ const Page = ({ params }) => {
                       Selected Country Translations
                     </h2>
                     <ul className="text-gray-600 list-disc list-inside gap-1 flex flex-col">
-                      {detail?.storeData?.selectedCountryTranslations?.map(
-                        (translation, index) => (
-                          <li key={index}>
-                            <span className="font-bold text-lg">
-                              {translation.name}
-                            </span>
-                            <hr />
-                          </li>
-                        )
+                      {detail?.storeData?.selectedCountryTranslations?.length >
+                      0 ? (
+                        <>
+                          {detail?.storeData?.selectedCountryTranslations?.map(
+                            (translation, index) => (
+                              <li key={index}>
+                                <span className="font-bold text-lg">
+                                  {translation.name}
+                                </span>
+                                <hr />
+                              </li>
+                            )
+                          )}
+                        </>
+                      ) : (
+                        "Translation Not Add By User"
                       )}
                     </ul>
                   </div>
@@ -385,20 +419,21 @@ const Page = ({ params }) => {
                           Selected Option:
                         </span>{" "}
                         &nbsp;
-                        {detail?.storeData?.selectedOption}
+                        {detail?.storeData?.selectedOption || "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">
                           Selected Price:
                         </span>{" "}
-                        &nbsp; ${detail?.storeData?.selectedPrice}
+                        &nbsp; $
+                        {detail?.storeData?.selectedPrice || "Not Added Yet"}
                       </p>
                       <hr />
                       <p>
                         <span className="font-bold text-lg">Status: </span>{" "}
                         &nbsp;
-                        {detail?.storeData?.status}
+                        {detail?.storeData?.status || "Not Added Yet"}
                       </p>
                     </div>
                   </div>
@@ -415,13 +450,14 @@ const Page = ({ params }) => {
                           <span className="font-bold text-lg">
                             Selected Company:
                           </span>
-                          {detail?.formDataContract?.selectedCompany}
+                          {detail?.formDataContract?.selectedCompany ||
+                            "Not Added Yet"}
                         </p>
                         <p>
                           <span className="font-bold text-lg">
                             Company URL:{" "}
                           </span>
-                          {detail?.formDataContract?.url}
+                          {detail?.formDataContract?.url || "Not Added Yet"}
                         </p>
                       </div>
                     </div>
@@ -430,7 +466,8 @@ const Page = ({ params }) => {
                   <div>
                     {filterData?.pdf && (
                       <Link
-                        href={filterData?.pdf}
+                        target="_blank"
+                        href={`https://files.imcwire.com/${filterData?.pdf}`}
                         // download
                         download="excel-file.pptx"
                         className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"

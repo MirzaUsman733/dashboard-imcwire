@@ -556,9 +556,17 @@ function SignupForm() {
             value={paymentMethod}
             onChange={handlePaymentMethodChange}
           >
-          <h1 className="font-bold pb-0">Payment Options</h1>
-            <FormControlLabel value="stripe" control={<Radio />} label="Stripe" />
-            <FormControlLabel value="paypro" control={<Radio />} label="PayPro" />
+            <h1 className="font-bold pb-0">Payment Options</h1>
+            {totalPrice > 240 ? (
+              <>
+                <FormControlLabel value="stripe" control={<Radio />} label="Stripe" />
+              </>
+            ) : (
+              <>
+                <FormControlLabel value="stripe" control={<Radio />} label="Stripe" />
+                <FormControlLabel value="paypro" control={<Radio />} label="PayPro" />
+              </>
+            )}
           </RadioGroup>
           <input
             type="checkbox"
