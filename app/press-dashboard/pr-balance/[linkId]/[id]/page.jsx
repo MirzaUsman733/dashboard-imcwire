@@ -35,7 +35,6 @@ const Page = ({ params }) => {
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
-  console.log(detail);
   const fetchFiles = async () => {
     if (detail?.formDataContract.file != null) {
       try {
@@ -356,7 +355,7 @@ const Page = ({ params }) => {
                   <div>
                     {filterData?.pdf && (
                     <Link
-                      href={`files.imcwire.com${filterData?.pdf}`}
+                      href={`https://files.imcwire.com${filterData?.pdf}`}
                       // download
                       download="excel-file.pptx"
                       className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
@@ -370,12 +369,12 @@ const Page = ({ params }) => {
             </div>
             {detail?.storeData?.action === "pending" ? (
               <div className="flex justify-center">
-                {/* <Link
+                <Link
                   className="btn-grad px-5 py-3"
                   href={`/press-dashboard/pr-balance/${linkId}/${id}/${detail?.id}`}
                 >
                   Edit Detail
-                </Link> */}
+                </Link>
               </div>
             ) : (
               ""
