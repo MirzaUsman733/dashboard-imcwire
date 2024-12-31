@@ -239,16 +239,16 @@ const Page = ({ params }) => {
               <StyledTableRow key={row?.id}>
                 <TableCell style={{ width: 100 }}>{row?.id}</TableCell>
                 <TableCell style={{ width: 160 }}>
-                  {row?.formData?.companyName}
+                  {row?.formData?.companyName ? row?.formData?.companyName : "Not Added Yet" }
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
-                  {row?.formData?.email}
+                  {row?.formData?.email ? row?.formData?.email : "Not Added" }
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
                   {formatDate(row?.updatedAt)}
                 </TableCell>
                 <TableCell style={{ width: 160 }}>
-                  {row?.formData?.address1}
+                  {row?.formData?.address1 ? row?.formData?.address1 : "Not Added Yet"}
                 </TableCell>
                 {row?.storeData?.action === "pending" ? (
                   <TableCell style={{ width: 160 }}>
@@ -279,7 +279,6 @@ const Page = ({ params }) => {
                 )}
                 <TableCell style={{ width: 160 }}>
                   <Link
-                    className=""
                     href={`/press-dashboard-admin/orders/${id}/${row.id}`}
                   >
                     <div className="border border-1 text-center border-purple-700 px-5 py-2 rounded-2xl hover:bg-purple-700 hover:border-0 hover:text-white w-full">

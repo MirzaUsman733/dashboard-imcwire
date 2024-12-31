@@ -4,16 +4,16 @@ import { signOut, useSession } from "next-auth/react";
 const Navbar = () => {
   const { data: session, status: sessionStatus } = useSession();
   return (
-    <nav className="bg-white text-black py-4 shadow-md fixed top-0 w-full z-10">
+    <nav className="bg-white text-black shadow-md fixed top-0 w-full z-10">
       <div className="container max-w-7xl mx-auto px-4">
         <div className="flex justify-between items-center h-20">
           <div className="flex items-center">
             <Link href="https://imcwire.com/">
               <Image
-                src="/cropped-IMC.webp"
+                src="/icon.svg"
                 alt="Logo"
-                height={100}
-                width={100}
+                height={140}
+                width={140}
                 className="h-16 mr-4"
               />
             </Link>
