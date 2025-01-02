@@ -33,8 +33,6 @@ const Page = ({ params }) => {
   useEffect(() => {
     fetchPlans();
   }, []);
-  console.log(transactions)
-  console.log(id);
   return (
     <div>
       <TawkTo/>

@@ -63,9 +63,7 @@ export async function GET() {
 export async function DELETE(req) {
   try {
     const url = new URL(req?.url);
-    // console.log(url)
     const id = url?.searchParams?.get("_id");
-    // console.log(id)
     const isAdmin = true;
 
     if (isAdmin) {

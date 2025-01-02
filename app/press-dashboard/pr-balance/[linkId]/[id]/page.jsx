@@ -42,7 +42,6 @@ const Page = ({ params }) => {
         const response = await fetch("/api/uploadPdf?_id=" + uniId);
         if (response.ok) {
           const uniqueData = await response.json();
-          console.log("Unique Data", uniqueData);
           setFilterData(uniqueData);
         } else {
           console.error("Failed to fetch plans");

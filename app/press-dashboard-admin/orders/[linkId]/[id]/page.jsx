@@ -1,10 +1,10 @@
 "use client";
+import React, { useCallback, useEffect, useState } from "react";
 import { Snackbar } from "@mui/material";
 import MuiAlert from "@mui/material/Alert";
 import { useSession } from "next-auth/react";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
-import React, { useCallback, useEffect, useState } from "react";
 import { FaRegFilePdf } from "react-icons/fa";
 import { InfinitySpin } from "react-loader-spinner";
 
@@ -53,7 +53,6 @@ const Page = ({ params }) => {
         const response = await fetch("/api/uploadPdf?_id=" + uniId);
         if (response.ok) {
           const uniqueData = await response.json();
-          console.log("Unique Data", uniqueData);
           setFilterData(uniqueData);
         } else {
           console.error("Failed to fetch plans");

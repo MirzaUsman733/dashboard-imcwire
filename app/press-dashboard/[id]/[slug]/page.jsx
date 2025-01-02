@@ -1,29 +1,20 @@
 "use client";
-import React, { useCallback, useEffect, useState } from "react";
-import PublicationdetailUpdate from "../../../components/PublicationsDetailUpdate";
-import CompanyInfoPersonalUpdate from "../../../components/CompanyInfoPersonalUpdate";
-import TimelineCreate from "../../../components/TimelineDetail";
-import { useUpdateData } from "../../../contexts/updateDataContext";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
+import { useCallback, useEffect, useState } from "react";
 import { InfinitySpin } from "react-loader-spinner";
+import PublicationdetailUpdate from "../../../components/PublicationsDetailUpdate";
 import TawkTo from "../../../components/TawkTo";
+import { useUpdateData } from "../../../contexts/updateDataContext";
 const Page = ({ params }) => {
   const id = params.slug;
   const router = useRouter();
   const { formData, setFormData, publicationData, setPublicationData } =
     useUpdateData();
-  const [showFirstComponent, setShowFirstComponent] = useState(true);
-  const [showSecondComponent, setShowSecondComponent] = useState(false);
   const [detail, setDetail] = useState(null);
   const [fetchingDetail, setFetchingDetail] = useState(true);
   const [loading, setLoading] = useState(true);
   const { data: session, status: sessionStatus } = useSession();
-  const handleNextButtonClick = () => {
-    setShowFirstComponent(false);
-    setShowSecondComponent(true);
-  };
-
   const fetchDetail = useCallback(async () => {
     try {
       const response = await fetch("/api/submit-detail?_id=" + id);
@@ -39,7 +30,7 @@ const Page = ({ params }) => {
       console.error("Error fetching detail:", error);
     } finally {
       setFetchingDetail(false);
-      setLoading(false); // Set loading to false when done fetching
+      setLoading(false);
     }
   }, [id, setFormData, setPublicationData]);
 
@@ -86,31 +77,16 @@ const Page = ({ params }) => {
       </h1>
       <div className="container mx-auto px-4 py-8">
         <div className="grid grid-cols-12 gap-4">
-          {/* <div className="col-span-3 sm:col-span-4 md:col-span-3">
-            <TimelineCreate
-              firstComponentShow={showFirstComponent}
-              secondComponentShow={showSecondComponent}
-            />
-          </div> */}
           <div className="col-span-9 sm:col-span-8 md:col-span-9">
             <div className="mt-18">
-              {/* {showFirstComponent && (
-                <CompanyInfoPersonalUpdate
-                  onNextButtonClick={handleNextButtonClick}
-                  formData={formData}
-                  setFormData={setFormData}
-                />
-              )} */}
-              {showSecondComponent && (
-                <PublicationdetailUpdate
-                  publicationData={publicationData}
-                  setPublicationData={setPublicationData}
-                  formData={formData}
-                  setFormData={setFormData}
-                  detail={detail}
-                  handleEditSubmit={handleEditSubmit}
-                />
-              )}
+              <PublicationdetailUpdate
+                publicationData={publicationData}
+                setPublicationData={setPublicationData}
+                formData={formData}
+                setFormData={setFormData}
+                detail={detail}
+                handleEditSubmit={handleEditSubmit}
+              />
             </div>
           </div>
         </div>

@@ -11,8 +11,6 @@ export async function POST(req) {
 
   const uniqueId = formData?.get("id");
   const pdfFile = formData?.get("pdf");
-  console.log(uniqueId)
-  console.log(pdfFile)
   const tempDir = path.join(__dirname, "temp");
   if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir, { recursive: true });
@@ -52,7 +50,6 @@ export async function POST(req) {
       },
     });
 
-    console.log("Database Record Result:", result);
     return NextResponse.json(result);
   } catch (e) {
     console.error("Error during file upload or database operation:", e);
@@ -68,17 +65,118 @@ export async function POST(req) {
 
 export async function PUT(req) {
   try {
-    const data = await req.json();
+    const formData = await req.formData();
     const url = new URL(req.url);
     const id = url.searchParams.get("_id");
-    const { ...updatedData } = data;
-    await prisma.pdf.update({
-      where: { id: parseInt(id) },
-      data: updatedData,
+    const pdfFile = formData.get("pdf");
+
+    // Validate the ID
+    if (!id || typeof id !== "string") {
+      return NextResponse.json(
+        { error: "Invalid ID provided" },
+        { status: 400 }
+      );
+    }
+
+    // Validate the PDF file
+    if (!pdfFile) {
+      return NextResponse.json(
+        { error: "No PDF file provided" },
+        { status: 400 }
+      );
+    }
+
+    // Step 2: Retrieve the current PDF record from the database
+    const currentPdfRecord = await prisma.pdf.findUnique({
+      where: { id: id },
     });
 
-    return NextResponse.json(true);
+    if (!currentPdfRecord) {
+      return NextResponse.json(
+        { error: "PDF record not found." },
+        { status: 404 }
+      );
+    }
+
+    const currentPdfPath = currentPdfRecord.pdf;
+    const currentPdfFileName = currentPdfPath.split("/").pop();
+
+    // Step 3: Delete the old PDF file from the FTP server
+    const client = new Client();
+    client.ftp.verbose = true;
+    try {
+      await client.access({
+        host: "185.224.133.237",
+        user: "imcwire_ftp_user",
+        password: "pzEl202cJdj7",
+        secure: true,
+        secureOptions: { rejectUnauthorized: false },
+      });
+      const filePartAfterUnderscore = currentPdfFileName.split("_")[1];
+
+      const pdfFirstChar = filePartAfterUnderscore[0].toLowerCase();
+
+      await client.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+      // Delete the old file from FTP
+      await client.remove(
+        `/uploads/pdf-Data/${pdfFirstChar}/${currentPdfFileName}`
+      );
+    } catch (ftpError) {
+      console.error("Error deleting old PDF from FTP:", ftpError);
+    } finally {
+      client.close();
+    }
+
+    // Step 4: Save the new PDF file locally and upload it to FTP
+    const tempDir = path.join(__dirname, "temp");
+    if (!fs.existsSync(tempDir)) {
+      fs.mkdirSync(tempDir, { recursive: true });
+    }
+
+    const sanitizedPdfName = pdfFile.name.replace(/ /g, "-");
+    const pdfPath = path.join(tempDir, sanitizedPdfName);
+    await pipeline(pdfFile.stream(), fs.createWriteStream(pdfPath));
+
+    const pdfFirstChar = sanitizedPdfName[0].toLowerCase();
+
+    const uploadClient = new Client();
+    uploadClient.ftp.verbose = true;
+    try {
+      await uploadClient.access({
+        host: "185.224.133.237",
+        user: "imcwire_ftp_user",
+        password: "pzEl202cJdj7",
+        secure: true,
+        secureOptions: { rejectUnauthorized: false },
+      });
+
+      await uploadClient.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+      await uploadClient.uploadFrom(
+        pdfPath,
+        `/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`
+      );
+    } catch (uploadError) {
+      console.error("Error uploading new PDF to FTP:", uploadError);
+      return NextResponse.json(
+        { error: "Failed to upload new PDF." },
+        { status: 500 }
+      );
+    } finally {
+      uploadClient.close();
+      fs.unlinkSync(pdfPath); // Clean up the temporary file
+    }
+
+    // Step 5: Update the database with the new PDF path
+    const result = await prisma.pdf.update({
+      where: { id: id },
+      data: {
+        pdf: `/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`,
+      },
+    });
+
+    return NextResponse.json(result);
   } catch (error) {
+    console.error("Error during update operation:", error);
     return NextResponse.json({
       status: 500,
       message: "Internal Server Error",

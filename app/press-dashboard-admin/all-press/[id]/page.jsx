@@ -11,7 +11,6 @@ import { useSession } from "next-auth/react";
 import { useRouter } from "next/navigation";
 const Page = ({ params }) => {
   const id = params.id;
-  console.log(id)
   const {
     storeMatchedData,
     matchedData,

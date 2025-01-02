@@ -1,7 +1,6 @@
 import ResponceOfApi from "../../components/ApiResponce/ResponceOfApi";
 
 const Page = async ({ params }) => {
-  console.log(params.id);
   
   try {
     const response = await fetch('https://dashboard.imcwire.com/api/orderChecked', {
@@ -17,7 +16,6 @@ const Page = async ({ params }) => {
     }
 
     const dataResponse = await response.json();
-    console.log("Data Response: ", dataResponse);
 
     return <ResponceOfApi dataResponse={dataResponse} />;
   } catch (error) {

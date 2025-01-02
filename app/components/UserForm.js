@@ -4,7 +4,6 @@ import { useSession } from "next-auth/react";
 
 export default function UserForm({ user, onSave }) {
   const { data: session, status: sessionStatus } = useSession();
-  console.log(session)
   const [userName, setUserName] = useState(session?.user?.name || '');
   const [userEmail, setUserEmail] = useState(session?.user?.email || '')
   const [image, setImage] = useState(user?.image || '');

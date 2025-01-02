@@ -171,7 +171,6 @@ export default function Page() {
       fetchPlans();
     }
   }, [session]);
-  console.log("Reports : ", plans);
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">

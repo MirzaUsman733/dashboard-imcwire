@@ -5,7 +5,6 @@ import { NextResponse } from "next/server";
 export async function POST(req) {
   try {
     const { name, email, totalPrice, clientId, address } = await req.json();
-    console.log(address);
     // Authenticate and get the token
     const authResponse = await fetch(`${process.env.Paypro_URL}/v2/ppro/auth`, {
       method: "POST",
@@ -27,7 +26,6 @@ export async function POST(req) {
 
     const authResult = await authResponse.text();
     const token = authResponse.headers.get("Token");
-    console.log(authResult, token);
     if (authResult === "Authorized" || !token) {
       return NextResponse.json({ status: 401, message: "Unauthorized" });
     }
@@ -70,12 +68,10 @@ export async function POST(req) {
     });
 
     const result = await orderResponse.json();
-    console.log(result);
     if (orderResponse.ok && result[0]?.Status === "00") {
       const click2PayUrl = result[1]?.Click2Pay;
       if (click2PayUrl) {
         const finalUrl = `${click2PayUrl}&callback_url=https://dashboard.imcwire.com/thankyou`;
-        console.log(finalUrl);
         return NextResponse.json({ finalUrl });
       } else {
         return NextResponse.json({

@@ -184,7 +184,6 @@ export default function Page() {
       </div>
     );
   }
-  console.log(plans)
   if (session && sessionStatus === "authenticated" && plans.length > 0) {
     return (
       <Container>

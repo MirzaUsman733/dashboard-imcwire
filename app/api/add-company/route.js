@@ -48,7 +48,6 @@ export async function GET(req) {
   try {
     const url = new URL(req?.url);
     const id = url?.searchParams?.get("_id");
-    console.log(id);
     if (id) {
       const company = await prisma?.company?.findUnique({
         where: { id: parseInt(id) },

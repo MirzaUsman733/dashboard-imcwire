@@ -7,7 +7,6 @@ const connect = async () => {
         useNewUrlParser: true,
         useUnifiedTopology: true,
       });
-      console.log("Mongo Connection successfully established.");
     } else {
       console.log("MongoDB is already connected.");
     }

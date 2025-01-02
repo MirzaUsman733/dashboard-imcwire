@@ -40,8 +40,6 @@ const Page = ({ params }) => {
       if (response.ok) {
         const plansData = await response.json();
         setPlans(plansData);
-        console.log("plans Data:", plansData)
-        console.log("Agency Name",plansData?.agencyName)
         // setAgencyName(plansData?.agencyName)
         // setShowFirstComponent(true);
       } else {
@@ -56,7 +54,6 @@ const Page = ({ params }) => {
   useEffect(() => {
     fetchPlans();
   }, []);
-  // console.log(plans)
   const fetchDetail = useCallback(async () => {
     try {
       const response = await fetch("/api/submit-detail");

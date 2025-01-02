@@ -51,9 +51,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
           const filteredCompanies = data?.filter(
             (company) => company?.user?.user?.id === session?.user?.id
           );
-          console.log("Filter Companies",filteredCompanies)
           const sortedData = filteredCompanies?.sort((a, b) => b.id - a.id);
-          console.log("Sorted Data",sortedData)
           setCompanies(sortedData);
         }
       } catch (error) {
@@ -66,7 +64,7 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
   }, [session]);
 
   const handleAddCompany = (newCompany) => {
-    setCompanies([newCompany ,...companies ]);
+    setCompanies([newCompany, ...companies]);
   };
   const handleCompanyChange = async (event) => {
     const companyName = event.target.value;
@@ -191,7 +189,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
             throw new Error("Failed to upload Data");
           }
         } catch (error) {
-          console.log(error);
           return null;
         }
         try {
@@ -395,7 +392,6 @@ const PublicationDetail = ({ storeData, formData, setFormData }) => {
                   <option value="" disabled>
                     Select Company
                   </option>
-                  {/* <option value="" disabled>Select the </option> */}
                   {companies?.map((company, index) => (
                     <option key={index} value={company?.companyName}>
                       {company.companyName}

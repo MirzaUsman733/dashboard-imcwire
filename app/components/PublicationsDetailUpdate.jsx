@@ -5,7 +5,13 @@ import { useSession } from "next-auth/react";
 import { Button, CircularProgress } from "@mui/material";
 import CloudUploadIcon from "@mui/icons-material/CloudUpload";
 
-const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit }) => {
+const PublicationDetailUpdate = ({
+  detail,
+  pdf,
+  formData,
+  handleEditSubmit,
+  handleFileUpload,
+}) => {
   const [file, setFile] = useState(null);
   const [previousFileName, setPreviousFileName] = useState(null);
   const [focusedField, setFocusedField] = useState("");
@@ -15,17 +21,45 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
   const [isNewCompanyModalOpen, setIsNewCompanyModalOpen] = useState(false);
   const [companies, setCompanies] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { data: session } = useSession();
-
   useEffect(() => {
     if (detail) {
-      setKeywords(detail.formDataContract.tags || []);
-      setTargetWebsite(detail.formDataContract.url || "");
-      setSelectedCompany(detail.formDataContract.selectedCompany || "");
+      setKeywords(detail?.formDataContract?.tags || []);
+      setTargetWebsite(detail?.formDataContract?.url || "");
+      setSelectedCompany(detail?.formDataContract?.selectedCompany || "");
       setFile(null);
-      setPreviousFileName(detail.formDataContract.fileName || "No file uploaded");
+      setPreviousFileName(
+        detail?.formDataContract?.fileName || "No file uploaded"
+      );
     }
   }, [detail]);
+
+  const handleFileChange = (event) => {
+    const uploadedFile = event.target.files[0];
+    setFile(uploadedFile);
+    setPreviousFileName(uploadedFile.name);
+  };
+
+  const handleFileUploadClick = () => {
+    if (handleFileUpload) {
+      setLoading(true);
+      handleFileUpload(file);
+      setLoading(false);
+    }
+  };
+
+  const handleSubmit = () => {
+    const formDataContract = {
+      url: targetWebsite,
+      tags: keywords,
+      file: file,
+      selectedCompany: selectedCompany,
+    };
+
+    handleEditSubmit({
+      formData: formData,
+      formDataContract: formDataContract,
+    });
+  };
 
   const handleAddCompany = (newCompany) => {
     setCompanies([...companies, newCompany]);
@@ -60,31 +94,6 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
     setTargetWebsite(event.target.value);
   };
 
-  const handleFileChange = (event) => {
-    const uploadedFile = event.target.files[0];
-    setFile(uploadedFile);
-    setPreviousFileName(uploadedFile.name); // Update the displayed file name
-  };
-
-  const handleSubmit = () => {
-    const formDataContract = {
-      url: targetWebsite,
-      tags: keywords,
-      file: file,
-      fileName: file ? file.name : previousFileName, // Send the updated or previous file name
-      selectedCompany: selectedCompany,
-    };
-
-    setLoading(true);
-
-    handleEditSubmit({
-      formData: formData,
-      formDataContract: formDataContract,
-    });
-
-    setLoading(false);
-  };
-
   const handleFocus = (fieldName) => {
     setFocusedField(fieldName);
   };
@@ -92,6 +101,14 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
   const handleBlur = () => {
     setFocusedField("");
   };
+
+  useEffect(() => {
+    if (detail) {
+      setPreviousFileName(
+        detail.formDataContract?.fileName || "No file uploaded"
+      );
+    }
+  }, [detail]);
 
   const renderForm = () => {
     if (detail?.storeData?.selectedOption === "ownPr") {
@@ -102,27 +119,44 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
             Ready to distribute your PR globally? Upload Your High-Quality
             Journalist's writing PR in Document.
           </p>
-          <input
-            type="file"
-            onChange={handleFileChange}
-            className="hidden"
-            id="pdf-upload"
-            accept=".pdf,.doc,.docs"
-          />
-          <label htmlFor="pdf-upload" className="flex items-center mt-3 cursor-pointer">
-            <Button
-              variant="contained"
-              component="span"
-              startIcon={<CloudUploadIcon />}
+
+          <div className="file-upload-section">
+            <input
+              type="file"
+              onChange={handleFileChange}
+              className="hidden"
+              id="pdf-upload"
+              accept=".pdf,.doc,.docs"
+            />
+            <label
+              htmlFor="pdf-upload"
+              className="flex items-center mt-3 cursor-pointer"
             >
-              Upload PDF
-            </Button>
-            {file ? (
-              <span className="ml-3">{file.name}</span>
-            ) : (
-              <span className="ml-3">{previousFileName}</span>
+              <Button
+                variant="contained"
+                component="span"
+                startIcon={<CloudUploadIcon />}
+              >
+                Upload PDF
+              </Button>
+              {file ? (
+                <span className="ml-3">{file.name}</span>
+              ) : (
+                <span className="ml-3">{previousFileName}</span>
+              )}
+            </label>
+            {pdf && (
+              <a
+                href={pdf}
+                target="_blank"
+                rel="noopener noreferrer"
+                className="text-blue-500 underline mt-2"
+              >
+                View Current PDF
+              </a>
             )}
-          </label>
+          </div>
+
           <div className="flex w-100 mt-5">
             <select
               style={{ width: "61%" }}
@@ -155,7 +189,7 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
             ) : (
               <button
                 className="btn-grad px-7 uppercase py-3 mt-4"
-                onClick={handleSubmit}
+                onClick={handleFileUploadClick}
               >
                 Update Written File
               </button>
@@ -166,7 +200,9 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
     } else {
       return (
         <div className="max-w-lg mx-auto p-6 bg-white shadow-lg rounded-md border border-1">
-          <h2 className="text-2xl font-bold my-4 text-center">Edit Your Keyword and URL</h2>
+          <h2 className="text-2xl font-bold my-4 text-center">
+            Edit Your Keyword and URL
+          </h2>
           <div className="grid sm:grid-cols-1 md:grid-cols-2 gap-5">
             <div>
               <div>
@@ -239,9 +275,7 @@ const PublicationDetailUpdate = ({ detail, storeData, formData, handleEditSubmit
                 {loading ? (
                   <CircularProgress size={24} />
                 ) : (
-                  <button onClick={handleSubmit} className="">
-                    Update Data
-                  </button>
+                  <button onClick={handleSubmit}>Update Data</button>
                 )}
               </div>
             </div>

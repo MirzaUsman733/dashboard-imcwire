@@ -114,7 +114,6 @@ export default function Auth() {
       return;
     }
     setLoadingSignUp(true);
-    console.log(isAgency)
     try {
       const res = await fetch("/api/register", {
         method: "POST",

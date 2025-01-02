@@ -65,7 +65,6 @@ const Rightbar = ({matchedPlan}) => {
     setSnackbarOpen(false);
   };
   const planPrice = cost * matchedPlanData?.numberOfPR;
-  console.log(coupons);
   return (
     <div className="rightbar-container bg-white border border-1 shadow-lg rounded-lg p-6">
       <Snackbar

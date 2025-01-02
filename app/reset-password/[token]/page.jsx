@@ -3,7 +3,6 @@ import { useState } from 'react';
 import { useRouter } from 'next/navigation';
 
 export default function Page({ params }) {
-    console.log(params.token)
     const token = params.token;
     const [newPassword, setNewPassword] = useState('');
     const router = useRouter();

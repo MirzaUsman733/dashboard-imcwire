@@ -11,7 +11,6 @@ import { InfinitySpin } from "react-loader-spinner";
 
 export default function Page({ params }) {
   const linkId = params.linkId;
-  console.log(linkId);
   const [plans, setPlans] = React.useState([]);
   const [filterData, setFilterData] = React.useState(null);
   const { data: session, status: sessionStatus } = useSession();
@@ -46,7 +45,6 @@ export default function Page({ params }) {
       const response = await fetch("/api/upload?_id=" + uniId);
       if (response.ok) {
         const uniqueData = await response.json();
-        console.log("Unique Data", uniqueData);
         setFilterData(uniqueData);
       } else {
         console.error("Failed to fetch plans");
@@ -60,12 +58,10 @@ export default function Page({ params }) {
       fetchFiles();
     }
   }, [plans]);
-  console.log(filterData);
   const pdfName = `https://files.imcwire.com${filterData?.pdf}`;
   const excelName = `https://files.imcwire.com${filterData?.excel}`;
   const DownloadedPdfName = pdfName.split("/").pop().split("_").pop();
   const DownloadedExcelName = excelName.split("/").pop().split("_").pop();
-  console.log("Downloaded Pdf Name: ", DownloadedPdfName);
   const handleDownload = (url, filename) => {
     const link = document.createElement("a");
     link.href = url;
@@ -75,8 +71,6 @@ export default function Page({ params }) {
     document.body.removeChild(link);
   };
 
-  console.log(pdfName);
-  console.log(excelName);
   if (session && sessionStatus === "authenticated" && filterData) {
     return (
       <Container>

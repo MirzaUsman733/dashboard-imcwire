@@ -59,9 +59,8 @@ const Page = ({ params }) => {
       const response = await fetch("/api/plans");
       if (response.ok) {
         const plansData = await response.json();
-        console.log("Fetched plans data:", plansData); // Log fetched data
         setPlans(plansData);
-        setLoading(false); // Set loading to false after fetching plans
+        setLoading(false);
       } else {
         console.error("Failed to fetch plans");
       }
@@ -71,7 +70,6 @@ const Page = ({ params }) => {
   };
   
   const matchedPlan = plans?.find((plan) => plan?.id == id);
-  console.log(matchedPlan)
   useEffect(() => {
     fetchPlans();
   }, []);
@@ -81,7 +79,6 @@ const Page = ({ params }) => {
       storePrice(matchedPlan.totalPlanPrice);
     }
   }, [matchedPlan, storeMatchedPlanData, storePrice]);
-  console.log(matchedPlan)
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">

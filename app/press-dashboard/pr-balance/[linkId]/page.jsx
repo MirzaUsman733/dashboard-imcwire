@@ -192,7 +192,6 @@ const Page = ({ params }) => {
   const handleAdd = () => {
     router.push(`/press-dashboard/${id}`);
   };
-  console.log(detail)
   if (loading) {
     return (
       <div className="h-[80vh] flex justify-center items-center w-full">
@@ -208,7 +207,7 @@ const Page = ({ params }) => {
   if (session && sessionStatus === "authenticated" && detail) {
     return (
       <Container>
-        <TawkTo/>
+        <TawkTo />
         <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20 mt-10">
           <div className="flex justify-center gap-5">
             <MdInventory />
@@ -233,8 +232,8 @@ const Page = ({ params }) => {
                   </h1>
                   {plans?.matchedPlanData?.numberOfPR - detail?.length > 0 && (
                     <Link
-                    href={`/press-dashboard/${id}`}
-                    className="border border-1 border-purple-300 rounded-lg px-2 py-1 hover:bg-purple-700 hover:text-white"
+                      href={`/press-dashboard/${id}`}
+                      className="border border-1 border-purple-300 rounded-lg px-2 py-1 hover:bg-purple-700 hover:text-white"
                     >
                       Add PR
                     </Link>

@@ -142,7 +142,6 @@ export default function Page() {
       const response = await fetch("/api/stripe-webhooks");
       if (response.ok) {
         const plansData = await response.json();
-        console.log(plansData)
         const filteredData = plansData?.filter(
           (transaction) =>
             transaction?.eventType ===
@@ -158,52 +157,11 @@ export default function Page() {
       console.error("Error fetching plans:", error);
     }
   };
-  console.log("Plans",plans)
-  // const fetchCompaignData = async () => {
-  //   try {
-  //     const response = await fetch("/api/compaignData");
-  //     if (response.ok) {
-  //       const plansData = await response.json();
-  //       const filteredCompaignData = filterCompaignData(
-  //         plansData,
-  //         session?.user?.email
-  //       );
-  //       setCompaignData(filteredCompaignData);
-  //       setLoading(false); // Set loading to false after fetching data
-  //     } else {
-  //       console.error("Failed to fetch campaign data");
-  //     }
-  //   } catch (error) {
-  //     console.error("Error fetching campaign data:", error);
-  //   }
-  // };
-
-  // const filterCompaignData = (data, email) => {
-  //   return data?.filter(
-  //     (plan) => plan.status === "paid" && plan.formDataSignUp.email === email
-  //   );
-  // };
-
-  // const filterWebhookData = (data, ids) => {
-  //   return data.filter((item) => ids.includes(item.eventData.id));
-  // };
-
-  // React.useEffect(() => {
-  //   if (session) {
-  //     fetchCompaignData();
-  //   }
-  // }, [session]);
-
+ 
   React.useEffect(() => {
     fetchPlans();
   }, [session]);
 
-  // const compaignTransactionIds = compaignData.flatMap(
-  //   (item) => item.transactionIds
-  // );
-
-  // const filteredWebhookData = filterWebhookData(plans, compaignTransactionIds);
-  // console.log(filteredWebhookData)
   const emptyRows =
     rowsPerPage - Math.min(rowsPerPage, plans.length - page * rowsPerPage);
   if (loading) {
@@ -261,9 +219,9 @@ export default function Page() {
                           page * rowsPerPage,
                           page * rowsPerPage + rowsPerPage
                         )
-                        .sort((a, b) => b.id - a.id) // Sort by descending order of row.id
+                        .sort((a, b) => b.id - a.id)
                     : plans.sort((a, b) => b.id - a.id)
-                  ) // Sort all data by descending order of row.id
+                  )
                     .map((row) => (
                       <StyledTableRow key={row.id}>
                         <TableCell>{row.id}</TableCell>

@@ -12,7 +12,6 @@ export default function ProfilePage() {
   // const [isAdmin, setIsAdmin] = useState(false);
   // const [profileFetched, setProfileFetched] = useState(false);
   const { status } = session;
-console.log(status)
   // useEffect(() => {
   //   if (status === 'authenticated') {
   //     fetch('/api/profile').then(response => {

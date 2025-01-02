@@ -210,7 +210,6 @@ function SignupForm() {
       console.log("Error, try again");
     } catch (error) {
       console.log("Error, try again");
-      console.log(error);
     }
   };
 

@@ -5,7 +5,6 @@ const prisma = new PrismaClient();
 
 export const POST = async (request) => {
   const data = await request?.json();
-  console.log(data);
   try {
     await prisma.$connect();
 
