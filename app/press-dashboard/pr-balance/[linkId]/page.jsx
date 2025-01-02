@@ -254,7 +254,9 @@ const Page = ({ params }) => {
                 </div>
                 <div>
                   <h1 className="text-2xl font-bold">
-                    {plans?.matchedPlanData?.numberOfPR}
+                    {plans?.matchedPlanData?.numberOfPR
+                      ? plans?.matchedPlanData?.numberOfPR
+                      : "Not Added Yet"}
                   </h1>
                 </div>
               </div>
@@ -280,9 +282,9 @@ const Page = ({ params }) => {
             <TableHead>
               <TableRow>
                 <StyledTableCell className="font-bold">PR No.</StyledTableCell>
-                <StyledTableCell className="font-bold">
+                {/* <StyledTableCell className="font-bold">
                   Company Name
-                </StyledTableCell>
+                </StyledTableCell> */}
                 <StyledTableCell className="font-bold">Email</StyledTableCell>
                 <StyledTableCell className="font-bold">Date</StyledTableCell>
                 <StyledTableCell className="font-bold">Address</StyledTableCell>
@@ -302,45 +304,49 @@ const Page = ({ params }) => {
               )?.map((row, index) => (
                 <StyledTableRow key={row?.id}>
                   <TableCell style={{ width: 100 }}>{row.id}</TableCell>
+                  {/* <TableCell style={{ width: 160 }}>
+                    {row?.formData?.companyName
+                      ? row?.formData?.companyName
+                      : "Not Added Yet"}
+                  </TableCell> */}
                   <TableCell style={{ width: 160 }}>
-                    {row?.formData?.companyName}
-                  </TableCell>
-                  <TableCell style={{ width: 160 }}>
-                    {row?.formData?.email}
+                  {row?.storeData?.formDataSignUp?.email
+                      ? row?.storeData?.formDataSignUp?.email
+                      : "Not Added"}
                   </TableCell>
                   <TableCell style={{ width: 160 }}>
                     {formatDate(row?.updatedAt)}
                   </TableCell>
                   <TableCell style={{ width: 160 }}>
-                    {row?.formData?.address1}
+                    {row?.formData?.address1
+                      ? row?.formData?.address1
+                      : "Not Added Yet"}
                   </TableCell>
-                  {row?.storeData?.action === "pending" ? (
+                  {["pending", "rejected", "completed", "inprogress"].includes(
+                    row?.storeData?.action
+                  ) ? (
                     <TableCell style={{ width: 160 }}>
-                      <span className="bg-blue-500 text-white px-2 py-1 rounded-lg">
+                      <span
+                        className={`px-2 py-1 rounded-lg text-white ${
+                          {
+                            pending: "bg-blue-500",
+                            rejected: "bg-red-500",
+                            completed: "bg-green-600",
+                            inprogress: "bg-yellow-600",
+                          }[row?.storeData?.action]
+                        }`}
+                      >
                         {row?.storeData?.action}
                       </span>
                     </TableCell>
                   ) : (
-                    ""
-                  )}
-                  {row?.storeData?.action === "completed" ? (
                     <TableCell style={{ width: 160 }}>
-                      <span className="bg-green-600 px-2 py-1 rounded-lg text-white">
-                        {row?.storeData?.action}
+                      <span className="bg-gray-500 text-white px-2 py-1 rounded-lg">
+                        Not proper action occurred
                       </span>
                     </TableCell>
-                  ) : (
-                    ""
                   )}
-                  {row?.storeData?.action === "inprogress" ? (
-                    <TableCell style={{ width: 160 }}>
-                      <span className="bg-yellow-600 px-2 py-1 rounded-lg text-white">
-                        {row?.storeData?.action}
-                      </span>
-                    </TableCell>
-                  ) : (
-                    ""
-                  )}
+
                   <TableCell style={{ width: 160 }}>
                     <Link
                       className=""

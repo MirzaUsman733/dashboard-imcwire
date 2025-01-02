@@ -113,7 +113,7 @@ const Page = ({ params }) => {
       <>
         <Snackbar
           open={snackbarOpen}
-          autoHideDuration={3000} // Adjust as needed
+          autoHideDuration={3000}
           onClose={handleCloseSnackbar}
           anchorOrigin={{
             vertical: "top",
@@ -130,23 +130,12 @@ const Page = ({ params }) => {
           </MuiAlert>
         </Snackbar>
         <div className="container-lg lg:max-w-7xl mx-auto mt-32">
-          <h1
-            className="text-6xl font-serif text-purple-700 font-bold text-center mb-20"
-            // style={{
-            //   backgroundImage: `url('https://images.unsplash.com/photo-1517504734587-2890819debab?w=500&auto=format&fit=crop&q=60&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxzZWFyY2h8N3x8cHVycGxlJTIwYWVzdGhldGljfGVufDB8fDB8fHww')`,
-            //   backgroundSize: "cover",
-            //   backgroundClip: "text",
-            //   color: "transparent",
-            //   textShadow:
-            //     "2px 7px 5px rgba(0,0,0,0.3), 0px -4px 10px rgba(255,255,255,0.3)",
-            // }}
-          >
+          <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-10">
             Press Release Order
           </h1>
           <div>
             <div className="container mx-auto px-4 py-8">
               <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
-                {/* Form Data Section */}
                 <div className="bg-white shadow-xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                   <div className="p-6">
                     <h2 className="text-2xl font-bold mb-4 text-center font-serif">
@@ -154,7 +143,7 @@ const Page = ({ params }) => {
                     </h2>
                     <div className="text-gray-600">
                       <p>
-                        <span className="font-bold text-lg"> Name: </span>
+                        <span className="font-bold text-lg">Name: </span>
                         {detail?.formData?.companyName
                           ? detail?.formData?.companyName
                           : "Not Added Yet"}
@@ -192,13 +181,13 @@ const Page = ({ params }) => {
                           : "Not Added Yet"}
                       </p>
                       <p>
-                        <span className="font-bold text-lg">Address: </span>
+                        <span className="font-bold text-lg">Address 1: </span>
                         {detail?.formData?.address1
                           ? detail?.formData?.address1
                           : "Not Added Yet"}
                       </p>
                       <p>
-                        <span className="font-bold text-lg">Address: </span>
+                        <span className="font-bold text-lg">Address 2: </span>
                         {detail?.formData?.address2
                           ? detail?.formData?.address2
                           : "Not Added Yet"}
@@ -232,13 +221,17 @@ const Page = ({ params }) => {
                         {detail?.storeData?.action || "Not Added Yet"}
                       </p>
                       <hr />
-                      <p>
-                        <span className="font-bold text-lg me-1">
-                          Agency Name:{" "}
-                        </span>
-                        {detail?.storeData?.agencyName}
-                      </p>
-                      <hr />
+                      {detail?.storeData?.agencyName && (
+                        <>
+                          <p>
+                            <span className="font-bold text-lg me-1">
+                              Agency Name:{" "}
+                            </span>
+                            {detail?.storeData?.agencyName}
+                          </p>
+                          <hr />
+                        </>
+                      )}
                       <p>
                         <span className="font-bold text-lg me-1">
                           Category Subtotal:
@@ -418,7 +411,9 @@ const Page = ({ params }) => {
                           Selected Option:
                         </span>{" "}
                         &nbsp;
-                        {detail?.storeData?.selectedOption || "Not Added Yet"}
+                        <span className="uppercase">
+                          {detail?.storeData?.selectedOption || "Not Added Yet"}
+                        </span>
                       </p>
                       <hr />
                       <p>
@@ -432,7 +427,9 @@ const Page = ({ params }) => {
                       <p>
                         <span className="font-bold text-lg">Status: </span>{" "}
                         &nbsp;
-                        {detail?.storeData?.status || "Not Added Yet"}
+                        <span className="uppercase">
+                          {detail?.storeData?.status || "Not Added Yet"}
+                        </span>
                       </p>
                     </div>
                   </div>
@@ -496,6 +493,8 @@ const Page = ({ params }) => {
                 <option value="pending">Pending</option>
                 <option value="approved">Approval</option>
                 <option value="inprogress">In Progress</option>
+                <option value="rejected">Rejected</option>
+                <option value="hold">Hold</option>
                 {/* <option value="completed">Completed</option> */}
               </select>
               <button

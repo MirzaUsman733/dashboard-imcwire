@@ -103,46 +103,67 @@ const Page = ({ params }) => {
                     <div className="text-gray-600">
                       <p>
                         <span className="font-bold text-lg"> Name: </span>
-                        {detail?.formData?.companyName}
+                        {detail?.formData?.companyName
+                          ? detail?.formData?.companyName
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Email: </span>
-                        {detail?.formData?.email}
+                        {detail?.formData?.email
+                          ? detail?.formData?.email
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Phone: </span>
-                        {detail?.formData?.phone}
+                        {detail?.formData?.phone
+                          ? detail?.formData?.phone
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">
                           Company Name:{" "}
                         </span>
-                        {detail?.formData?.companyName}
+                        {detail?.formData?.companyName
+                          ? detail?.formData?.companyName
+                          : "Not Added Yet"}
                       </p>
                       <p>
-                        <span className="font-bold text-lg">
-                          State:{" "}
-                        </span>
-                        {detail?.formData?.state}
+                        <span className="font-bold text-lg">State: </span>
+                        {detail?.formData?.state
+                          ? detail?.formData?.state
+                          : "Not Added Yet"}
                       </p>
                       <p>
-                        <span className="font-bold text-lg">
-                          City:{" "}
-                        </span>
-                        {detail?.formData?.city}
+                        <span className="font-bold text-lg">City: </span>
+                        {detail?.formData?.city
+                          ? detail?.formData?.city
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Address: </span>
-                        {detail?.formData?.address1}
+                        {detail?.formData?.address1
+                          ? detail?.formData?.address1
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Address: </span>
-                        {detail?.formData?.address2}
+                        {detail?.formData?.address2
+                          ? detail?.formData?.address2
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg"> Website: </span>
-                        <Link href={detail?.formData?.websiteUrl} target="_blank">
-                          {detail?.formData?.websiteUrl}
+                        <Link
+                          href={
+                            detail?.formData?.websiteUrl
+                              ? detail?.formData?.websiteUrl
+                              : "Not Added Yet"
+                          }
+                          target="_blank"
+                        >
+                          {detail?.formData?.websiteUrl
+                            ? detail?.formData?.websiteUrl
+                            : "Not Added Yet"}
                         </Link>
                       </p>
                     </div>
@@ -158,13 +179,18 @@ const Page = ({ params }) => {
                     <div className="text-gray-600">
                       <p>
                         <span className="font-bold text-lg">Action: </span>
-                        {detail?.storeData?.action}
+                        {detail?.storeData?.action
+                          ? detail?.storeData?.action
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">
                           Category Subtotal:
                         </span>
-                        ${detail?.storeData?.categorySubtotal}
+                        $
+                        {detail?.storeData?.categorySubtotal
+                          ? detail?.storeData?.categorySubtotal
+                          : "Not Added Yet"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Cost: </span> $
@@ -238,7 +264,6 @@ const Page = ({ params }) => {
                   </div>
                 </div>
 
-             
                 {/* Selected Categories Section */}
                 <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                   <div className="p-6">
@@ -327,8 +352,7 @@ const Page = ({ params }) => {
                     </div>
                   </div>
                 </div>
-                   {/* Form Data Contract Section */}
-                   {detail?.formDataContract?.file != null && !filterData?.pdf ? (
+                {detail?.formDataContract?.file != null && !filterData?.pdf ? (
                   <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                     <div className="p-6">
                       <h2 className="text-2xl font-bold mb-4 text-center font-serif">
@@ -339,13 +363,17 @@ const Page = ({ params }) => {
                           <span className="font-bold text-lg">
                             Selected Company:
                           </span>
-                          {detail?.formDataContract?.selectedCompany}
+                          {detail?.formDataContract?.selectedCompany
+                            ? detail?.formDataContract?.selectedCompany
+                            : "Not Added Yet"}
                         </p>
                         <p>
                           <span className="font-bold text-lg">
                             Company URL:{" "}
                           </span>
-                          {detail?.formDataContract?.url}
+                          {detail?.formDataContract?.url
+                            ? detail?.formDataContract?.url
+                            : "Not Added Yet"}
                         </p>
                       </div>
                     </div>
@@ -353,14 +381,14 @@ const Page = ({ params }) => {
                 ) : (
                   <div>
                     {filterData?.pdf && (
-                    <Link
-                      href={`https://files.imcwire.com${filterData?.pdf}`}
-                      // download
-                      download="excel-file.pptx"
-                      className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
-                    >
-                       <FaRegFilePdf /> <span> Download Docs file </span>
-                    </Link>
+                      <Link
+                        href={`https://files.imcwire.com${filterData?.pdf}`}
+                        // download
+                        download="excel-file.pptx"
+                        className="bg-blue-500 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-md flex gap-5 items-center justify-center w-full text-center"
+                      >
+                        <FaRegFilePdf /> <span> Download Docs file </span>
+                      </Link>
                     )}
                   </div>
                 )}

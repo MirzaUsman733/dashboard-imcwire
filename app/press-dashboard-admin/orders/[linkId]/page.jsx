@@ -120,7 +120,7 @@ const Page = ({ params }) => {
   const [plans, setPlans] = React.useState([]);
   const [detail, setDetail] = React.useState(null);
   const { data: session, status: sessionStatus } = useSession();
-  const [loading, setLoading] = React.useState(true); 
+  const [loading, setLoading] = React.useState(true);
   const router = useRouter();
   React.useEffect(() => {
     if (session?.user?.role === "user") {
@@ -202,128 +202,131 @@ const Page = ({ params }) => {
       </div>
     );
   }
-
   if (session && sessionStatus === "authenticated" && detail) {
-  return (
-    <Container>
-      <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
-        <div className="flex justify-center gap-5">
-          <MdInventory />
-          <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20"> Manage Your Press Release </h1>
-        </div>
-      </h1>
-      <TableContainer component={Paper} className="shadow-lg">
-        <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
-          <TableHead>
-            <TableRow>
-              <StyledTableCell className="font-bold">PR No.</StyledTableCell>
-              <StyledTableCell className="font-bold">
-                Company Name
-              </StyledTableCell>
-              <StyledTableCell className="font-bold">Email</StyledTableCell>
-              <StyledTableCell className="font-bold">Date</StyledTableCell>
-              <StyledTableCell className="font-bold">Address</StyledTableCell>
-              <StyledTableCell className="font-bold">Status</StyledTableCell>
-              <StyledTableCell className="font-bold">See More</StyledTableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {(rowsPerPage > 0
-              ? detail?.slice(
-                  page * rowsPerPage,
-                  page * rowsPerPage + rowsPerPage
-                  
-                )
-              : detail
-            )?.map((row, index) => (
-              <StyledTableRow key={row?.id}>
-                <TableCell style={{ width: 100 }}>{row?.id}</TableCell>
-                <TableCell style={{ width: 160 }}>
-                  {row?.formData?.companyName ? row?.formData?.companyName : "Not Added Yet" }
-                </TableCell>
-                <TableCell style={{ width: 160 }}>
-                  {row?.formData?.email ? row?.formData?.email : "Not Added" }
-                </TableCell>
-                <TableCell style={{ width: 160 }}>
-                  {formatDate(row?.updatedAt)}
-                </TableCell>
-                <TableCell style={{ width: 160 }}>
-                  {row?.formData?.address1 ? row?.formData?.address1 : "Not Added Yet"}
-                </TableCell>
-                {row?.storeData?.action === "pending" ? (
-                  <TableCell style={{ width: 160 }}>
-                    <span className="bg-blue-500 text-white px-2 py-1 rounded-lg">
-                      {row?.storeData?.action}
-                    </span>
-                  </TableCell>
-                ) : (
-                  ""
-                )}
-                {row?.storeData?.action === "completed" ? (
-                  <TableCell style={{ width: 160 }}>
-                    <span className="bg-green-600 px-2 py-1 rounded-lg text-white">
-                      {row?.storeData?.action}
-                    </span>
-                  </TableCell>
-                ) : (
-                  ""
-                )}
-                {row?.storeData?.action === "inprogress" ? (
-                  <TableCell style={{ width: 160 }}>
-                    <span className="bg-yellow-600 px-2 py-1 rounded-lg text-white">
-                      {row?.storeData?.action}
-                    </span>
-                  </TableCell>
-                ) : (
-                  ""
-                )}
-                <TableCell style={{ width: 160 }}>
-                  <Link
-                    href={`/press-dashboard-admin/orders/${id}/${row.id}`}
-                  >
-                    <div className="border border-1 text-center border-purple-700 px-5 py-2 rounded-2xl hover:bg-purple-700 hover:border-0 hover:text-white w-full">
-                      Detail
-                    </div>
-                  </Link>
-                </TableCell>
-              </StyledTableRow>
-            ))}
-            {emptyRows > 0 && (
-              <TableRow style={{ height: 53 * emptyRows }}>
-                <TableCell colSpan={6} />
+    return (
+      <Container>
+        <h1 className="text-5xl font-extrabold my-10 text-center text-purple-700">
+          <div className="flex justify-center gap-5">
+            <MdInventory />
+            <h1 className="text-6xl font-serif text-purple-700 font-bold text-center mb-20">
+              {" "}
+              Manage Your Press Release{" "}
+            </h1>
+          </div>
+        </h1>
+        <TableContainer component={Paper} className="shadow-lg">
+          <Table sx={{ minWidth: 500 }} aria-label="custom pagination table">
+            <TableHead>
+              <TableRow>
+                <StyledTableCell className="font-bold">PR No.</StyledTableCell>
+                <StyledTableCell className="font-bold">
+                  Company Name
+                </StyledTableCell>
+                <StyledTableCell className="font-bold">Email</StyledTableCell>
+                <StyledTableCell className="font-bold">Date</StyledTableCell>
+                <StyledTableCell className="font-bold">Address</StyledTableCell>
+                <StyledTableCell className="font-bold">Status</StyledTableCell>
+                <StyledTableCell className="font-bold">
+                  See More
+                </StyledTableCell>
               </TableRow>
-            )}
-          </TableBody>
-          <TableFooter>
-            <TableRow>
-              <TablePagination
-                rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
-                colSpan={7}
-                count={detail?.length}
-                rowsPerPage={rowsPerPage}
-                page={page}
-                SelectProps={{
-                  inputProps: {
-                    "aria-label": "rows per page",
-                  },
-                  native: true,
-                }}
-                onPageChange={handleChangePage}
-                onRowsPerPageChange={handleChangeRowsPerPage}
-                ActionsComponent={TablePaginationActions}
-              />
-            </TableRow>
-          </TableFooter>
-        </Table>
-      </TableContainer>
-    </Container>
-  );
-} else {
-  return (
-    <div className="h-[80vh] flex justify-center items-center w-full">
-    <p>Failed to fetch data.</p>
-  </div>
-  );
-}
+            </TableHead>
+            <TableBody>
+              {(rowsPerPage > 0
+                ? detail?.slice(
+                    page * rowsPerPage,
+                    page * rowsPerPage + rowsPerPage
+                  )
+                : detail
+              )?.map((row, index) => (
+                <StyledTableRow key={row?.id}>
+                  <TableCell style={{ width: 100 }}>{row?.id}</TableCell>
+                  <TableCell style={{ width: 160 }}>
+                    {row?.formData?.companyName
+                      ? row?.formData?.companyName
+                      : "Not Added Yet"}
+                  </TableCell>
+                  <TableCell style={{ width: 160 }}>
+                    {row?.storeData?.formDataSignUp?.email
+                      ? row?.storeData?.formDataSignUp?.email
+                      : "Not Added"}
+                  </TableCell>
+                  <TableCell style={{ width: 160 }}>
+                    {formatDate(row?.updatedAt)}
+                  </TableCell>
+                  <TableCell style={{ width: 160 }}>
+                    {row?.formData?.address1
+                      ? row?.formData?.address1
+                      : "Not Added Yet"}
+                  </TableCell>
+                  {["paid", "unpaid"].includes(row?.storeData?.status) ? (
+                    <TableCell style={{ width: 160 }}>
+                      <span
+                        className={`px-2 py-1 rounded-lg uppercase text-white ${
+                          {
+                            paid: "bg-blue-500",
+                            unpaid: "bg-red-500",
+                          }[row?.storeData?.status]
+                        }`}
+                      >
+                        {row?.storeData?.status}
+                      </span>
+                    </TableCell>
+                  ) : (
+                    <TableCell style={{ width: 160 }}>
+                      <span className="bg-gray-500 text-white px-2 py-1 rounded-lg">
+                        Not proper action occurred
+                      </span>
+                    </TableCell>
+                  )}
+
+                  <TableCell style={{ width: 160 }}>
+                    <Link
+                      href={`/press-dashboard-admin/orders/${id}/${row.id}`}
+                    >
+                      <div className="border border-1 text-center border-purple-700 px-5 py-2 rounded-2xl hover:bg-purple-700 hover:border-0 hover:text-white w-full">
+                        Detail
+                      </div>
+                    </Link>
+                  </TableCell>
+                </StyledTableRow>
+              ))}
+              {emptyRows > 0 && (
+                <TableRow style={{ height: 53 * emptyRows }}>
+                  <TableCell colSpan={6} />
+                </TableRow>
+              )}
+            </TableBody>
+            <TableFooter>
+              <TableRow>
+                <TablePagination
+                  rowsPerPageOptions={[5, 10, 25, { label: "All", value: -1 }]}
+                  colSpan={7}
+                  count={detail?.length}
+                  rowsPerPage={rowsPerPage}
+                  page={page}
+                  SelectProps={{
+                    inputProps: {
+                      "aria-label": "rows per page",
+                    },
+                    native: true,
+                  }}
+                  onPageChange={handleChangePage}
+                  onRowsPerPageChange={handleChangeRowsPerPage}
+                  ActionsComponent={TablePaginationActions}
+                />
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </TableContainer>
+      </Container>
+    );
+  } else {
+    return (
+      <div className="h-[80vh] flex justify-center items-center w-full">
+        <p>Failed to fetch data.</p>
+      </div>
+    );
+  }
 };
 export default Page;
