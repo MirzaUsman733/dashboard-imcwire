@@ -77,10 +77,13 @@ export async function POST(req) {
       await transporter.sendMail(userMailOptions);
 
       // Send alert email to admin(s)
-      const adminEmails = ["imcwirenotifications@gmail.com", "admin@imcwire.com"]; 
+      const adminEmails = [
+        "imcwirenotifications@gmail.com",
+        "admin@imcwire.com",
+      ];
       const adminMailOptions = {
         from: "IMCWire <Orders@imcwire.com>",
-        to: adminEmails.join(","), 
+        to: adminEmails.join(","),
         subject: "New Press Release Submission",
         html: `
         <!DOCTYPE html>
@@ -134,6 +137,7 @@ export async function PUT(req) {
     const userEmail = user?.storeData?.formDataSignUp?.email;
     const userName = user?.storeData?.formDataSignUp?.name;
     let emailSubject, emailText;
+
     switch (updatedData?.storeData?.action) {
       case "pending":
         emailSubject = "Your IMCWire Press Release Order is Pending Approval";
@@ -235,6 +239,89 @@ export async function PUT(req) {
         </html>
         `;
         break;
+      case "rejected":
+        emailSubject = "Your Press Release is Rejected";
+        emailText = `<!DOCTYPE html>
+          <html lang="en">
+          <head>
+          <meta charset="UTF-8">
+          <meta name="viewport" content="width=device-width, initial-scale=1.0">
+          <title>Press Release Underway</title>
+          </head>
+          <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+          <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+          <h3 style="font-weight: bold">Dear ${userName},</h3>
+            <h3 style="font-weight: bold">Status: Approved</h3>
+          <p>We hope this message finds you well. We are writing to inform you that your recent press release submission through IMCWire has been rejected. This decision has been made based on specific criteria set by the platforms where we aimed to publish your content.</p>
+          <p><strong>Rejection Details:</strong></p>
+          <h3 style="font-weight: bold">Title of Press Release: ${
+            updatedData?.storeData?.matchedPlanData.planName
+          }</h3>
+          <h3 style="font-weight: bold">
+  Submission Date: ${new Date(updatedData?.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  )}
+</h3>
+          <p>We understand this may be disappointing, and we are here to assist you in making any necessary adjustments to meet the publication standards. Please reach out to us at your earliest convenience to discuss the next steps and how we can successfully get your press release distributed.</p>
+          <p>For more detailed feedback or to explore alternative strategies for your press release, please contact our support team. We are committed to providing you with the best possible service and finding a solution that meets your needs.</p>
+          <p>We value your trust in our ability to communicate your news effectively. If you have any questions or need assistance during this process, please don't hesitate to reach out to our support team at <a mailto="support@imcwire.com">support@imcwire.com</a>.</p>
+          <p><strong>Contact Information:</strong></p>
+          <li><strong>•Email:</strong>support@imcwire.com</li>
+          <li><strong>•	Phone:</strong>+44 730 758 3590</li>
+          <p>Thank you for choosing IMCWire. We look forward to assisting you further and ensuring your content reaches your intended audience.</p>
+          <p>Best regards,<br>The IMCWire Team</p>
+          </div>
+          </body>
+          </html>
+          `;
+        break;
+      case "hold":
+        emailSubject = "Your Press Release is Hold";
+        emailText = `<!DOCTYPE html>
+            <html lang="en">
+            <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Press Release Underway</title>
+            </head>
+            <body style="font-family: Arial, sans-serif; background-color: #f5f5f5; padding: 20px;">
+            <div style="background-color: #fff; max-width: 600px; margin: 0 auto; padding: 20px; border-radius: 10px; box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);">
+            <h3 style="font-weight: bold">Dear ${userName},</h3>
+              <h3 style="font-weight: bold">Status: Approved</h3>
+            <p>We hope this message finds you well. We are writing to inform you that your recent press release submission through IMCWire has been rejected. This decision has been made based on specific criteria set by the platforms where we aimed to publish your content.</p>
+            <p><strong>Hold Details:</strong></p>
+            <h3 style="font-weight: bold">Title of Press Release: ${
+              updatedData?.storeData?.matchedPlanData.planName
+            }</h3>
+          <h3 style="font-weight: bold">
+  Submission Date: ${new Date(updatedData?.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  )}
+</h3>
+            <p>To ensure your press release meets all necessary criteria for successful distribution and to discuss the required changes, we kindly ask you to contact our support team as soon as possible. We are here to assist you in resolving these issues promptly.</p>
+            <p>We value your trust in our ability to communicate your news effectively. If you have any questions or need assistance during this process, please don't hesitate to reach out to our support team at <a mailto="support@imcwire.com">support@imcwire.com</a>.</p>
+            <p><strong>Contact Information:</strong></p>
+            <li><strong>Email: </strong>support@imcwire.com</li>
+            <li><strong>Phone: </strong>+44 730 758 3590</li>
+            <p>Thank you for choosing IMCWire. We look forward to assisting you further and ensuring your content reaches your intended audience.</p>
+            <p>Best regards,<br>The IMCWire Team</p>
+            </div>
+            </body>
+            </html>
+            `;
+        break;
       case "completed":
         emailSubject =
           "Your Press Release Distribution is Complete – View Your Report!";
@@ -285,7 +372,7 @@ export async function PUT(req) {
     const adminEmails = ["admin@imcwire.com", "imcwirenotifications@gmail.com"]; // Array of admin emails
     const adminMailOptions = {
       from: "IMCWire <Orders@imcwire.com>",
-      to: adminEmails.join(","), 
+      to: adminEmails.join(","),
       subject: "Press Release Order Update Alert",
       html: `
       <!DOCTYPE html>
