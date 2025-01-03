@@ -187,10 +187,7 @@ const Page = ({ params }) => {
                         <span className="font-bold text-lg">
                           Category Subtotal:
                         </span>
-                        $
-                        {detail?.storeData?.categorySubtotal
-                          ? detail?.storeData?.categorySubtotal
-                          : "Not Added Yet"}
+                        ${detail?.storeData?.categorySubtotal}
                       </p>
                       <p>
                         <span className="font-bold text-lg">Cost: </span> $
@@ -227,7 +224,7 @@ const Page = ({ params }) => {
                         <span className="font-bold text-lg">
                           Plan Description:
                         </span>
-                        {detail?.storeData?.matchedPlanData?.planDescription}
+                        {detail?.storeData?.matchedPlanData?.planDescription || " Not Added by Admin"}
                       </p>
                       <p>
                         <span className="font-bold text-lg">
