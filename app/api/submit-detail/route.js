@@ -153,12 +153,21 @@ export async function PUT(req) {
             <h2>Dear ${userName},</h2>
             <p>Thank you for choosing IMCWire for your press release needs. We're eager to help broadcast your message through our vast network of media outlets.</p>
             
-            <h3>Order Status:</h3>
-            <ul>
-              <li><strong>Order ID:</strong> ${user?.clientId}</li>
-              <li><strong>Plan:</strong> ${user?.matchedPlanData?.planName}</li>
-              <li><strong>Submitted on:</strong> ${user?.matchedPlanData?.createdAt} </li>
-            </ul>
+            <h3>Order Detail:</h3>
+              <h3 style="font-weight: bold">Title of Press Release: ${
+                updatedData?.storeData?.matchedPlanData.planName
+              }</h3>
+          <h3 style="font-weight: bold">
+  Submission Date: ${new Date(updatedData?.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  )}
+</h3>
             
             <h3>Next Steps:</h3>
             <p><strong>Review Process:</strong> Our team is currently reviewing your submission to ensure it meets our quality and content standards.</p>
@@ -191,6 +200,21 @@ export async function PUT(req) {
           <h3 style="font-weight: bold">Status: Approved</h3>
           <p>We're delighted to inform you that your press release has been approved and is ready for distribution through IMCWire!</p>
           <p>Your press release has met our quality standards and is set to make an impact.</p>
+           <h3 style="font-weight: bold">Order Detail : </h3>
+           <h3 style="font-weight: bold">Title of Press Release: ${
+             updatedData?.storeData?.matchedPlanData.planName
+           }</h3>
+          <h3 style="font-weight: bold">
+  Submission Date: ${new Date(updatedData?.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  )}
+</h3>
           <p><strong>Next Steps:</strong></p>
           <ul>
           <li><strong>Distribution:</strong> Your press release will now be distributed to our extensive network of media outlets.</li>
@@ -220,11 +244,20 @@ export async function PUT(req) {
           <h3 style="font-weight: bold">Status: Approved</h3>
         <p>Exciting news—your press release is officially underway at IMCWire! We're committed to maximizing the reach of your story through our extensive network of media outlets.</p>
         <p><strong>Order Details:</strong></p>
-        <ul>
-        <li><strong>Order ID:</strong> ${user?.clientId}</li>
-        <li><strong>Plan Selected:</strong> ${user?.matchedPlanData?.planName}</li>
-        <li><strong>Status:</strong> In Progress</li>
-        </ul>
+         <h3 style="font-weight: bold">Title of Press Release: ${
+            updatedData?.storeData?.matchedPlanData.planName
+          }</h3>
+          <h3 style="font-weight: bold">
+  Submission Date: ${new Date(updatedData?.createdAt).toLocaleDateString(
+    "en-US",
+    {
+      weekday: "long",
+      year: "numeric",
+      month: "long",
+      day: "numeric",
+    }
+  )}
+</h3>
         <p><strong>Next Steps:</strong></p>
         <ul>
         <li><strong>Distribution:</strong> We are preparing your press release for distribution as per your selected plan to ensure a successful launch.</li>
