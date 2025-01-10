@@ -20,7 +20,7 @@ export const metadata = {
 export default function RootLayout({ children }) {
   return (
     <html lang="en">
-      <head>
+      {/* <head>
         <script 
           dangerouslySetInnerHTML={{ 
             __html: `
@@ -32,7 +32,7 @@ export default function RootLayout({ children }) {
             ` 
           }} 
         />
-      </head>
+      </head> */}
       <body className={inter.className}>
         <SessionProvider>
           <UserProvider>

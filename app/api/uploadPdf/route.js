@@ -30,10 +30,10 @@ export async function POST(req) {
   client.ftp.verbose = true;
   try {
     await client.access({
-      host: "185.224.133.237",
-      user: "imcwire_ftp_user",
-      password: "pzEl202cJdj7",
-      secure: true,
+      host: process.env.FTP_host,
+      user: process.env.FTP_user,
+      password: process.env.FTP_password,
+      secure: false,
       secureOptions: { rejectUnauthorized: false },
     });
 
@@ -106,10 +106,10 @@ export async function PUT(req) {
     client.ftp.verbose = true;
     try {
       await client.access({
-        host: "185.224.133.237",
-        user: "imcwire_ftp_user",
-        password: "pzEl202cJdj7",
-        secure: true,
+        host: process.env.FTP_host,
+        user: process.env.FTP_user,
+        password: process.env.FTP_password,
+        secure: false,
         secureOptions: { rejectUnauthorized: false },
       });
       const filePartAfterUnderscore = currentPdfFileName.split("_")[1];
@@ -143,10 +143,10 @@ export async function PUT(req) {
     uploadClient.ftp.verbose = true;
     try {
       await uploadClient.access({
-        host: "185.224.133.237",
-        user: "imcwire_ftp_user",
-        password: "pzEl202cJdj7",
-        secure: true,
+        host: process.env.FTP_host,
+        user: process.env.FTP_user,
+        password: process.env.FTP_password,
+        secure: false,
         secureOptions: { rejectUnauthorized: false },
       });
 
