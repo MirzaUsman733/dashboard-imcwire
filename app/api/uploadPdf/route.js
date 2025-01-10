@@ -6,6 +6,7 @@ import { pipeline } from "stream/promises";
 import path from "path";
 
 const prisma = new PrismaClient();
+
 export async function POST(req) {
   const formData = await req.formData();
 
@@ -30,10 +31,15 @@ export async function POST(req) {
   client.ftp.verbose = true;
   try {
     await client.access({
-      host: process.env.FTP_host,
-      user: process.env.FTP_user,
-      password: process.env.FTP_password,
-      secure: false,
+      // host: process.env.FTP_HOST,
+      // user: process.env.FTP_USER,
+      // password: process.env.FTP_PASS,
+      // port: process.env.FTP_PORT,
+      host: "141.136.43.210",
+      user: "u810641239.imcwire.com",
+      password: "9/L54$edWGaUz?6",
+      port: 21,
+      secure: true,
       secureOptions: { rejectUnauthorized: false },
     });
 
@@ -62,6 +68,9 @@ export async function POST(req) {
     fs.unlinkSync(pdfPath);
   }
 }
+
+
+
 
 export async function PUT(req) {
   try {
@@ -106,10 +115,15 @@ export async function PUT(req) {
     client.ftp.verbose = true;
     try {
       await client.access({
-        host: process.env.FTP_host,
-        user: process.env.FTP_user,
-        password: process.env.FTP_password,
-        secure: false,
+        // host: process.env.FTP_HOST,
+        // user: process.env.FTP_USER,
+        // password: process.env.FTP_PASS,
+        // port: process.env.FTP_PORT || 21,
+        host: "141.136.43.210",
+        user: "u810641239.imcwire.com",
+        password: "9/L54$edWGaUz?6",
+        port: 21,
+        secure: true,
         secureOptions: { rejectUnauthorized: false },
       });
       const filePartAfterUnderscore = currentPdfFileName.split("_")[1];
@@ -143,10 +157,15 @@ export async function PUT(req) {
     uploadClient.ftp.verbose = true;
     try {
       await uploadClient.access({
-        host: process.env.FTP_host,
-        user: process.env.FTP_user,
-        password: process.env.FTP_password,
-        secure: false,
+        // host: process.env.FTP_HOST,
+        // user: process.env.FTP_USER,
+        // password: process.env.FTP_PASS,
+        // port: process.env.FTP_PORT || 21,
+        host: "141.136.43.210",
+        user: "u810641239.imcwire.com",
+        password: "9/L54$edWGaUz?6",
+        port: 21,
+        secure: true,
         secureOptions: { rejectUnauthorized: false },
       });
 
