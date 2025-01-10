@@ -7,43 +7,109 @@ import path from "path";
 
 const prisma = new PrismaClient();
 
+// export async function POST(req) {
+//   const formData = await req.formData();
+
+//   const uniqueId = formData?.get("id");
+//   const pdfFile = formData?.get("pdf");
+//   const tempDir = path.join(__dirname, "temp");
+//   if (!fs.existsSync(tempDir)) {
+//     fs.mkdirSync(tempDir, { recursive: true });
+//   }
+//   if (!pdfFile) {
+//     return NextResponse.json(
+//       { error: "No PDF file provided." },
+//       { status: 400 }
+//     );
+//   }
+//   const sanitizedPdfName = pdfFile.name.replace(/ /g, "-");
+//   const pdfPath = path.join(tempDir, sanitizedPdfName);
+//   await pipeline(pdfFile.stream(), fs.createWriteStream(pdfPath));
+//   const pdfFirstChar = sanitizedPdfName[0].toLowerCase();
+
+//   const client = new Client();
+//   client.ftp.verbose = true;
+//   try {
+//     await client.access({
+//       // host: process.env.FTP_HOST,
+//       // user: process.env.FTP_USER,
+//       // password: process.env.FTP_PASS,
+//       // port: process.env.FTP_PORT,
+//       host: "141.136.43.210",
+//       user: "u810641239.imcwire.com",
+//       password: "9/L54$edWGaUz?6",
+//       port: 21,
+//       secure: true,
+//       secureOptions: { rejectUnauthorized: false },
+//     });
+
+//     await client.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+//     await client.uploadFrom(
+//       pdfPath,
+//       `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
+//     );
+
+//     const result = await prisma.pdf.create({
+//       data: {
+//         id: uniqueId,
+//         pdf: `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`,
+//       },
+//     });
+
+//     return NextResponse.json(result);
+//   } catch (e) {
+//     console.error("Error during file upload or database operation:", e);
+//     return NextResponse.json(
+//       { error: "Something went wrong." },
+//       { status: 500 }
+//     );
+//   } finally {
+//     client.close();
+//     fs.unlinkSync(pdfPath);
+//   }
+// }
+
 export async function POST(req) {
   const formData = await req.formData();
 
-  const uniqueId = formData?.get("id");
-  const pdfFile = formData?.get("pdf");
-  const tempDir = path.join(__dirname, "temp");
+  const uniqueId = formData.get("id");
+  const pdfFile = formData.get("pdf");
+
+  if (!uniqueId || typeof uniqueId !== 'string') {
+    return NextResponse.json({ error: "Invalid or missing ID." }, { status: 400 });
+  }
+
+  if (!pdfFile || !(pdfFile instanceof File)) {
+    return NextResponse.json({ error: "No PDF file provided." }, { status: 400 });
+  }
+
+  const tempDir = path.join(process.cwd(), "temp");
   if (!fs.existsSync(tempDir)) {
     fs.mkdirSync(tempDir, { recursive: true });
   }
-  if (!pdfFile) {
-    return NextResponse.json(
-      { error: "No PDF file provided." },
-      { status: 400 }
-    );
-  }
-  const sanitizedPdfName = pdfFile.name.replace(/ /g, "-");
+
+  const sanitizedPdfName = pdfFile.name.replace(/[^a-zA-Z0-9.-]/g, "-");
   const pdfPath = path.join(tempDir, sanitizedPdfName);
-  await pipeline(pdfFile.stream(), fs.createWriteStream(pdfPath));
   const pdfFirstChar = sanitizedPdfName[0].toLowerCase();
 
   const client = new Client();
-  client.ftp.verbose = true;
+  client.ftp.verbose = console.log;
+
   try {
+    await pipeline(pdfFile.stream(), fs.createWriteStream(pdfPath));
+
     await client.access({
-      // host: process.env.FTP_HOST,
-      // user: process.env.FTP_USER,
-      // password: process.env.FTP_PASS,
-      // port: process.env.FTP_PORT,
       host: "141.136.43.210",
       user: "u810641239.imcwire.com",
       password: "9/L54$edWGaUz?6",
-      port: 21,
+      port: parseInt(process.env.FTP_PORT || "21"),
       secure: true,
       secureOptions: { rejectUnauthorized: false },
     });
 
-    await client.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+    // Ensure the directory exists
+    await client.ensureDir(`/uploads/pdf-Data/${pdfFirstChar}`);
+
     await client.uploadFrom(
       pdfPath,
       `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
@@ -57,19 +123,19 @@ export async function POST(req) {
     });
 
     return NextResponse.json(result);
-  } catch (e) {
-    console.error("Error during file upload or database operation:", e);
+  } catch (error) {
+    console.error("Error during file upload or database operation:", error);
     return NextResponse.json(
-      { error: "Something went wrong." },
+      { error: "Something went wrong during file upload or database operation." },
       { status: 500 }
     );
   } finally {
     client.close();
-    fs.unlinkSync(pdfPath);
+    if (fs.existsSync(pdfPath)) {
+      fs.unlinkSync(pdfPath);
+    }
   }
 }
-
-
 
 
 export async function PUT(req) {
