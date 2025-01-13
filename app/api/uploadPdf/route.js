@@ -43,16 +43,16 @@ const prisma = new PrismaClient();
 //       secureOptions: { rejectUnauthorized: false },
 //     });
 
-//     await client.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+//     await client.cd(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}`);
 //     await client.uploadFrom(
 //       pdfPath,
-//       `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
+//       `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
 //     );
 
 //     const result = await prisma.pdf.create({
 //       data: {
 //         id: uniqueId,
-//         pdf: `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`,
+//         pdf: `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`,
 //       },
 //     });
 
@@ -108,11 +108,11 @@ export async function POST(req) {
     });
 
     // Ensure the directory exists
-    await client.ensureDir(`/uploads/pdf-Data/${pdfFirstChar}`);
+    await client.ensureDir(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}`);
 
     await client.uploadFrom(
       pdfPath,
-      `/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
+      `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${uniqueId}_${sanitizedPdfName}`
     );
 
     const result = await prisma.pdf.create({
@@ -196,10 +196,10 @@ export async function POST(req) {
 
 //       const pdfFirstChar = filePartAfterUnderscore[0].toLowerCase();
 
-//       await client.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+//       await client.cd(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}`);
 //       // Delete the old file from FTP
 //       await client.remove(
-//         `/uploads/pdf-Data/${pdfFirstChar}/${currentPdfFileName}`
+//         `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${currentPdfFileName}`
 //       );
 //     } catch (ftpError) {
 //       console.error("Error deleting old PDF from FTP:", ftpError);
@@ -235,10 +235,10 @@ export async function POST(req) {
 //         secureOptions: { rejectUnauthorized: false },
 //       });
 
-//       await uploadClient.cd(`/uploads/pdf-Data/${pdfFirstChar}`);
+//       await uploadClient.cd(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}`);
 //       await uploadClient.uploadFrom(
 //         pdfPath,
-//         `/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`
+//         `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`
 //       );
 //     } catch (uploadError) {
 //       console.error("Error uploading new PDF to FTP:", uploadError);
@@ -255,7 +255,7 @@ export async function POST(req) {
 //     const result = await prisma.pdf.update({
 //       where: { id: id },
 //       data: {
-//         pdf: `/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`,
+//         pdf: `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`,
 //       },
 //     });
 
@@ -325,11 +325,11 @@ export async function PUT(req) {
         const pdfFirstChar = filePartAfterUnderscore?.[0]?.toLowerCase() || 'a';
 
         // Ensure the directory exists before trying to access it
-        await client.ensureDir(`/uploads/pdf-Data/${pdfFirstChar}`);
+        await client.ensureDir(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}`);
 
         // Try to delete the old file, but don't throw an error if it doesn't exist
         try {
-          await client.remove(`/uploads/pdf-Data/${pdfFirstChar}/${currentPdfFileName}`);
+          await client.remove(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${currentPdfFileName}`);
         } catch (removeError) {
           console.warn("Error deleting old PDF from FTP (file may not exist):", removeError);
         }
@@ -356,11 +356,11 @@ export async function PUT(req) {
 
     try {
       // Ensure the directory exists
-      await client.ensureDir(`/uploads/pdf-Data/${pdfFirstChar}`);
+      await client.ensureDir(`/public_html/files/uploads/pdf-Data/${pdfFirstChar}`);
 
       await client.uploadFrom(
         pdfPath,
-        `/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`
+        `/public_html/files/uploads/pdf-Data/${pdfFirstChar}/${id}_${sanitizedPdfName}`
       );
     } catch (uploadError) {
       console.error("Error uploading new PDF to FTP:", uploadError);
