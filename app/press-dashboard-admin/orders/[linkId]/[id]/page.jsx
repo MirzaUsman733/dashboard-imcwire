@@ -41,7 +41,7 @@ const Page = ({ params }) => {
       console.error("Error fetching detail:", error);
     }
   }, []);
-
+  console.log(detail);
   useEffect(() => {
     fetchDetail();
   }, [fetchDetail]);
@@ -435,7 +435,7 @@ const Page = ({ params }) => {
                   </div>
                 </div>
                 {/* Form Data Contract Section */}
-                {detail?.formDataContract?.file != null && !filterData?.pdf ? (
+                {detail?.formDataContract?.file === null && !filterData?.pdf ? (
                   <div className="bg-white shadow-2xl border border-1 border-purple-300 rounded-lg overflow-hidden">
                     <div className="p-6">
                       <h2 className="text-2xl font-bold mb-4 text-center font-serif">
@@ -449,11 +449,25 @@ const Page = ({ params }) => {
                           {detail?.formDataContract?.selectedCompany ||
                             "Not Added Yet"}
                         </p>
-                        <p>
+                        <hr className="my-1" />
+                        <p className=" mt-2">
                           <span className="font-bold text-lg">
                             Company URL:{" "}
                           </span>
                           {detail?.formDataContract?.url || "Not Added Yet"}
+                        </p>
+                        <hr className="my-1" />
+                        <p>
+                          <span className="font-bold text-lg mt-2">
+                            Target Keywords:{" "}
+                          </span>
+                          <ul>
+                            {detail?.formDataContract?.tags.map(
+                              (tag, index) => (
+                                <li key={index}>{tag}</li>
+                              )
+                            )}
+                          </ul>
                         </p>
                       </div>
                     </div>

@@ -103,7 +103,7 @@ export const POST = async (request) => {
               <h1>Forget Password</h1>
               <p>You recently requested to reset your password. Click the button below to reset it:</p>
               <div style="display: flex; justify-content: center;">
-              <a class="btn" href="http://localhost:3000/reset-password/${resetToken}">Reset Password</a>
+              <a class="btn" href="http://dashboard.imcwire.com/reset-password/${resetToken}">Reset Password</a>
               </div>
               <p class="footer">If you did not request this, please ignore this email.</p>
           </div>

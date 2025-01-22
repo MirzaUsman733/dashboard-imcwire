@@ -67,7 +67,7 @@ export async function GET(req) {
 
 export async function DELETE(req) {
   try {
-    const { id } = await req?.json(); // await the resolution of req.json() promise
+    const { id } = await req?.json();
     await prisma?.company?.delete({
       where: { id },
     });
